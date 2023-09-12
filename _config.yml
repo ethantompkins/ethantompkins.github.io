@@ -1,19 +1,19 @@
 # Site Settings
-title:               Steven Morse
-tagline:             personal website and research notes
+title:               Ethan Tompkins
+tagline:             personal website
 description:
 baseurl:            #"/Lagrange"
 url:                #"https://lenpaul.github.io"
 github:
-  url:               "https://stmorse.github.io"
+  url:               "https://ethantompkins.github.io"
 author:
-  name:              "Steven Morse"
-  email:             "steventmorse@gmail.com"
-  twitter:           "thestevemo"
+  name:              "Ethan Tompkins"
+  email:             "ethantompkins55@yahoo.com"
+  twitter:           "NA"
   #instagram:         "paululele"
-  github:            "stmorse"
+  github:            "ethantompkins"
   #facebook:          "Le.Paul.94"
-  linkedin:          "steventmorse"
+  linkedin:          "ethantompkins"
 paginate:            5
 
 
