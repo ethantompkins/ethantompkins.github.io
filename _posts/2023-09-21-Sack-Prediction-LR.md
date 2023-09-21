@@ -67,5 +67,5 @@ In summary, the notebook offers a comprehensive approach to predicting sacks in 
 
 ---
 
-*Note: This is a summarized version of the notebook's content. For detailed code and in-depth explanations, it's advisable to refer to the original notebook.*
+*Link to the full github repo located [here] (https://github.com/ethantompkins/jupyter-notebooks-fb/blob/main/logistic_regression_sack_prediction.ipynb)*
 
