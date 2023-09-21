@@ -1,13 +1,14 @@
 ---
 layout: post
-title: "NFL Sack Predictions using Logistic Regression"
+title: "Predicting NFL Sacks with Logistic Regression"
 categories: journal
 date: 2023-09-21
 tags: ['python']
 ---
 
+### Predicting NFL Sacks with Machine Learning
 
-Every play in the National Football League (NFL) has a possibility of changing a game. A sack, where a quarterback is tackled by a defensive player behind the line of scrimmage before he can throw a forward pass is an example of this. Using logistic regression and historical NFL data, we can predict the likelihood of a sack happening during a play.
+In the National Football League (NFL), every play has a possibility of changing the game. One such game-changing play is the sack, where a quarterback is tackled behind the line of scrimmage before he can throw a forward pass. Predicting when a sack might occur can offer teams a strategic advantage, and with the power of machine learning, this prediction becomes feasible.
 
 In this post, we'll walk through a Python notebook that leverages NFL play-by-play data to predict the occurrence of sacks. 
 
@@ -66,5 +67,7 @@ In summary, the notebook offers a comprehensive approach to predicting sacks in 
 
 ---
 
-*Link to the full github repo located [here] (https://github.com/ethantompkins/jupyter-notebooks-fb/blob/main/logistic_regression_sack_prediction.ipynb)*
+*Link to the full github repo located [here]*
+
+[here]: https://github.com/ethantompkins/jupyter-notebooks-fb/blob/main/logistic_regression_sack_prediction.ipynb
 
