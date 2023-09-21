@@ -6,9 +6,8 @@ date: 2023-09-21
 tags: ['python']
 ---
 
-### Predicting NFL Sacks with Machine Learning
 
-In the world of the National Football League (NFL), every play carries the potential to change the course of a game. One such game-changing play is the sack, where a quarterback is tackled behind the line of scrimmage before he can throw a forward pass. Predicting when a sack might occur can offer teams a strategic advantage, and with the power of machine learning, this prediction becomes feasible.
+Every play in the National Football League (NFL) has a possibility of changing a game. A sack, where a quarterback is tackled by a defensive player behind the line of scrimmage before he can throw a forward pass is an example of this. Using logistic regression and historical NFL data, we can predict the likelihood of a sack happening during a play.
 
 In this post, we'll walk through a Python notebook that leverages NFL play-by-play data to predict the occurrence of sacks. 
 
