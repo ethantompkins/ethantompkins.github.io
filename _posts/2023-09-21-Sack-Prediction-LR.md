@@ -65,7 +65,14 @@ Looking at the data, we think about features we can add to make predicting a sac
 pbp_clean['obvious_pass'] = np.where((pbp_clean['down'] == 3) & (pbp_clean['ydstogo'] >= 6), 1,0)
 ```
 
-Next we can create a 'down' variable (1st down, 2nd down, etc.). This is treated as a categorical feature, making it more digestible for the models.
+- After this, we need to clean the dataframe so that all Null values are removed.
+```python
+pre_df = pbp_clean[['game_id', 'play_id', 'season', 'name', 'down', 'ydstogo', 'yardline_100', 'game_seconds_remaining',
+                    'defenders_in_box', 'number_of_pass_rushers', 'xpass', 'obvious_pass', 'sack']]
+df = pre_df.dropna()
+```
+
+-Next, we can create a 'down' variable (1st down, 2nd down, etc.). This is treated as a categorical feature, making it more digestible for the models.
 
 ```python 
 df['down'] = df['down'].astype('category')
@@ -77,12 +84,25 @@ df_no_ids = pd.get_dummies(df_no_ids, columns = ['down'])
 
 #### 6. Modeling and Evaluation
 
-Three machine learning models are trained on the data:
-1. **Logistic Regression**
-2. **Random Forest**
-3. **XGBoost**
+Before we run our machine learning models, stratified training and test datasets need to be created. This ensures that the training and test datasets have a similar distribution of the target variable. When working with unbalanced classes this is especially useful. 
 
-Each model's performance is evaluated using the Brier Score, which measures the mean squared difference between the predicted probabilities and the actual outcomes.
+```python 
+sss = StratifiedShuffleSplit(n_splits=1, test_size=0.25, random_state=42)
+for train_index, test_index in sss.split(df_no_ids, df_no_ids['sack']):
+    strat_train_set = df_no_ids.iloc[train_index]
+    strat_test_set = df_no_ids.iloc[test_index]
+
+X_train = strat_train_set.drop(columns = ['sack'])
+Y_train = strat_train_set['sack']
+X_test = strat_test_set.drop(columns = ['sack'])
+Y_test = strat_test_set['sack']
+```
+
+Three machine learning models were trained on the data. Each model's performance is evaluated using the Brier Score, which measures the mean squared difference between the predicted probabilities and the actual outcomes.
+
+1. **Logistic Regression:** Brier Score: 0.056650718844646
+2. **Random Forest:** Brier Score: 0.059645596501199945
+3. **XGBoost:** Brier Score: 0.05711192786011701
 
 ---
 
