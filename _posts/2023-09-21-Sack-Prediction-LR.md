@@ -39,9 +39,13 @@ pbp_clean = pbp[(pbp['pass'] == 1) & (pbp['play_type'] != "no_play")]
 #### 4. Exploratory Data Analysis (EDA)
 
 Visualization plays a crucial role in understanding the dataset. Through EDA:
-- The distribution of sacks in the dataset is visualized to understand the balance between plays resulting in sacks and those that don't.
-<img align="center" width="100%" src="{{ site.github.url }}/images/sack_prediction_lr/sack_count.png" alt="Sack count">
+- The distribution of sacks in the dataset is visualized using a count plot to understand the balance between plays resulting in sacks and those that don't. We can also look at the amount of sacks that occur each down.
+<div style="display: flex; justify-content: space-between;">
 
+<img src="{{ site.github.url }}/images/sack_prediction_lr/sack_count.png" alt="Sack count" style="width: 50%; max-width: 900px;">
+<img src="{{ site.github.url }}/images/sack_prediction_lr/sack_count_per_down_.png" alt="Sack count per down" style="width: 50%; max-width: 900px;">
+
+</div>
 - Insights are drawn on how the number of pass rushers or the number of defenders in the box can influence the likelihood of a sack.
 
 <div style="display: flex; justify-content: space-between;">
@@ -55,9 +59,19 @@ Visualization plays a crucial role in understanding the dataset. Through EDA:
 
 #### 5. Feature Engineering
 
-The power of a machine learning model often lies in the features used. In this notebook:
-- A new feature called 'obvious_pass' is introduced, highlighting scenarios where a passing play is highly anticipated.
-- The 'down' variable (1st down, 2nd down, etc.) is treated as a categorical feature, making it more digestible for the models.
+Looking at the data, we think about features we can add to make predicting a sack easier. From our EDA, a sack is most likely to happen on third down. From this we can define an "obvious pass" variable to help with analysis. An obvious pass is going to be one where it is third down and there is atleast 6 yards to go for a first down. 
+
+```python 
+pbp_clean['obvious_pass'] = np.where((pbp_clean['down'] == 3) & (pbp_clean['ydstogo'] >= 6), 1,0)
+```
+
+Next we can create a 'down' variable (1st down, 2nd down, etc.). This is treated as a categorical feature, making it more digestible for the models.
+
+```python 
+df['down'] = df['down'].astype('category')
+df_no_ids = df.drop(columns = ['game_id', 'play_id', 'name', 'season'])
+df_no_ids = pd.get_dummies(df_no_ids, columns = ['down'])
+```
 
 ---
 
