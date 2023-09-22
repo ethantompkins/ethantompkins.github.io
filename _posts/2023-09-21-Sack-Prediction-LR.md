@@ -46,9 +46,9 @@ Visualization plays a crucial role in understanding the dataset. Through EDA:
 
 <div style="display: flex; justify-content: space-between;">
 
-![Sack count per defender in box]({{ site.github.url }}/images/sack_prediction_lr/sack_count_per_defenderinbox.png)
-![Sack count per down]({{ site.github.url }}/images/sack_prediction_lr/sack_count_per_down.png)
-![Sack count per pass rusher]({{ site.github.url }}/images/sack_prediction_lr/sack_count_per_pass_rusher.png)
+![Sack count per defender in box](/images/sack_prediction_lr/sack_count_per_defenderinbox.png)
+![Sack count per down](/images/sack_prediction_lr/sack_count_per_down.png)
+![Sack count per pass rusher](/images/sack_prediction_lr/sack_count_per_pass_rusher.png)
 
 </div>
 
