@@ -44,19 +44,14 @@ Visualization plays a crucial role in understanding the dataset. Through EDA:
 
 - Insights are drawn on how the number of pass rushers or the number of defenders in the box can influence the likelihood of a sack.
 
-![<img src="/images/sack_prediction_lr/sack_count_per_defenderinbox.png" width="300"/>](/images/sack_prediction_lr/sack_count_per_defenderinbox.png) | 
-![</images/sack_prediction_lr/sack_count_per_down.png" width="300"/>](/images/sack_prediction_lr/sack_count_per_down.png)
-![<img src="(/images/sack_prediction_lr/sack_count_per_pass_rusher.png" width="300"/>](/images/sack_prediction_lr/sack_count_per_pass_rusher.png)
+<div style="display: flex; justify-content: space-between;">
 
-<!-- 
-<p>
-  <img align="center" width="250" src="{{ site.github.url }}/images/sack_prediction_lr/sack_count_per_defenderinbox.png" alt="Sack count per defender in box"/>
-  <img align="center" width="250" src="{{ site.github.url }}/images/sack_prediction_lr/sack_count_per_down.png" alt="Sack count per down"/>
-  <img align="center" width="250" src="{{ site.github.url }}/images/sack_prediction_lr/sack_count_per_pass_rusher.png" alt="Sack count per pass rusher"/>
-  <img src="/images/sack_prediction_lr/sack_count_per_down.png" width="400" /> 
-  <img src="/images/sack_prediction_lr/sack_count_per_pass_rusher.png" width="400" /> 
-</p>
--->
+![Sack count per defender in box]({{ site.github.url }}/images/sack_prediction_lr/sack_count_per_defenderinbox.png)
+![Sack count per down]({{ site.github.url }}/images/sack_prediction_lr/sack_count_per_down.png)
+![Sack count per pass rusher]({{ site.github.url }}/images/sack_prediction_lr/sack_count_per_pass_rusher.png)
+
+</div>
+
 ---
 
 #### 5. Feature Engineering
