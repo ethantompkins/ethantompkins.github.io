@@ -40,15 +40,14 @@ pbp_clean = pbp[(pbp['pass'] == 1) & (pbp['play_type'] != "no_play")]
 
 Visualization plays a crucial role in understanding the dataset. Through EDA:
 - The distribution of sacks in the dataset is visualized to understand the balance between plays resulting in sacks and those that don't.
-<img align="center" width="400" src="{{ site.github.url }}/images/sack_prediction_lr/sack_count.png" alt="Sack count">
+<img align="center" width="100%" src="{{ site.github.url }}/images/sack_prediction_lr/sack_count.png" alt="Sack count">
 
 - Insights are drawn on how the number of pass rushers or the number of defenders in the box can influence the likelihood of a sack.
 
 <div style="display: flex; justify-content: space-between;">
 
-<img src="{{ site.github.url }}/images/sack_prediction_lr/sack_count_per_defenderinbox.png" alt="Sack count per defender in box" style="width: 30%; max-width: 900px;">
-<img src="{{ site.github.url }}/images/sack_prediction_lr/sack_count_per_down.png" alt="Sack count per down" style="width: 30%; max-width: 900px;">
-<img src="{{ site.github.url }}/images/sack_prediction_lr/sack_count_per_pass_rusher.png" alt="Sack count per pass rusher" style="width: 30%; max-width: 900px;">
+<img src="{{ site.github.url }}/images/sack_prediction_lr/sack_count_per_defenderinbox.png" alt="Sack count per defender in box" style="width: 50%; max-width: 900px;">
+<img src="{{ site.github.url }}/images/sack_prediction_lr/sack_count_per_pass_rusher.png" alt="Sack count per pass rusher" style="width: 50%; max-width: 900px;">
 
 </div>
 
