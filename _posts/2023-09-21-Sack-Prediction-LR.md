@@ -6,16 +6,14 @@ date: 2023-09-21
 tags: ['python']
 ---
 
-In the National Football League (NFL), every play has a possibility of changing the game. One such game-changing play is the sack, where a quarterback is tackled behind the line of scrimmage before he can throw a forward pass. Predicting when a sack might occur can offer teams a strategic advantage, and with the power of machine learning, this prediction becomes feasible.
-
-In this post, we'll walk through a Python notebook that leverages NFL play-by-play data to predict the occurrence of sacks. 
+In the National Football League (NFL), every play has a possibility of changing the game. One such game-changing play is the sack, where a quarterback is tackled behind the line of scrimmage before he can throw a forward pass. Using logistic regression, we can make a prediction on whethere a sack is likely to happen based on different circumstances within a game.
 
 ---
 
 #### 1. Setting the Stage: Installing and Importing Libraries
 
 The first step involves setting up the necessary Python libraries. Among these are:
-- `nfl_data_py`: A unique package tailored for fetching NFL data.
+- `nfl_data_py`: A  package for fetching NFL data.
 - `pandas`, `numpy`: For data manipulation.
 - `matplotlib`, `seaborn`: For visualization.
 - `sklearn`, `xgboost`: For machine learning.
@@ -24,14 +22,18 @@ The first step involves setting up the necessary Python libraries. Among these a
 
 #### 2. Fetching the Data
 
-The NFL play-by-play data for the years 2020, 2021, and 2022 is loaded using the `import_pbp_data` function from the `nfl_data_py` package.
-
+For this we are using NFL play-by-play data from the years 2020, 2021, and 2022.
+```python
+pbp = nfl.import_pbp_data([2020, 2021, 2022])
+```
 ---
 
 #### 3. Data Cleaning and Preprocessing
 
 The dataset undergoes a cleaning process, filtering out non-passing plays and plays labeled as "no_play". This ensures that the data used for modeling is relevant and noise-free.
-
+```python
+pbp_clean = pbp[(pbp['pass'] == 1) & (pbp['play_type'] != "no_play")]
+```
 ---
 
 #### 4. Exploratory Data Analysis (EDA)
@@ -39,7 +41,11 @@ The dataset undergoes a cleaning process, filtering out non-passing plays and pl
 Visualization plays a crucial role in understanding the dataset. Through EDA:
 - The distribution of sacks in the dataset is visualized to understand the balance between plays resulting in sacks and those that don't.
 - Insights are drawn on how the number of pass rushers or the number of defenders in the box can influence the likelihood of a sack.
-
+<p float="left">
+  <img src="/images/sack_prediction_lr/sack_count_per_defenderinbox.png" width="100" />
+  <img src="/images/sack_prediction_lr/sack_count_per_down.png" width="100" /> 
+  <img src="/images/sack_prediction_lr/sack_count_per_pass_rusher.png" width="100" />
+</p>
 ---
 
 #### 5. Feature Engineering
