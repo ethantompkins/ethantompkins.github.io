@@ -43,7 +43,7 @@ Visualization plays a crucial role in understanding the dataset. Through EDA:
 <div style="display: flex; justify-content: space-between;">
 
 <img src="{{ site.github.url }}/images/sack_prediction_lr/sack_count.png" alt="Sack count" style="width: 50%; max-width: 900px;">
-<img src="{{ site.github.url }}/images/sack_prediction_lr/sack_count_per_down_.png" alt="Sack count per down" style="width: 50%; max-width: 900px;">
+<img src="{{ site.github.url }}/images/sack_prediction_lr/sack_count_per_down.png" alt="Sack count per down" style="width: 50%; max-width: 900px;">
 
 </div>
 - Insights are drawn on how the number of pass rushers or the number of defenders in the box can influence the likelihood of a sack.
