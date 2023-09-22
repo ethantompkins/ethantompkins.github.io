@@ -45,7 +45,7 @@ Visualization plays a crucial role in understanding the dataset. Through EDA:
 - Insights are drawn on how the number of pass rushers or the number of defenders in the box can influence the likelihood of a sack.
 
 ![<img src="/images/sack_prediction_lr/sack_count_per_defenderinbox.png" width="300"/>](/images/sack_prediction_lr/sack_count_per_defenderinbox.png) | 
-![</images/sack_prediction_lr/sack_count_per_down.png" width="300"/>](/images/sack_prediction_lr/sack_count_per_down.png) | 
+![</images/sack_prediction_lr/sack_count_per_down.png" width="300"/>](/images/sack_prediction_lr/sack_count_per_down.png)
 ![<img src="(/images/sack_prediction_lr/sack_count_per_pass_rusher.png" width="300"/>](/images/sack_prediction_lr/sack_count_per_pass_rusher.png)
 
 <!-- 
