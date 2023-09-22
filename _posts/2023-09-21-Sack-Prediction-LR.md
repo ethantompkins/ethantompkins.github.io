@@ -72,7 +72,7 @@ pre_df = pbp_clean[['game_id', 'play_id', 'season', 'name', 'down', 'ydstogo', '
 df = pre_df.dropna()
 ```
 
--Next, we can create a 'down' variable (1st down, 2nd down, etc.). This is treated as a categorical feature, making it more digestible for the models.
+- Next, we can create a 'down' variable (1st down, 2nd down, etc.). This is treated as a categorical feature, making it more digestible for the models.
 
 ```python 
 df['down'] = df['down'].astype('category')
