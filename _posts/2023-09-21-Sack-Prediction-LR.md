@@ -109,10 +109,6 @@ We can also take visual insight into the significance of different features used
 
 ---
 
-In summary, the notebook offers a comprehensive approach to predicting sacks in NFL games using machine learning. By leveraging historical play-by-play data, cleaning it, engineering meaningful features, and employing robust models, we can make informed predictions that could potentially change the way teams strategize in real-time.
-
----
-
 *Link to the full github repo located [here]*
 
 [here]: https://github.com/ethantompkins/jupyter-notebooks-fb/blob/main/logistic_regression_sack_prediction.ipynb
