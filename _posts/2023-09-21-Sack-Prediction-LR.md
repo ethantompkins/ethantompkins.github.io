@@ -103,6 +103,10 @@ Three machine learning models were trained on the data. Each model's performance
 2. **Random Forest:** Brier Score: 0.059645596501199945
 3. **XGBoost:** Brier Score: 0.05711192786011701
 
+We can also take visual insight into the significance of different features used by an XGBClassifier model. The values are fetched then sorted to determine the ranking of features based on their influence on the model's predictions.
+
+![XGBClassifier Feature Importance](/images/sack_prediction_lr/XGBClassifierFeatureImportance.png)
+
 ---
 
 In summary, the notebook offers a comprehensive approach to predicting sacks in NFL games using machine learning. By leveraging historical play-by-play data, cleaning it, engineering meaningful features, and employing robust models, we can make informed predictions that could potentially change the way teams strategize in real-time.
