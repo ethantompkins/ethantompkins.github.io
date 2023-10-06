@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Predicting NFL Sacks with Logistic Regression"
+title: "NFL Sack Probability with Logistic Regression"
 categories: journal
 date: 2023-09-21
 tags: ['python']
