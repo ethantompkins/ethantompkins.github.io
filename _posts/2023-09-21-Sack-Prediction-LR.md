@@ -10,7 +10,7 @@ In the National Football League (NFL), every play has a possibility of changing 
 
 ---
 
-#### 1. Setting the Stage: Installing and Importing Libraries
+#### 1. Installing and Importing Libraries
 
 The first step involves setting up the necessary Python libraries. Among these are:
 - `nfl_data_py`: A  package for fetching NFL data.
