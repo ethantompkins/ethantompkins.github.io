@@ -26,4 +26,43 @@ import cfbd
 from cfbd.rest import ApiException
 ```
 
-Within the CFBD API, play data appears to be the most suitable as it encompasses all essential details regarding the game situation and conveniently categorizes each play type, such as runs, passes, kickoffs, among others. 
+Within the CFBD API, play data appears to be the most suitable as it encompasses all essential details regarding the game situation and conveniently categorizes each play type, such as runs, passes, kickoffs, among others. Specifically, I will go from 2015 to present day.
+
+```python
+api_instance = cfbd.PlaysApi(cfbd.ApiClient(configuration))
+# List to store the lines data for each year
+all_plays = []
+
+for year in range(2015, 2023):
+  for week in range(1,15):
+    try:
+    # Play by play data
+      api_response = api_instance.get_plays(year=year, week=week, team='Clemson')
+      all_plays.extend(api_response)
+    except ApiException as e:
+      print("Exception when calling PlaysApi->get_plays: %s\n" % e)
+```
+
+I will put this all into a dataframe for ease of use: 
+
+```python 
+df = pd.DataFrame([
+    dict(
+        home = l.home,
+        away = l.away,
+        offense_score = l.offense_score,
+        defense_score = l.defense_score,
+        period = l.period,
+        clock_minutes = l.clock.minutes,
+        clock_seconds = l.clock.seconds,
+        yards_to_goal = l.yards_to_goal,
+        down = l.down,
+        distance = l.distance,
+        play_type = l.play_type
+        )
+    for l in all_plays])
+```
+
+![All Plays Dataframe](images/play_prediction_rfc/all_plays_initial.png)
+
+# Cleanup 
