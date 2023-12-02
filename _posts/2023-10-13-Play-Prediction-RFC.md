@@ -63,7 +63,7 @@ df = pd.DataFrame([
     for l in all_plays])
 ```
 
-![All Plays Dataframe](images/play_prediction_rfc/all_plays_initial.png)
+![All Plays Dataframe](/images/play_prediction_rfc/all_plays_initial.png)
 
 # Cleanup 
 
@@ -76,7 +76,7 @@ df['seconds_remaining'] = (df['clock_minutes'] * 60) + df['clock_seconds']
 
 ```
 
-![All Plays Post Cleanup] (images/play_prediction_rfc/after_cleanup.png)
+![All Plays Post Cleanup](images/play_prediction_rfc/after_cleanup.png)
 
 Before constructing our random forest classifier, there's a bit more preparation needed. The 'play_type' field, as it currently stands, is too detailed, outlining both the play's type and outcome (like "Pass Incompletion" or "Rush TD"). We'll refine this to focus solely on the play calls we're interested in: rush, pass, punt, and field goal (FG). I've created a function to categorize plays into these four groups. It's worth noting that some plays, such as kickoffs, timeouts, and penalties, don't fit these categories and will be classified as 'None'. This function should now be run to modify our data frame, adding a new column for the simplified play call classification.
 
@@ -114,6 +114,6 @@ Let's eliminate any unnecessary columns, specifically those used solely for deri
 plays = df[['offense_score', 'defense_score', 'period', 'yards_to_goal', 'down', 'distance', 'is_home', 'seconds_remaining', 'play_call']]
 ```
 
-![Final All Plays Dataframe](images/play_prediction_rfc/final_all_plays.png)
+![Final All Plays Dataframe](/images/play_prediction_rfc/final_all_plays.png)
 
 # Building the Prediction Model
