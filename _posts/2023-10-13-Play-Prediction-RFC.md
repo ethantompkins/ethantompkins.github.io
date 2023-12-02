@@ -163,6 +163,12 @@ classifier.predict_proba(plays_validation)[0:10]
 ```
 ![predict_proba](images/play_prediction_rfc/predict_proba.png)
 
+To map our original set of outputs to our category labels, this can be done:
 
+```python
+predicted_calls = y_keys[classifier.predict(plays_validation)]
+predicted_calls
+```
 
+This is not useful until the vau
 
