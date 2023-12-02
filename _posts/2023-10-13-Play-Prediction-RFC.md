@@ -156,6 +156,13 @@ classifier.fit(plays_train, y)
 classifier.predict(plays_validation)
 ```
 
+This outputs the raw inputs, so they still need to be converted into labels using the *y_keys* mapping object created earlier. Before doing this, *predict_proba* within the scikit-learn library provides a greater level of granularity by outputting the probabilities within each set of inputs. There are four probabilities for each set of inputs which correspond to our four different output labels (pass/rush/fg/punt).
+
+```python
+classifier.predict_proba(plays_validation)[0:10]
+```
+![predict_proba](images/play_prediction_rfc/predict_proba.png)
+
 
 
 
