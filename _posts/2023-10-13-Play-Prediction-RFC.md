@@ -117,3 +117,29 @@ plays = df[['offense_score', 'defense_score', 'period', 'yards_to_goal', 'down',
 ![Final All Plays Dataframe](/images/play_prediction_rfc/final_all_plays.png)
 
 # Building the Prediction Model
+
+To set up our prediction model, we will import two  modules from the scikit-learn library. The initial module facilitates the division of data into training and validation sets, a process we'll delve into shortly. The second module is pivotal for constructing random forest classifiers, serving as the core of our model-building endeavor.
+
+```python 
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+```
+
+We're now going to organize our data to better suit our model's development. Initially, we'll differentiate between our features (independent variables) and the desired output (dependent variable) of our model. The features will contain various game situation inputs, while the model aims to predict play calls, our dependent variable. Next, we'll divide the data into training and validation subsets. Employing the train_test_split module, previously imported, we'll allocate 20% of our data as the validation set, ensuring we have a robust framework for testing and refining our model.
+
+```python 
+# split the data set between our independent variables (i.e. features) and our dependent variable or output
+play_calls = plays['play_call']
+plays = plays.drop(['play_call'], axis=1)
+
+# split the data into training and validation sets
+plays_train, plays_validation, calls_train, calls_validation = train_test_split(plays, play_calls, train_size=0.8, test_size=0.2, random_state=0)
+plays_train.head()
+```
+
+
+
+
+
+
+
