@@ -115,3 +115,5 @@ plays = df[['offense_score', 'defense_score', 'period', 'yards_to_goal', 'down',
 ```
 
 ![Final All Plays Dataframe](images/play_prediction_rfc/final_all_plays.png)
+
+# Building the Prediction Model
