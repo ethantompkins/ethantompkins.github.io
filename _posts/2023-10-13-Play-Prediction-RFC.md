@@ -137,8 +137,24 @@ plays_train, plays_validation, calls_train, calls_validation = train_test_split(
 plays_train.head()
 ```
 
+![Training feature set](images/play_prediction_rfc/training_feature_set.png)
 
+When training, it is best to have all data in numerical format. While the feature set is, the dependent set of play calls is not. To convert this categorical data into numerical data, we use pd.factorize. 
 
+The factorize method returns two sets, one contained the data as a set of numbers ranging from 0 to 3 and other containing the key mappings telling us which number mapped to which label. We can now build and train the random forest classifier.
+
+Note that we passed in both of our set of features as well as the set of corresponding outputs in numeric format. The validation set of features can be passed through at this point.
+
+```python
+# convert the categorical data into numerical data
+y, y_keys = pd.factorize(calls_train)
+# build the classifier
+classifier = RandomForestClassifier(random_state=0, n_estimators=100)
+#train the classifier with our test set
+classifier.fit(plays_train, y)
+# pass validation set of features and see what classifier outputs
+classifier.predict(plays_validation)
+```
 
 
 
