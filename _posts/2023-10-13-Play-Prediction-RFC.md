@@ -114,3 +114,4 @@ Let's eliminate any unnecessary columns, specifically those used solely for deri
 plays = df[['offense_score', 'defense_score', 'period', 'yards_to_goal', 'down', 'distance', 'is_home', 'seconds_remaining', 'play_call']]
 ```
 
+![Final All Plays Dataframe](images/play_prediction_rfc/final_all_plays.png)
