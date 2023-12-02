@@ -66,3 +66,51 @@ df = pd.DataFrame([
 ![All Plays Dataframe](images/play_prediction_rfc/all_plays_initial.png)
 
 # Cleanup 
+
+We would like to know when Clemson was home while calling plays, so we calculate a column called is_home. Next we want to calculate the total seconds remaining instead of the minutes and seconds remaining, so we will combine them into one seconds_remaining category.
+
+```python
+df['is_home'] = np.where(df['home'] == 'Clemson', 1, 0)
+
+df['seconds_remaining'] = (df['clock_minutes'] * 60) + df['clock_seconds']
+
+```
+
+![All Plays Post Cleanup] (images/play_prediction_rfc/after_cleanup.png)
+
+Before constructing our random forest classifier, there's a bit more preparation needed. The 'play_type' field, as it currently stands, is too detailed, outlining both the play's type and outcome (like "Pass Incompletion" or "Rush TD"). We'll refine this to focus solely on the play calls we're interested in: rush, pass, punt, and field goal (FG). I've created a function to categorize plays into these four groups. It's worth noting that some plays, such as kickoffs, timeouts, and penalties, don't fit these categories and will be classified as 'None'. This function should now be run to modify our data frame, adding a new column for the simplified play call classification.
+
+```python
+pass_types = ['Pass Reception', 'Pass Interception Return', 'Pass Incompletion', 'Sack', 'Passing Touchdown', 'Interception Return Touchdown']
+rush_types = ['Rush', 'Rushing Touchdown']
+punt_types = ['Punt', 'Punt Return Touchdown', 'Blocked Punt', 'Blocked Punt Touchdown']
+fg_types = ['Field Goal Good', 'Field Goal Missed', 'Blocked Field Goal']
+
+def getPlayCall(x):
+    if x in pass_types:
+            return 'pass'
+    elif x in rush_types:
+        return 'rush'
+    elif x in punt_types:
+        return 'punt'
+    elif x in fg_types:
+        return 'fg'
+    else:
+        return None
+
+df['play_call'] = df['play_type'].apply(getPlayCall)
+```
+
+What should we do with play types that don't align with our four main play call categories? For the purposes of this project, these plays are irrelevant. Recall that we assigned a 'None' value to these types of plays. Fortunately, Pandas provides a handy function to eliminate rows with missing values. We can even specify which columns to consider when deciding which rows to remove. To clean our data and keep it focused on our study's scope, execute the following code to discard these irrelevant rows.
+
+
+```python
+df.dropna(subset=['play_call'], inplace=True)
+```
+
+Let's eliminate any unnecessary columns, specifically those used solely for deriving new columns. To preserve these columns for potential future adjustments, I'll transfer the current data frame into a new variable. This step ensures that we retain access to the original data for any further modifications.
+
+```python
+plays = df[['offense_score', 'defense_score', 'period', 'yards_to_goal', 'down', 'distance', 'is_home', 'seconds_remaining', 'play_call']]
+```
+
