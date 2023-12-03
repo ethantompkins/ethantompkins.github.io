@@ -170,5 +170,23 @@ predicted_calls = y_keys[classifier.predict(plays_validation)]
 predicted_calls
 ```
 
-This is not useful until the vau
+This is not useful until the predicted outputs can be compared to the actual outputs within the validation set. The *crosstab* functionality allows this to be done.
+
+```python
+pd.crosstab(calls_validation, predicted_calls, rownames=['Actual Calls'], colnames=['Predicted Calls'])
+```
+
+![Crosstab Chart](/images/play_prediction_rfc/crosstab_image.png)
+
+In the validation set, each row corresponds to the actual type of play calls, while the columns display the predictions made by the classifier. The classifier is quite effective in forecasting when Dabo opts for punts and field goals. It also shows reasonable accuracy in predicting running plays, though its performance in predicting passing plays is less accurate. This indicates that there's still potential for enhancing the model's precision.
+
+# Improving the Model
+
+Using the *feature_importances_* property from the classifier, the importance of each feature when forming predictions can be viewed.
+
+```python 
+list(zip(plays_train, classifier.feature_importances_))
+```
+
+![Feature Importance](/images/play_prediction_rfc/feature_importance.png)
 
