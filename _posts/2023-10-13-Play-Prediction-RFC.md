@@ -215,7 +215,46 @@ pd.crosstab(calls_validation, predicted_calls, rownames=['Actual Calls'], colnam
 
 ![Predicted Calls Chart](/images/play_prediction_rfc/predicted_calls_new.png)
 
+The model now shows enhanced accuracy in predicting passing plays. Predictions for rushing plays have remained largely consistent with the previous version of the model. There is very high accuracy in predicting punt calls and are nearing perfection with field goal predictions.
 
+While there are additional improvements that could be made, the next step is to apply the model to real-time scenarios. A function can be written to process inputs such as the yard line, down, distance, time left, and score difference, enabling the model to evaluate situations as they occur in live games.
+
+```python
+def predict_call(yards, down, distance, seconds, margin):
+    test_plays = pd.DataFrame({'yards_to_goal': [yards], 'down': [down], 'distance': [distance], 'seconds_remaining': [seconds], 'margin': [margin]})
+    return y_keys[classifier.predict(test_plays)][0]
+```
+
+For example, the ball is on the 50 yard line. It's forth and 1 with 2 minutes left, and Clemson is down by 5 points.
+
+```python
+call = predict_call(50, 4, 1, 120, -5)
+call
+```
+```python
+rush
+```
+
+The model predicts Clemson will call a run play. Now imagine the exact same scenario but Clemson is up by 9.
+
+```python
+call = predict_call(50, 4, 1, 120, 9)
+call
+```
+```python
+punt
+```
+
+Now the model predicts a punt. In these two situations the outputs seem reasonable. 
+
+# Next Steps for Improvements
+
+Looking at our results, some changes can be made to improve our results. The sample size of 8 years may be too much. In this time span, the play calling can evolve with the game or depending on the staff changes made within the specific program. Training on 1 or 2 seasons may produce more quality predictons. 
+
+Additional changes that can be made: 
+ 1. Isolating the data by offensive coordinator instead of by head coach.
+ 2. Look at the list of available data points and determine if adding or modifying them can yield a more accurate model.
+ 3. Examine the list of probabilities for each outcome and see why these numbers are being returned.
 
 
 
