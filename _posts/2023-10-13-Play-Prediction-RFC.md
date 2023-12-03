@@ -190,3 +190,34 @@ list(zip(plays_train, classifier.feature_importances_))
 
 ![Feature Importance](/images/play_prediction_rfc/feature_importance.png)
 
+The model is prioritizing factors like the seconds remaining in the quarter, the current down, and the distance to the goal line. However, it seems to be minimally utilizing the home/away indicator, which might just be contributing confusion. So, let's remove that column and observe the impact. Additionally, considering the model's limited use of the period field, this could be integrated into the seconds remaining, similar to our earlier adjustment with the minutes. This could streamline the data further for potentially better model performance.
+
+```python
+# incorporate period into seconds_remaining
+plays['margin'] = plays['offense_score'] - plays['defense_score']
+# drop is_home and period columns
+plays = plays.drop(columns=['offense_score', 'defense_score'])
+```
+
+Play calling likely depends more on a team's lead or deficit than on the absolute scores. Because of this, *offense_score* and *defense_score* could be combined. Merging these into a single score margin field could provide a more relevant measure for the analysis. 
+
+```python
+plays_train, plays_validation, calls_train, calls_validation = train_test_split(plays, play_calls, train_size=0.8, test_size=0.2, random_state=0)
+y, y_keys = pd.factorize(calls_train)
+
+classifier = RandomForestClassifier(n_estimators=100, random_state=0)
+classifier.fit(plays_train, y)
+
+predicted_calls = y_keys[classifier.predict(plays_validation)]
+
+pd.crosstab(calls_validation, predicted_calls, rownames=['Actual Calls'], colnames=['Predicted Calls'])
+```
+
+![Predicted Calls Chart](/images/play_prediction_rfc/predicted_calls_new.png)
+
+
+
+
+
+
+
