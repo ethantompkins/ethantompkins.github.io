@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: post2
 title: "Bootstrap Resampling NFL Prop Predictions"
 categories: journal
 date: 2023-10-05
