@@ -2,7 +2,7 @@
 layout: post2
 title: "NFL Sack Probability with Logistic Regression"
 categories: journal
-date: 2023-09-21
+date: 2023-08-11
 tags: ['python']
 ---
 
