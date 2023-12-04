@@ -2,7 +2,7 @@
 layout: post2
 title: "Forecasting Football Plays with a Random Forest Classifier"
 categories: journal
-date: 2023-10-13
+date: 2023-09-24
 tags: ['python']
 ---
 
