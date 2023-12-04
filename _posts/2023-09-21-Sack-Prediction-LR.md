@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: post2
 title: "NFL Sack Probability with Logistic Regression"
 categories: journal
 date: 2023-09-21
