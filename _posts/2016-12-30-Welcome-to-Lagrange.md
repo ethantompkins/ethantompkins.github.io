@@ -1,9 +1,9 @@
----
+<!-- ---
 layout: post
 title: "New site"
 categories: journal
 tags: [documentation,sample]
----
+--- -->
 
 I am now running my personal site using Jekyll, hosted by Github Pages.  I modded a theme I found [here](https://github.com/lenpaul/lagrange).  Feel free to fork my version or the original.
 
