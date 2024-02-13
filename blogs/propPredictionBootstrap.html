@@ -1,0 +1,151 @@
+<h1 id="taking-positive-expected-value-bets">Taking Positive Expected Value Bets</h1>
+<p>Expected value (EV) is when the calculated probability is greater than the implied probability. The calculated odds can be considered the &quot;true line&quot; should be, and the difference between that and the implied odds is the extra value. This can be applied in the worlds of trading and investing, along with in our case sports betting.</p>
+<p>Takine a positive EV bet does not mean it will actually hit. EV gives you an advantage over time as the positive EV value with be realized after a series of bets. There is always the variable of randomness that can prevent predictability around individual bets.</p>
+<p>We are implying the probabilities from the lines, but what the line is <i>explicitly</i> telling us is our reward-to-risk ratio (for each unit of risk, how much do we win?). If we have a bet that&#39;s +300, that&#39;s a 3 to 1 payout, and a 25% implied probability (100/(300+100)). 25% is also our breakeven point on any 3-1 bet. Which means, if we consistently took +300 bets, we would need a 25% win rate to breakeven. If we are able to push our win rate above 25%, even to say 27%, then we&#39;ve developed an edge and positive EV.</p>
+<p>This also means, that by definition, just taking sports bets at random, your EV is 0 and you are expected to lose no money and gain no money assuming Vegas is right over the long run, which is usually the fair assumption.</p>
+<p>We&#39;ll only be covering a single player prop here, since this post will end up being quite long. We&#39;ll be looking at the O/U for Jalen Hurts pass attempts, which is currently +100 for over 31.5 attempts on DraftKings. However, you&#39;re welcome to also apply this code to other player props that might be well-modeled by the distribution we&#39;ll discuss (Poisson), or even other types of props that may be well-modeled by different distributions (ie. Anytime TD scorer and a Binomial distribution).</p>
+<pre><code class="lang-python"><span class="hljs-keyword">import</span> nfl_data_py <span class="hljs-keyword">as</span> nfl
+<span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+from matplotlib <span class="hljs-keyword">import</span> pyplot <span class="hljs-keyword">as</span> plt
+<span class="hljs-keyword">import</span> seaborn <span class="hljs-keyword">as</span> sns
+<span class="hljs-keyword">import</span> warnings; warnings.simplefilter('ignore')
+
+random = np.random.default_rng(<span class="hljs-number">42</span>)
+
+plt.style.use(<span class="hljs-string">'ggplot'</span>)
+</code></pre>
+<p>To simplify, we are taking the odds from just one sportsbook (Fanduel).</p>
+<pre><code class="lang-python"><span class="hljs-attr">hurts_pa_ou</span> = <span class="hljs-number">31.5</span>
+<span class="hljs-attr">hurts_pa_line</span> = +<span class="hljs-number">100</span> # for the over
+</code></pre>
+<p><code>implied_probability</code> takes two parameters: <code>money_line</code> and <code>round_n</code>, with <code>round_n</code> defaulting to 2 if not provided. It calculates the implied probability of a sports event outcome based on the given money line, where negative values favor the outcome and positive values indicate the outcome as an underdog.</p>
+<pre><code class="lang-python">def implied_probability(money_line, round_n=<span class="hljs-number">2</span>):
+    <span class="hljs-keyword">if</span> money_line &lt; <span class="hljs-number">0</span>:
+<span class="hljs-built_in">        return</span> <span class="hljs-built_in">round</span>(money_line / (money_line - <span class="hljs-number">100</span>), round_n)
+    <span class="hljs-keyword">else</span>:
+<span class="hljs-built_in">        return</span> <span class="hljs-built_in">round</span>(<span class="hljs-number">1</span> - (money_line / (money_line + <span class="hljs-number">100</span>)), round_n)
+
+ip_x = implied_probability(hurts_pa_line)
+print(f'Implied probability <span class="hljs-keyword">of</span> <span class="hljs-keyword">over</span> {hurts_pa_ou} pass attempts <span class="hljs-keyword">for</span> Hurts <span class="hljs-keyword">in</span> <span class="hljs-keyword">the</span> Super Bowl <span class="hljs-keyword">is</span>: ', ip_x)
+</code></pre>
+<p><code>Implied probability of over 31.5 pass attempts for Hurts in the Super Bowl is:  0.5</code></p>
+<p>Using nfl-data-py, we can grab Hurts weekly data, specifically grabbing the <code>attempts</code> column from his DataFrame, and convert it to an array using the <code>values</code> attribute.</p>
+<pre><code class="lang-python">#load our data for hurts
+weekly_data = nfl.import_weekly_data(years=range(<span class="hljs-number">2021</span>, <span class="hljs-number">2023</span>), columns=[<span class="hljs-string">'player_name'</span>, <span class="hljs-string">'attempts'</span>])
+hurts_pa = weekly_data.loc[weekly_data[<span class="hljs-string">'player_name'</span>] == <span class="hljs-string">'J.Hurts'</span>].attempts.values
+
+plt.hist(hurts_pa, bins=<span class="hljs-number">25</span>);
+</code></pre>
+<p><img src="/images/prop_prediction_boot/hist_jh_pa.png" alt="Hurts Pass Attempts"></p>
+<pre><code class="lang-python"><span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(<span class="hljs-string">'Sample size: '</span>, len(hurts_pa)</span></span>)
+<span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(<span class="hljs-string">'Mean: '</span>, hurts_pa.mean()</span></span>)
+<span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(<span class="hljs-string">'Median: '</span>, np.median(hurts_pa)</span></span>)
+<span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(<span class="hljs-string">'Standard deviation: '</span>, hurts_pa.std()</span></span>)
+</code></pre>
+<p><code>print(&#39;Sample size: &#39;, len(hurts_pa))</code>
+<code>print(&#39;Mean: &#39;, hurts_pa.mean())</code>
+<code>print(&#39;Median: &#39;, np.median(hurts_pa))</code>
+<code>print(&#39;Standard deviation: &#39;, hurts_pa.std())</code></p>
+<h1 id="bootstrap-resampling">Bootstrap Resampling</h1>
+<p>This plots Hurts passing attempt data and prints out some summary statistics to better understand how his pass attempts are distributed. Of these statistics the mean is most useful for our analysis.</p>
+<p>Bootstrap resampling is a method for establishing a confidence interval for the parameters in shaping our data distribution. It is particularly useful in scenarios where precise estimates of statistics are necessary, but the ability to gather additional samples is either impractical or expensive.</p>
+<p>In this approach, we repeatedly draw samples from our dataset, mimicking Hurts&#39; pass attempt outcomes, with replacement (allowing duplicates) for n iterations. Here, n corresponds to the length of our dataset, representing the available samples of actual pass attempts in his career. For each bootstrapped dataset, we calculate the desired statistic, such as the mean, storing these results in a separate array.</p>
+<p>After conducting multiple rounds of this process, we look at the collection of summary statistics we&#39;ve generated. This dataset allows us to explore a range of possibilities and have a better understanding of the parameter we are seeking, or in this case the mean.</p>
+<pre><code class="lang-python"># sampling with replacement <span class="hljs-built_in">first</span>
+xs = <span class="hljs-built_in">np</span>.<span class="hljs-built_in">array</span>([])
+n_simulations = 10_000
+
+<span class="hljs-keyword">for</span> <span class="hljs-symbol">_</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(n_simulations):
+    boot_x = <span class="hljs-built_in">np</span>.<span class="hljs-built_in">random</span>.choice(hurts_pa, size=len(hurts_pa), replace=True).<span class="hljs-built_in">mean</span>()
+    xs =  <span class="hljs-built_in">np</span>.<span class="hljs-built_in">append</span>(xs, boot_x)
+</code></pre>
+<pre><code class="lang-python">sns.distplot(xs);
+plt.gca().vlines(<span class="hljs-attr">x=hurts_pa_ou,</span> <span class="hljs-attr">ymin=0,</span> <span class="hljs-attr">ymax=0.5,</span> <span class="hljs-attr">color='blue');</span>
+plt.gcf().legend(['Bootstrapped means', 'Hurts Pass Attempt O/U']);
+
+kde_data_x, <span class="hljs-attr">kde_data_y</span> = plt.gca().lines[<span class="hljs-number">0</span>].get_data()
+</code></pre>
+<p><img src="/images/prop_prediction_boot/bootstrap_vs_attempts.png" alt="Bootstrapped Means with Pass Attempts O/U"></p>
+<p>The chart illustrates the range of bootstrapped means from random re-sampling of Jalen Hurts&#39; career. Observing the data, there&#39;s a slight possibility that Jalen Hurts&#39; long-term passing attempts could peak at 34 or dip to 24. Although this seems improbable given Jalen Hurts&#39; past performances, it can&#39;t be ruled out. It&#39;s more probable that his genuine long-term mean aligns with his present career average of 29, and the data spread supports this.</p>
+<pre><code class="lang-python">lower_bound, upper_bound = <span class="hljs-built_in">np</span>.<span class="hljs-built_in">quantile</span>(xs, <span class="hljs-number">0.025</span>), <span class="hljs-built_in">np</span>.<span class="hljs-built_in">quantile</span>(xs, <span class="hljs-number">0.975</span>)
+lower_bound, upper_bound
+</code></pre>
+<p><code>(27.676470588235293, 32.411764705882355)</code></p>
+<p>We can be fairly certain that Hurts long-run passing attempt average lies somewhere between 27.39 and 32.21 (only 2.5% of values fell below the former, and only 2.5% of values fell above the latter).</p>
+<h1 id="modeling-pass-attempts">Modeling Pass Attempts</h1>
+<p>Next, we&#39;re going to model Jalen Hurts&#39; pass attempts using a Poisson distribution. A Poisson distribution is a discrete probability distribution where the timing of events are independent from each other. It has one parameter, lambda, which is the rate at which events occur per unit time. pass attempts per game is the lambda for this. We&#39;ll start off by using Hurts mean pass attempts / gm, but then we&#39;ll bring in the results of our bootstrap to model different, but also-likely, values for lambda.</p>
+<p>First, we&#39;ll essentially stress test our model by calculating that long-run frequency of pass attempts / gm with the lower and upper bounds of our confidence interval for the bootstrap above.</p>
+<pre><code class="lang-python"><span class="hljs-selector-id">#drawing</span> from <span class="hljs-selector-tag">a</span> Poisson distribution
+poisson_arr = np<span class="hljs-selector-class">.random</span><span class="hljs-selector-class">.poisson</span>(lam=hurts_pa.mean(), size=n_simulations)
+
+calculated_probability = sum(poisson_arr &gt; hurts_pa_ou) / n_simulations
+<span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(<span class="hljs-string">'Calculated probability of the over hitting: '</span>, calculated_probability)</span></span>
+print (<span class="hljs-string">'Calculated probability of the under hitting: '</span>, <span class="hljs-number">1</span> - calculated_probability)
+<span class="hljs-keyword">if</span> calculated_probability &gt; ip_x:
+    print(<span class="hljs-string">'Take the over'</span>)
+<span class="hljs-keyword">else</span>:
+    print(<span class="hljs-string">'Take the under'</span>)
+</code></pre>
+<p><code>Calculated probability of the over hitting:  0.3874</code>
+<code>Calculated probability of the under hitting:  0.6126</code>
+<code>Take the under</code></p>
+<p>Now calculate a &quot;best-case&quot; calculated probability and &quot;worst-case&quot; calculated probability for Hurts using a lower bound of 2.5% and upper bound of 97.5%, or 95% confidence interval.</p>
+<pre><code class="lang-python">poisson_arr_lower_bound = <span class="hljs-built_in">np</span>.<span class="hljs-built_in">random</span>.<span class="hljs-built_in">poisson</span>(lam=lower_bound, size=n_simulations)
+calculated_probability_lower_bound = <span class="hljs-built_in">sum</span>(poisson_arr_lower_bound &gt; hurts_pa_ou) / n_simulations
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">round</span>(calculated_probability_lower_bound, <span class="hljs-number">4</span>), <span class="hljs-built_in">round</span>(ip_x, <span class="hljs-number">4</span>))
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">round</span>(<span class="hljs-number">1</span> - calculated_probability_lower_bound, <span class="hljs-number">4</span>), <span class="hljs-built_in">round</span>(ip_x, <span class="hljs-number">4</span>))
+</code></pre>
+<p><code>0.2287 0.5</code>
+<code>0.7713 0.5</code></p>
+<pre><code class="lang-python">poisson_arr_upper_bound = <span class="hljs-built_in">np</span>.<span class="hljs-built_in">random</span>.<span class="hljs-built_in">poisson</span>(lam=upper_bound, size=n_simulations)
+calculated_probability_upper_bound = <span class="hljs-built_in">sum</span>(poisson_arr_upper_bound &gt; hurts_pa_ou) / n_simulations
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">round</span>(calculated_probability_upper_bound, <span class="hljs-number">4</span>), <span class="hljs-built_in">round</span>(ip_x, <span class="hljs-number">4</span>))
+<span class="hljs-built_in">print</span>(<span class="hljs-built_in">round</span>(<span class="hljs-number">1</span> - calculated_probability_upper_bound, <span class="hljs-number">4</span>), <span class="hljs-built_in">round</span>(ip_x, <span class="hljs-number">4</span>))
+</code></pre>
+<p><code>0.5562 0.5</code>
+<code>0.4438 0.5</code></p>
+<p>In the &quot;worst-case&quot; scenario, which refers to the maximum limit of our confidence range, the likelihood of exceeding the target is 53%, in comparison to the 50% anticipated probability. This means that the under is more likely to be taken in this case.</p>
+<p>You can actually show how the edge (the spread between calculated probability and implied probability, also our profit margin) changes given a change in the estimate for Hurts&#39; true pass attempts / gm:</p>
+<pre><code class="lang-python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">calculate_probability</span><span class="hljs-params">(lam, n_simulations=<span class="hljs-number">200</span>_000)</span>:</span>
+    <span class="hljs-string">"""
+    Function that calculates probability of hitting the over for a given lambda, with default n_simulations=200,000
+    """</span>
+    draws = np.random.poisson(lam=lam, size=n_simulations)
+    <span class="hljs-keyword">return</span> sum(draws &gt; hurts_pa_ou) / n_simulations
+
+quantiles = np.arange(<span class="hljs-number">1</span>, len(kde_data_x)) / len(kde_data_x)
+y = np.array([calculate_probability(np.quantile(xs, i/len(quantiles))) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(<span class="hljs-number">1</span>, len(quantiles) + <span class="hljs-number">1</span>)])
+x = np.array([np.quantile(xs, quantile) <span class="hljs-keyword">for</span> quantile <span class="hljs-keyword">in</span> quantiles])
+</code></pre>
+<p>We end up with the data here that contains our calculated probability for each reasonably likely  Hurts&#39; pass attempt / gm. This is plotted, along with the implied probability from the money line (When calculated probability &lt; implied probability, then the under is +EV and over is -EV, and when calculated probability &gt; implied probability, then the under is -EV and the over is +EV).</p>
+<pre><code class="lang-python">fig, ax = plt.subplots(figsize=(<span class="hljs-number">10</span>, <span class="hljs-number">6</span>))
+
+ax.plot(x, y);
+ax.hlines(xmin=x.<span class="hljs-built_in">min</span>(), xmax=x.<span class="hljs-built_in">max</span>(), y=ip_x, <span class="hljs-built_in">color</span>=<span class="hljs-string">'blue'</span>, <span class="hljs-built_in">alpha</span>=<span class="hljs-number">0.2</span>, linestyle=<span class="hljs-string">'--'</span>);
+ax.fill_between(
+    x, y, ip_x, <span class="hljs-built_in">color</span>=<span class="hljs-string">'green'</span>, <span class="hljs-built_in">alpha</span>=<span class="hljs-number">0.2</span>, where=y&lt;ip_x
+)
+ax.fill_between(
+    x, y, ip_x, <span class="hljs-built_in">color</span>=<span class="hljs-string">'red'</span>, <span class="hljs-built_in">alpha</span>=<span class="hljs-number">0.2</span>, where=y&gt;ip_x*<span class="hljs-number">0.99</span>
+);
+
+ax.set_ylabel(<span class="hljs-string">'Probability'</span>)
+ax.set_xlabel(<span class="hljs-string">'Jalen Hurts Pass Attempts / Gm.'</span>);
+
+ax.plot(kde_data_x, kde_data_y);
+ax.set_xlim([x.<span class="hljs-built_in">min</span>(), x.<span class="hljs-built_in">max</span>()]);
+
+ax.legend([<span class="hljs-string">'Calculated Probability of Over'</span>, <span class="hljs-string">'Implied Probability  of Over from Money Line'</span>, <span class="hljs-string">'Positive EV'</span>, <span class="hljs-string">'Negative EV'</span>, <span class="hljs-string">'Jalen Hurts Pass Attempts / GM'</span>], bbox_to_anchor=(<span class="hljs-number">1.1</span>, <span class="hljs-number">1.05</span>));
+</code></pre>
+<p><img src="/images/prop_prediction_boot/probability_chart.png" alt="Probability Chart"></p>
+<p>The blue line is the bootstrapped means distribution. It is labeled that as &quot;Jalen Hurts pass attempts/GM&quot;. The dotted line marks the implied probability of over 31.5 pass attempts hitting according to the given line. The solid red line is the calculated probability of the over hitting at each likely Hurts&#39; pass attempt per game.</p>
+<p>Frim this graph, We can see that as Jalen Hurts&#39; pass attempts / gm number gets smaller and smaller, the edge widens. Going farther on the right side of the distribution, we can see our edge narrows until it eventually turns -EV.</p>
+<p>We can also see here that our under bet tilts to -EV after around 31.5. This makes sense given that was the over/under. Therefore, we can get the probability of our bet being +EV from the result our bootstrap.</p>
+<pre><code class="lang-python">probability_bet_is_positive_ev = sum(<span class="hljs-name">xs</span> &lt; hurts_pa_ou) / len(<span class="hljs-name">xs</span>)
+print('Probability the under is +EV: ', probability_bet_is_positive_ev)
+</code></pre>
+<p><code>Probability the under is +EV:  0.8793</code></p>
+<p>This shows the likelihood of the under hitting is somewhere around 63%, with a confidence interval of somewhere between 46% and 78%, and a 91% chance that the bet is +EV.</p>
+<p>The pass defense is the main thing not being taken into account. This could affect the odds positively or negatively depending. Ignoring those factors though, 
+    is seems the over is more likely to happen in this case and is therefore the safer option.
+</p>
