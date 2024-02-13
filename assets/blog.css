@@ -1,0 +1,18 @@
+ul:where(.astro-G6LKM5ZN) {
+    list-style-type: none;
+    padding: unset
+}
+
+ul:where(.astro-G6LKM5ZN) li:where(.astro-G6LKM5ZN) {
+    display: flex
+}
+
+ul:where(.astro-G6LKM5ZN) li:where(.astro-G6LKM5ZN) time:where(.astro-G6LKM5ZN) {
+    flex: 0 0 130px;
+    font-style: italic;
+    color: #595959
+}
+
+ul:where(.astro-G6LKM5ZN) li:where(.astro-G6LKM5ZN) a:where(.astro-G6LKM5ZN):visited {
+    color: #8e32dc
+}
