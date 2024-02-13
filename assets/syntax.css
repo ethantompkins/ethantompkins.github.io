@@ -60,6 +60,6 @@
 .highlight .vi { color: #033 } /* Name.Variable.Instance */
 .highlight .il { color: #f60 } /* Literal.Number.Integer.Long */
 
-.assests .o,
-.assests .o + .nt,
-.assests .nt + .nt { color: #999; }
+.assets .o,
+.assets .o + .nt,
+.assets .nt + .nt { color: #999; }
