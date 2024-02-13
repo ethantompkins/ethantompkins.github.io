@@ -1,0 +1,110 @@
+<h1 id="sample-markdown">Sample Markdown</h1>
+<p>In the National Football League (NFL), every play has a possibility of changing the game. One such game-changing play is the sack, where a quarterback is tackled behind the line of scrimmage before he can throw a forward pass. Using logistic regression, we can make a prediction on whethere a sack is likely to happen based on different circumstances within a game.</p>
+<hr>
+<h4 id="1-installing-and-importing-libraries">1. Installing and Importing Libraries</h4>
+<p>The first step involves setting up the necessary Python libraries. Among these are:</p>
+<ul>
+<li><code>nfl_data_py</code>: A  package for fetching NFL data.</li>
+<li><code>pandas</code>, <code>numpy</code>: For data manipulation.</li>
+<li><code>matplotlib</code>, <code>seaborn</code>: For visualization.</li>
+<li><code>sklearn</code>, <code>xgboost</code>: For machine learning.</li>
+</ul>
+<hr>
+<h4 id="2-fetching-the-data">2. Fetching the Data</h4>
+<p>For this we are using NFL play-by-play data from the years 2020, 2021, and 2022.</p>
+<pre><code class="lang-python">pbp = nfl.import_pbp_data([<span class="hljs-number">2020</span>, <span class="hljs-number">2021</span>, <span class="hljs-number">2022</span>])
+</code></pre>
+<hr>
+<h4 id="3-data-cleaning-and-preprocessing">3. Data Cleaning and Preprocessing</h4>
+<p>The dataset undergoes a cleaning process, filtering out non-passing plays and plays labeled as &quot;no_play&quot;. This ensures that the data used for modeling is relevant and noise-free.</p>
+<pre><code class="lang-python">pbp_clean = pbp[(pbp[<span class="hljs-string">'pass'</span>] == <span class="hljs-number">1</span>) &amp; (pbp[<span class="hljs-string">'play_type'</span>] != <span class="hljs-string">"no_play"</span>)]
+</code></pre>
+<hr>
+<h4 id="4-exploratory-data-analysis-eda-">4. Exploratory Data Analysis (EDA)</h4>
+<p>Visualization plays a crucial role in understanding the dataset. Through EDA:</p>
+<ul>
+<li>The distribution of sacks in the dataset is visualized using a count plot to understand the balance between plays resulting in sacks and those that don&#39;t. We can also look at the amount of sacks that occur each down.<div style="display: flex; justify-content: space-between;">
+
+</li>
+</ul>
+<p><img src="{{ site.github.url }}/images/sack_prediction_lr/sack_count.png" alt="Sack count" style="width: 50%; max-width: 900px;">
+<img src="{{ site.github.url }}/images/sack_prediction_lr/sack_count_per_down.png" alt="Sack count per down" style="width: 50%; max-width: 900px;"></p>
+<p></div></p>
+<ul>
+<li>Insights are drawn on how the number of pass rushers or the number of defenders in the box can influence the likelihood of a sack.</li>
+</ul>
+<div style="display: flex; justify-content: space-between;">
+
+<img src="{{ site.github.url }}/images/sack_prediction_lr/sack_count_per_defenderinbox.png" alt="Sack count per defender in box" style="width: 50%; max-width: 900px;">
+<img src="{{ site.github.url }}/images/sack_prediction_lr/sack_count_per_pass_rusher.png" alt="Sack count per pass rusher" style="width: 50%; max-width: 900px;">
+
+</div>
+
+<hr>
+<h4 id="5-feature-engineering">5. Feature Engineering</h4>
+<p>Looking at the data, we think about features we can add to make predicting a sack easier. From our EDA, a sack is most likely to happen on third down. From this we can define an &quot;obvious pass&quot; variable to help with analysis. An obvious pass is going to be one where it is third down and there is atleast 6 yards to go for a first down. </p>
+<pre><code class="lang-python">pbp_clean[<span class="hljs-string">'obvious_pass'</span>] = np.where((pbp_clean[<span class="hljs-string">'down'</span>] == <span class="hljs-number">3</span>) &amp; (pbp_clean[<span class="hljs-string">'ydstogo'</span>] &gt;= <span class="hljs-number">6</span>), <span class="hljs-number">1</span>,<span class="hljs-number">0</span>)
+</code></pre>
+<ul>
+<li><p>After this, we need to clean the dataframe so that all Null values are removed.</p>
+<pre><code class="lang-python">pre_df = pbp_clean[[<span class="hljs-string">'game_id'</span>, <span class="hljs-string">'play_id'</span>, <span class="hljs-string">'season'</span>, <span class="hljs-string">'name'</span>, <span class="hljs-string">'down'</span>, <span class="hljs-string">'ydstogo'</span>, <span class="hljs-string">'yardline_100'</span>, <span class="hljs-string">'game_seconds_remaining'</span>,
+                  <span class="hljs-string">'defenders_in_box'</span>, <span class="hljs-string">'number_of_pass_rushers'</span>, <span class="hljs-string">'xpass'</span>, <span class="hljs-string">'obvious_pass'</span>, <span class="hljs-string">'sack'</span>]]
+df = pre_df.dropna()
+</code></pre>
+</li>
+<li><p>Next, we can create a &#39;down&#39; variable (1st down, 2nd down, etc.). This is treated as a categorical feature, making it more digestible for the models.</p>
+<pre><code class="lang-python">df[<span class="hljs-string">'down'</span>] = df[<span class="hljs-string">'down'</span>].astype(<span class="hljs-string">'category'</span>)
+df_no_ids = df.drop(columns = [<span class="hljs-string">'game_id'</span>, <span class="hljs-string">'play_id'</span>, <span class="hljs-string">'name'</span>, <span class="hljs-string">'season'</span>])
+df_no_ids = pd.get_dummies(df_no_ids, columns = [<span class="hljs-string">'down'</span>])
+</code></pre>
+</li>
+</ul>
+<hr>
+<h4 id="6-modeling-and-evaluation">6. Modeling and Evaluation</h4>
+<p>Before we run our machine learning models, stratified training and test datasets need to be created. This ensures that the training and test datasets have a similar distribution of the target variable. When working with unbalanced classes this is especially useful. </p>
+<pre><code class="lang-python"><span class="hljs-attr">sss</span> = StratifiedShuffleSplit(<span class="hljs-attr">n_splits=1,</span> <span class="hljs-attr">test_size=0.25,</span> <span class="hljs-attr">random_state=42)</span>
+for train_index, test_index <span class="hljs-keyword">in</span> sss.split(df_no_ids, df_no_ids['sack']):
+    <span class="hljs-attr">strat_train_set</span> = df_no_ids.iloc[train_index]
+    <span class="hljs-attr">strat_test_set</span> = df_no_ids.iloc[test_index]
+
+<span class="hljs-attr">X_train</span> = strat_train_set.drop(<span class="hljs-attr">columns</span> = ['sack'])
+<span class="hljs-attr">Y_train</span> = strat_train_set['sack']
+<span class="hljs-attr">X_test</span> = strat_test_set.drop(<span class="hljs-attr">columns</span> = ['sack'])
+<span class="hljs-attr">Y_test</span> = strat_test_set['sack']
+</code></pre>
+<p>Three machine learning models were trained on the data. Each model&#39;s performance is evaluated using the Brier Score, which measures the mean squared difference between the predicted probabilities and the actual outcomes.</p>
+<ol>
+<li><strong>Logistic Regression:</strong> Brier Score: 0.056650718844646</li>
+<li><strong>Random Forest:</strong> Brier Score: 0.059645596501199945</li>
+<li><strong>XGBoost:</strong> Brier Score: 0.05711192786011701</li>
+</ol>
+<p>We can also take visual insight into the significance of different features used by an XGBClassifier model. The values are fetched then sorted to determine the ranking of features based on their influence on the model&#39;s predictions.</p>
+<p><img src="/images/sack_prediction_lr/XGBClassifierFeatureImportance.png" alt="XGBClassifier Feature Importance"></p>
+<hr>
+<p><em>Link to the full github repo located <a href="https://github.com/ethantompkins/jupyter-notebooks-fb/blob/main/logistic_regression_sack_prediction.ipynb">here</a></em></p>
+<p>This is some basic, sample markdown.</p>
+<h2 id="second-heading">Second Heading</h2>
+<ul>
+<li>Unordered lists, and:<ol>
+<li>One</li>
+<li>Two</li>
+<li>Three</li>
+</ol>
+</li>
+<li>More</li>
+</ul>
+<blockquote>
+<p>Blockquote</p>
+</blockquote>
+<p>And <strong>bold</strong>, <em>italics</em>, and even <em>italics and later <strong>bold</strong></em>. Even <del>strikethrough</del>. <a href="https://markdowntohtml.com">A link</a> to somewhere.</p>
+<p>And code highlighting:</p>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> foo = <span class="hljs-string">'bar'</span>;
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">baz</span><span class="hljs-params">(s)</span> </span>{
+   <span class="hljs-keyword">return</span> foo + <span class="hljs-string">':'</span> + s;
+}
+</code></pre>
+<p>Or inline code like <code>var foo = &#39;bar&#39;;</code>.</p>
+<p>Or an image of bears</p>
+<p><img src="http://placebear.com/200/200" alt="bears"></p>
+<p>The end ...</p>
