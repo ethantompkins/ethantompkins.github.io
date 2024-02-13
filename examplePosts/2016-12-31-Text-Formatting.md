@@ -228,9 +228,9 @@ This is an example of a [link](http://apple.com "Apple").
 
 ### Abbreviation Tag
 
-The abbreviation assests stands for "Cascading Style Sheets".
+The abbreviation assets stands for "Cascading Style Sheets".
 
-*[assests]: Cascading Style Sheets
+*[assets]: Cascading Style Sheets
 
 ### Cite Tag
 
