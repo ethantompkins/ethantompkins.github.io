@@ -10,7 +10,7 @@ image:
   creditlink:
 --- -->
 
-As always, Jekyll offers support for GitHub Flavored Markdown, which allows you to format your posts using the [Markdown syntax](https://guides.github.com/features/mastering-markdown/). Examples of these text formatting features can be seen below. You can find this post in the `_posts` directory.
+As always, Jekyll offers support for GitHub Flavored Markdown, which allows you to format your posts using the [Markdown syntax](https://guides.github.com/features/mastering-markdown/). Examples of these text formatting features can be seen below. You can find this post in the `blogs` directory.
 
 ### Table of Contents
 {:.no_toc}
@@ -228,9 +228,9 @@ This is an example of a [link](http://apple.com "Apple").
 
 ### Abbreviation Tag
 
-The abbreviation CSS stands for "Cascading Style Sheets".
+The abbreviation assests stands for "Cascading Style Sheets".
 
-*[CSS]: Cascading Style Sheets
+*[assests]: Cascading Style Sheets
 
 ### Cite Tag
 

@@ -1,10 +1,10 @@
 <div class="related">
   <h1 >Related posts:</h1>
-  {% assign listed_posts_urls = page.url | split: ' ' %}
+  {% assign listedblogs_urls = page.url | split: ' ' %}
   <ul class="related-posts">
     {% for tag in page.tags %}
       {% for mypost in site.tags[tag] limit:3 %}
-        {% if listed_posts_urls contains mypost.url %}
+        {% if listedblogs_urls contains mypost.url %}
         {% else %}
           <li>
             <h3>
@@ -15,7 +15,7 @@
               </a>
             </h3>
           </li>
-          {% assign listed_posts_urls = listed_posts_urls | push: mypost.url %}
+          {% assign listedblogs_urls = listedblogs_urls | push: mypost.url %}
         {% endif %}
       {% endfor %}
     {% endfor %}
