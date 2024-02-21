@@ -190,11 +190,13 @@ ax.set_xlabel(<span class="hljs-string">'Jalen Hurts Pass Attempts / Gm.'</span>
 ax.plot(kde_data_x, kde_data_y);
 ax.set_xlim([x.<span class="hljs-built_in">min</span>(), x.<span class="hljs-built_in">max</span>()]);
 
-ax.legend([<span class="hljs-string">'Calculated Probability of Over'</span>, <span class="hljs-string">'Implied Probability  of Over from Money Line'</span>, <span class="hljs-string">'Positive EV'</span>, <span class="hljs-string">'Negative EV'</span>, <span class="hljs-string">'Jalen Hurts Pass Attempts / GM'</span>], bbox_to_anchor=(<span class="hljs-number">1.1</span>, <span class="hljs-number">1.05</span>));
+ax.legend([<span class="hljs-string">'Calculated Probability of Over'</span>, <span class="hljs-string">'Implied Probability  of Over from Money Line'</span>, 
+<span class="hljs-string">'Positive EV'</span>, <span class="hljs-string">'Negative EV'</span>, <span class="hljs-string">'Jalen Hurts Pass Attempts / GM'</span>], 
+bbox_to_anchor=(<span class="hljs-number">1.1</span>, <span class="hljs-number">1.05</span>));
 </code></pre>
 <p><img src="/images/prop_prediction_boot/probability_chart.png" alt="Probability Chart"></p>
 <p>The blue line is the bootstrapped means distribution. It is labeled that as &quot;Jalen Hurts pass attempts/GM&quot;. The dotted line marks the implied probability of over 31.5 pass attempts hitting according to the given line. The solid red line is the calculated probability of the over hitting at each likely Hurts&#39; pass attempt per game.</p>
-<p>Frim this graph, We can see that as Jalen Hurts&#39; pass attempts / gm number gets smaller and smaller, the edge widens. Going farther on the right side of the distribution, we can see our edge narrows until it eventually turns -EV.</p>
+<p>From this graph, We can see that as Jalen Hurts&#39; pass attempts / gm number gets smaller and smaller, the edge widens. Going farther on the right side of the distribution, we can see our edge narrows until it eventually turns -EV.</p>
 <p>We can also see here that our under bet tilts to -EV after around 31.5. This makes sense given that was the over/under. Therefore, we can get the probability of our bet being +EV from the result our bootstrap.</p>
 <pre><code class="lang-python">probability_bet_is_positive_ev = sum(<span class="hljs-name">xs</span> &lt; hurts_pa_ou) / len(<span class="hljs-name">xs</span>)
 print('Probability the under is +EV: ', probability_bet_is_positive_ev)
