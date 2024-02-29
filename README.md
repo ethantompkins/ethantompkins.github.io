@@ -1,3 +1,1 @@
-## Personal website
-
-This is my [personal website](https://ethantompkins.github.io)
+Source code for my [personal website](https://ethantompkins.com)
