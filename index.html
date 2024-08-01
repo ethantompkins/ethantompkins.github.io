@@ -1,758 +1,214 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
     <head>
+        <!-- Global Metadata -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width,initial-scale=1">
-        <title>Welcome!</title>
-        <meta name="description" content="Blog of Ethan Tompkins.">
-        <meta name="generator" content="Eleventy">
-        <meta property="og:site_name" content="ethantompkins">
-        <meta property="og:title" content="Welcome!">
-        <meta property="og:description" content="Blog of Ethan Tompkins.">
-        <meta property="og:locale" content="en_US">
-        <meta property="og:url" content="/">
-        <meta property="og:image" content="/assets/images/default_og_image.png">
-        <link rel="canonical" href="https://ethantompkins.com/">
-        <link rel="alternate" href="/feed/feed.xml" type="application/atom+xml" title="ethantompkins">
-        <link rel="alternate" href="/feed/feed.json" type="application/json" title="ethantompkins">
-        <link rel="webmention" href="https://webmention.io/codesue.com/webmention">
-        <link rel="pingback" href="https://webmention.io/ethantompkins.com/xmlrpc">
-        <link rel="me" href="https://github.com/ethantompkins">
-        <link rel="me" href="https://linkedin.com/in/ethantompkins">
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
         <link rel="manifest" href="/site.webmanifest">
-        <meta name="color-scheme" content="light dark">
-        <meta name="theme-color" content="hsl(0, 0%, 100%)" media="(prefers-color-scheme: light)">
-        <meta name="theme-color" content="hsl(236, 23%, 12%)" media="(prefers-color-scheme: dark)">
-        <link rel="preload" href="/assets/fonts/WorkSans-Regular.woff2" as="font" type="font/woff2" crossorigin>
-        <link rel="preload" href="/assets/fonts/WorkSans-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000">
+        <meta name="msapplication-TileColor" content="#da532c">
+        <meta name="theme-color" content="#ffffff">
+        <meta name="generator" content="Astro v3.6.4">
+        <!-- Canonical URL -->
+        <link rel="canonical" href="https://blog.isak.me/">
+        <!-- Primary Meta Tags -->
+        <title>Blog, by Ethan Tompkins</title>
+        <meta name="title" content="Blog, by Ethan Tompkins">
+        <meta name="description" content="ios, web, thoughts &#38; notes">
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://ethantompkins.com/">
+        <meta property="og:title" content="Blog, by Ethan Tompkins">
+        <meta property="og:description" content="ios, web, thoughts &#38; notes">
+        <meta property="og:image" content="https://blog.isak.me/blog-placeholder-4.jpg">
+       <!--  Twitter 
+        <meta property="twitter:card" content="summary_large_image">
+        <meta property="twitter:url" content="https://blog.isak.me/">
+        <meta property="twitter:title" content="Dreamscape, a blog by Isak Solheim">
+        <meta property="twitter:description" content="ios, web, thoughts &#38; notes">
+        -->
+        <meta property="twitter:image" content="https://blog.isak.me/blog-placeholder-4.jpg"><link rel="stylesheet" href="/_astro/_slug_.9f0f125c.css"/>
         <style>
-            @font-face {
-                font-family: 'Work Sans';
-                font-style: normal;
-                font-weight: 400;
-                font-display: swap;
-                src: url('/assets/fonts/WorkSans-Regular.woff2') format('woff2')
-            }
-
-            @font-face {
-                font-family: 'Work Sans';
-                font-style: normal;
-                font-weight: 500;
-                font-display: swap;
-                src: url('/assets/fonts/WorkSans-Medium.woff2') format('woff2')
-            }
-
-            @font-face {
-                font-family: 'Work Sans';
-                font-style: normal;
-                font-weight: 600;
-                font-display: swap;
-                src: url('/assets/fonts/WorkSans-SemiBold.woff2') format('woff2')
-            }
-
-            @font-face {
-                font-family: 'Work Sans';
-                font-style: italic;
-                font-weight: 400;
-                font-display: swap;
-                src: url('/assets/fonts/WorkSans-Italic.woff2') format('woff2')
-            }
-
-            @font-face {
-                font-family: 'Work Sans';
-                font-style: italic;
-                font-weight: 600;
-                font-display: swap;
-                src: url('/assets/fonts/WorkSans-SemiBold-Italic.woff2') format('woff2')
-            }
-
-            @font-face {
-                font-family: Inconsolata;
-                font-style: normal;
-                font-weight: 400;
-                font-display: swap;
-                src: url('/assets/fonts/Inconsolata-Regular.woff2') format('woff2')
-            }
-
-            :root {
-                --font-family: "Work Sans",system-ui,sans-serif;
-                --font-family-monospace: Inconsolata,monospace;
-                --font-weight-bold: 600
-            }
-
-            :root {
-                --code-theme-base: hsl(220, 23%, 95%);
-                --code-theme-text: hsl(234, 16%, 35%);
-                --code-theme-subtext0: hsl(233, 10%, 47%);
-                --code-theme-overlay1: hsl(231, 10%, 59%);
-                --code-theme-flamingo: hsl(0, 60%, 67%);
-                --code-theme-rosewater: hsl(11, 59%, 67%);
-                --code-theme-mauve: hsl(266, 85%, 58%);
-                --code-theme-red: hsl(347, 87%, 44%);
-                --code-theme-peach: hsl(22, 99%, 52%);
-                --code-theme-yellow: hsl(40, 62%, 73%);
-                --code-theme-green: hsl(109, 58%, 40%);
-                --code-theme-teal: hsl(183, 74%, 35%);
-                --code-theme-sky: hsl(197, 97%, 46%);
-                --code-theme-blue: hsl(220, 91%, 54%)
-            }
-
-            @media (prefers-color-scheme: dark) {
-                :root {
-                    --code-theme-base:hsl(232, 23%, 18%);
-                    --code-theme-text: hsl(227, 68%, 88%);
-                    --code-theme-subtext0: hsl(227, 27%, 72%);
-                    --code-theme-overlay1: hsl(228, 15%, 57%);
-                    --code-theme-flamingo: hsl(0, 58%, 86%);
-                    --code-theme-rosewater: hsl(10, 58%, 90%);
-                    --code-theme-mauve: hsl(267, 83%, 80%);
-                    --code-theme-red: hsl(351, 74%, 73%);
-                    --code-theme-peach: hsl(21, 86%, 73%);
-                    --code-theme-yellow: hsl(40, 70%, 78%);
-                    --code-theme-green: hsl(105, 48%, 72%);
-                    --code-theme-teal: hsl(171, 47%, 69%);
-                    --code-theme-sky: hsl(189, 59%, 73%);
-                    --code-theme-blue: hsl(220, 83%, 75%)
-                }
-            }
-
-            code,kbd,pre {
-                font-family: var(--font-family-monospace);
-                tab-size: 2
-            }
-
             pre {
-                display: block;
-                margin: 1.5em 0;
-                border-radius: 6px;
-                background: var(--code-theme-base);
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch
-            }
-
-            code[class*=language-],pre>code,pre[class*=language-] {
-                display: block;
-                padding: .75em;
-                font-size: .975em;
-                -webkit-text-size-adjust: none;
-                overflow-x: scroll;
-                -ms-overflow-style: none;
-                scrollbar-width: none
-            }
-
-            code[class*=language-]::-webkit-scrollbar,pre>code::-webkit-scrollbar,pre[class*=language-]::-webkit-scrollbar {
-                display: none
-            }
-
-            code,kbd {
-                background: var(--code-theme-base)
-            }
-
-            code {
-                word-break: break-all
-            }
-
-            h1 code,h2 code,h3 code,h4 code,li code,li kbd,p code,p kbd {
-                padding: 2px 4px;
-                border-radius: 4px;
-                font-size: .875em
-            }
-
-            .code-output {
-                font-family: var(--font-family-monospace);
                 font-size: .9em;
-                color: var(--code-theme-text);
-                margin-bottom: 2.5em
-            }
-
-            .code-output p {
-                margin-top: 0;
-                margin-bottom: .5em;
-                max-width: 84ch
-            }
-
-            .token.comment {
-                color: var(--code-theme-subtext0);
-                font-style: italic
-            }
-
-            .token.prolog {
-                color: var(--code-theme-subtext0)
-            }
-
-            .token.cdata {
-                color: var(--code-theme-subtext0)
-            }
-
-            .token.doctype {
-                color: var(--code-theme-overlay1)
-            }
-
-            .token.punctuation {
-                color: var(--code-theme-overlay1)
-            }
-
-            .token.entity {
-                color: var(--code-theme-overlay1)
-            }
-
-            .token.attr-name {
-                color: var(--code-theme-blue)
-            }
-
-            .token.boolean {
-                color: var(--code-theme-peach)
-            }
-
-            .token.constant {
-                color: var(--code-theme-peach)
-            }
-
-            .token.number {
-                color: var(--code-theme-peach)
-            }
-
-            .token.atrule {
-                color: var(--code-theme-peach)
-            }
-
-            .token.keyword {
-                color: var(--code-theme-red)
-            }
-
-            .token.property {
-                color: var(--code-theme-blue)
-            }
-
-            .token.tag {
-                color: var(--code-theme-mauve)
-            }
-
-            .token.symbol {
-                color: var(--code-theme-sky)
-            }
-
-            .token.deleted {
-                color: var(--code-theme-teal)
-            }
-
-            .token.important {
-                color: var(--code-theme-teal)
-            }
-
-            .token.selector {
-                color: var(--code-theme-red)
-            }
-
-            .token.string {
-                color: var(--code-theme-green)
-            }
-
-            .token.char {
-                color: var(--code-theme-yellow)
-            }
-
-            .token.builtin {
-                color: var(--code-theme-text)
-            }
-
-            .token.inserted {
-                color: var(--code-theme-green)
-            }
-
-            .token.regex {
-                color: var(--code-theme-sky)
-            }
-
-            .token.attr-value {
-                color: var(--code-theme-sky)
-            }
-
-            .token.variable {
-                color: var(--code-theme-flamingo)
-            }
-
-            .token.operator {
-                color: var(--code-theme-sky)
-            }
-
-            .token.function {
-                color: var(--code-theme-blue);
-                font-style: italic
-            }
-
-            .token.url {
-                color: var(--code-theme-yellow)
-            }
-
-            .token.changed {
-                color: var(--code-theme-peach)
-            }
-
-            .token.class-name {
-                color: var(--code-theme-peach)
-            }
-
-            .token.hexcode {
-                color: var(--code-theme-yellow)
-            }
-
-            .token.bold {
-                font-weight: 700
-            }
-
-            .token.italic {
-                font-style: italic
-            }
-
-            .token.entity {
-                color: var(--code-theme-overlay1);
-                cursor: help
-            }
-
-            .token.namespace {
-                opacity: .7
-            }
-
-            :root {
-                --heading-font-weight: 400;
-                --title-alignment: center;
-                --background-color: hsl(0, 0%, 100%);
-                --text-color: hsl(0, 0%, 25%);
-                --secondary-text-color: hsl(0, 0, 61%);
-                --highlight-color: hsla(54, 100%, 62%, 0.4);
-                --highlight-color-deep: hsla(54, 100%, 62%, 0.9);
-                --table-border-color: hsl(240, 33%, 96%)
-            }
-
-            @media (prefers-color-scheme: dark) {
-                :root {
-                    --background-color:hsl(236, 23%, 12%);
-                    --text-color: hsl(227, 68%, 88%);
-                    --secondary-text-color: hsl(227, 27%, 72%);
-                    --highlight-color: hsl(355, 71%, 77%, 0.4);
-                    --highlight-color-deep: hsl(355, 71%, 77%, 0.6);
-                    --table-border-color: hsl(232, 23%, 18%)
-                }
-
-                img.dark-mode-invert {
-                    -webkit-filter: invert(1);
-                    filter: invert(1)
-                }
-
-                .dark-mode-dim,img {
-                    filter: brightness(.8) contrast(1.2)
-                }
-            }
-
-            * {
-                box-sizing: border-box
-            }
-
-            *,::after,::before {
-                -webkit-font-smoothing: antialiased;
-                -moz-osx-font-smoothing: grayscale
-            }
-
-            body,html {
-                padding: 0;
-                margin: 0 auto;
-                font-family: var(--font-family);
-                color: var(--text-color);
-                background-color: var(--background-color);
-                height: 100%
-            }
-
-            html {
-                overflow-y: auto
-            }
-
-            body {
-                max-width: 40em
-            }
-
-            h1,h2,h3,h4,h5,h6 {
-                font-weight: var(--heading-font-weight)
-            }
-
-            h1,h2,h3 {
-                line-height: 1.5em;
-                margin-top: 1.5em;
-                margin-bottom: .75em;
-                padding-top: .35em;
-                padding-bottom: .35em
-            }
-
-            h1 {
-                margin-top: 1em;
-                font-size: 2em;
-                text-align: var(--title-alignment)
-            }
-
-            h2 {
-                font-size: 1.5em
-            }
-
-            h3 {
-                font-size: 1.2em
-            }
-
-            li,p {
-                line-height: 1.5em;
-                margin: 1em 0;
-                max-width: 64ch
-            }
-
-            p:last-child {
-                margin-bottom: 0
-            }
-
-            .linkify,a {
-                color: inherit;
-                text-decoration: none
-            }
-
-            .linkify,li>a:not([class]),p>a:not([class]) {
-                background: linear-gradient(to right,var(--highlight-color),var(--highlight-color-deep));
-                background-size: 300% 40%;
-                background-repeat: no-repeat;
-                background-position: 0 100%;
-                transition-property: background-position;
-                transition-duration: .3s;
-                padding: 0
-            }
-
-            .linkify:hover,li>a:not([class]):hover,p>a:not([class]):hover {
-                background-position: 100% 100%
-            }
-
-            .linkify {
-                cursor: pointer
-            }
-
-            .external-link:after {
-                content: "↗";
-                font-size: .7em;
-                position: relative;
-                top: -.25em;
-                padding-left: .1em
-            }
-
-            main {
-                padding: 1rem
-            }
-
-            main :first-child {
-                margin-top: 0
-            }
-
-            header {
-                display: flex;
-                gap: 1em .5em;
-                flex-wrap: wrap;
-                align-items: center;
                 padding: 1em
             }
 
-            .home-link {
-                font-size: 1.125em;
-                font-weight: var(--font-weight-bold);
-                margin-right: 1.5em
+            code {
+                font-size: .9em;
+                font-family: Monospace;
+                font-weight: 400!important
             }
 
-            .nav {
-                display: flex;
-                padding: 0;
-                margin: 0;
-                list-style: none
-            }
-
-            .nav-item {
-                display: inline-block;
-                margin-right: 1em;
-                font-size: 1.125em;
-                text-transform: lowercase
-            }
-
-            .nav-item a[href] {
-                background: 0 0
-            }
-
-            .nav-item a::before {
-                content: '['
-            }
-
-            .nav-item a::after {
-                content: ']'
-            }
-
-            body>footer {
-                position: sticky;
-                top: 100vh
-            }
-
-            footer {
-                font-size: var(--font-family);
-                color: var(--secondary-text-color);
-                margin-top: 3em;
-                padding-bottom: 3em;
-                padding-left: 1em;
-                padding-right: 1em
-            }
-
-            img,picture {
-                max-width: 100%;
-                height: auto
-            }
-
-            figure {
-                max-width: 100%;
-                margin-left: auto;
-                margin-right: auto;
-                padding-bottom: 1em
-            }
-
-            figure:has( + h2,+ h3 ) {
-                padding-bottom: 0
-            }
-
-            .wrapper {
-                border: 1px solid var(--table-border-color);
-                position: relative;
-                height: 0;
-                padding-bottom: 55.5%
-            }
-
-            .wrapper iframe {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%
+            code:before,code:after {
+                content: ""!important
             }
 
             blockquote {
-                font-style: italic
+                font-style: normal!important
             }
 
-            blockquote em,blockquote pre {
-                font-style: normal
+            p:before,p:after {
+                content: ""!important
             }
 
-            figcaption,table caption {
-                text-align: center;
-                font-style: italic;
-                margin: .75em 0
+            blockquote {
+                border-left: 2px solid #333
             }
 
-            table {
-                text-align: left;
-                line-height: 1.5em;
-                border-collapse: collapse;
-                margin: 2em 0;
-                width: 100%;
-                border: 1px solid var(--table-border-color)
-            }
-
-            td,th {
-                padding: .4em;
-                letter-spacing: .5px;
-                border-bottom: 1px solid var(--table-border-color);
-                border-left: 1px solid var(--table-border-color)
-            }
-
-            th {
-                font-weight: 500
-            }
-
-            details {
-                margin: 1em 0
-            }
-
-            summary {
-                cursor: pointer
-            }
-
-            summary>h2,summary>h3,summary>h4 {
-                display: inline;
-                margin-left: 8px
-            }
-
-            hr {
-                border: 0;
-                margin: 2em 0
-            }
-
-            hr::after {
-                content: '* * *';
-                display: block;
-                width: 100%;
-                color: var(--secondary-text-color);
-                text-align: center;
-                font-family: var(--font-family-monospace)
-            }
-
-            .post-title {
-                margin-bottom: 0;
-                padding-bottom: 0
-            }
-
-            .post-date {
-                text-align: var(--title-alignment);
-                margin-bottom: 2em;
-                padding-top: 0;
-                padding-bottom: .35em;
-                font-weight: 500;
-                line-height: .8rem
-            }
-
-            .postlist ul {
-                list-style: none;
-                padding: 0
-            }
-
-            .postlist-item {
-                display: flex;
-                flex-wrap: wrap;
-                align-items: baseline;
-                margin-bottom: 1em
-            }
-
-            .postlist-date {
-                color: var(--secondary-text-color);
-                font-size: calc(1em - 2px);
-                font-style: italic;
-                word-spacing: -0.5px;
-                white-space: nowrap
-            }
-
-            .postlist-link {
-                flex-basis: calc(100% - 1.5rem);
-                font-weight: 500
-            }
-
-            .postlist-item-active .postlist-link {
-                font-style: italic
-            }
-
-            .postlist details summary::-webkit-details-marker {
-                display: none
-            }
-
-            .postlist details>summary {
-                list-style: none
-            }
-
-            .postlist details[open] summary {
-                display: none
-            }
-
-            .more-posts-prompt,.postlist summary {
-                margin-top: 2em
-            }
-
-            .post-tag {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                font-style: italic
-            }
-
-            .postlist-item>.post-tag {
-                align-self: center
-            }
-
-            .post-metadata {
-                display: inline-flex;
-                flex-wrap: wrap;
-                gap: .5em;
-                list-style: none;
-                padding: 0;
-                margin: 0
-            }
-
-            .cta-subscribe {
-                text-align: var(--title-alignment)
-            }
-
-            .cta-subscribe hr {
-                margin-top: 3em;
-                margin-bottom: .75em
-            }
-
-            .cta-subscribe-text {
-                font-style: italic
-            }
-
-            .visually-hidden {
-                clip: rect(0 0 0 0);
-                clip-path: inset(50%);
-                height: 1px;
-                overflow: hidden;
+            .margin {
                 position: absolute;
-                white-space: nowrap;
-                width: 1px
+                box-sizing: border-box;
+                width: 26%
             }
 
-            .redacted {
-                background: var(--c-text);
-                color: var(--c-text)
+            .left.margin {
+                left: -28%;
+                padding-right: 10px;
+                text-align: right;
+                border-right: 2px solid rgb(209 213 219 / var(--tw-border-opacity))
             }
 
-            .redacted::selection,.redacted:hover {
-                background: var(--c-bg);
-                color: var(--c-text);
-                transition-duration: .5s
+            .left.margin>p {
+                margin: 4px 0 0;
+                line-height: 1rem;
+                font-size: .9rem
+            }
+
+            .right.margin {
+                right: -28%;
+                padding-left: 10px;
+                border-left: 2px solid rgb(209 213 219 / var(--tw-border-opacity))
+            }
+
+            .right.margin>p {
+                margin-bottom: 0;
+                margin-top: 0;
+                font-size: .9rem
+            }
+
+            @media screen and (max-width: 1060px) {
+                .content-wrapper {
+                    margin:0 auto;
+                    padding-left: 16px;
+                    padding-right: 16px
+                }
+
+                .margin,.margin.left,.margin.right {
+                    position: relative;
+                    display: block;
+                    inset: auto
+                }
+
+                .margin.left {
+                    text-align: left;
+                    float: left;
+                    border: 0
+                }
+
+                .margin.right {
+                    float: right
+                }
+
+                .margin.right.rel {
+                    float: left;
+                    width: 100%;
+                    padding: 0
+                }
+            }
+
+            @media screen and (max-width: 600px) {
+                .content-wrapper {
+                    margin:1em 0 2rem;
+                    padding-top: .5rem;
+                    min-width: auto
+                }
+
+                .margin {
+                    width: 40%
+                }
+
+                .margin.left {
+                    padding-right: 16px
+                }
+
+                .margin.right {
+                    padding-left: 16px
+                }
+            }
+
+            tr {
+                border-bottom: 0
+            }
+
+            .astro-code {
+                background-color: linen!important;
+                border-radius: 0
             }
         </style>
-        <script src="/pwa.js" defer="defer"></script>
     </head>
-    <body>
-        <a href="#skip" class="visually-hidden">Skip to main content</a>
+    <body class="max-w-prose m-auto px-4 relative">
         <header>
-            <a href="/" class="home-link">ethantompkins</a>
-            <nav>
-                <h2 class="visually-hidden">Top level navigation menu</h2>
-                <ul class="nav">
-                    <li class="nav-item">
-                        <a href="/posts">Writing</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/reading">Reading</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="https://github.com/ethantompkins" target="_blank">GitHub</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="https://www.linkedin.com/in/ethantompkins" target="_blank">LinkedIn</a>
-                    </li>
-                </ul>
+            <nav class="flex gap-4 my-16">
+                <a href="/">
+                    <img class="w-28 h-28" src="/dreamscape.png" alt="shapes">
+                </a>
+                <div class="justify-between flex flex-col">
+                    <div>
+                        <h2 class="text-2xl font-medium">
+                            <a href="/">blog</a>
+                        </h2>
+                        <p class="text-gray-600 mb-2">a blog by Ethan Tompkins</p>
+                    </div>
+                    <div class="internal-links flex gap-2">
+                        <a href="/" class="text-black">home </a>
+                        <a href="/code" class="text-gray-500">code </a>
+                        <a href="/about" class="text-gray-500">about </a>
+                    </div>
+                </div>
             </nav>
         </header>
-        <main id="skip">
-            <h1>
-                <a href="/">Welcome!</a>
-            </h1>
-
-            <p>
-                I'm Ethan Tompkins. I'm a Software Engineer based in Washington, D.C. currently working at
-                <a href="https://www.obm.mn/" target="_blank">OBM</a>, 
-                a clean energy and blockchain startup, helping build <a href="https://foreman.mn/" target="_blank">Foreman</a>.
-            </p>
-
-
-            <p>I have strong interests in computer systems, analytics, and blockchain. I write about what I'm learning, reading, and building on this blog.
-                A more in-depth history of my experience can be found on my <a href="/docs/EthanTompkinsResume.pdf" target="_blank">resume</a>.
-            </p>
-
-            <p>My contact email is ethantompkins55 [at] yahoo.com.</p>
-
+        <main>
+            <section>
+                <ul>
+                    <li class="mb-8">
+                        <a href="/reviving-an-old-project">
+                            <h1 class="text-xl font-bold hover:underline">Reviving an old project </h1>
+                        </a>
+                        <p class="mb-2 text-gray-700">I published a Hugo theme.</p>
+                        <a href="/reviving-an-old-project" class="text-blue-600 hover:text-blue-500 font-medium">Read this article →
+</a>
+                </ul>
+            </section>
         </main>
-        <footer>
-            <span>&copy;2024 Ethan Tompkins</span>
+        <footer class="flex flex-col-reverse gap-4 sm:flex-row sm:gap-0 my-16 text-xs justify-between">
+            <p>&copy;2024 — Ethan Tompkins
+</p>
+            <div class="flex gap-2">
+                <a href="https://ethantompkins.com/" target="_blank" class="flex items-center">
+                    Me
+
+                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                </a>
+                <a href="https://github.com/ethantompkins/" target="_blank" class="flex items-center">
+                    GitHub
+                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                </a>
+                <a href="/about">About</a>
+                <a href="/posts">posts</a>
+                <a href="/reading">Reading</a>
+            </div>
         </footer>
     </body>
 </html>
