@@ -257,7 +257,17 @@ df[<span class="hljs-string">'seconds_remaining'</span>] = (df[<span class="hljs
 </code></pre>
 <p><img src="/images/play_prediction_rfc/after_cleanup.png" alt="All Plays Post Cleanup"></p>
 <p>Before constructing our random forest classifier, there&#39;s a bit more preparation needed. The &#39;play_type&#39; field, as it currently stands, is too detailed, outlining both the play&#39;s type and outcome (like &quot;Pass Incompletion&quot; or &quot;Rush TD&quot;). We&#39;ll refine this to focus solely on the play calls we&#39;re interested in: rush, pass, punt, and field goal (FG). I&#39;ve created a function to categorize plays into these four groups. It&#39;s worth noting that some plays, such as kickoffs, timeouts, and penalties, don&#39;t fit these categories and will be classified as &#39;None&#39;. This function should now be run to modify our data frame, adding a new column for the simplified play call classification.</p>
-<pre><code class="lang-python">pass_types = [<span class="hljs-string">'Pass Reception'</span>, <span class="hljs-string">'Pass Interception Return'</span>, <span class="hljs-string">'Pass Incompletion'</span>, <span class="hljs-string">'Sack'</span>, <span class="hljs-string">'Passing Touchdown'</span>, <span class="hljs-string">'Interception Return Touchdown'</span>]
+
+<pre><code class="lang-python">pass_types = [
+    <span class="hljs-string">'Pass Reception'</span>, 
+    <span class="hljs-string">'Pass Interception Return'</span>, 
+    <span class="hljs-string">'Pass Incompletion'</span>, 
+    <span class="hljs-string">'Sack'</span>, 
+    <span class="hljs-string">'Passing Touchdown'</span>, 
+    <span class="hljs-string">'Interception Return Touchdown'</span>
+]
+</code></pre>
+
 rush_types = [<span class="hljs-string">'Rush'</span>, <span class="hljs-string">'Rushing Touchdown'</span>]
 punt_types = [<span class="hljs-string">'Punt'</span>, <span class="hljs-string">'Punt Return Touchdown'</span>, <span class="hljs-string">'Blocked Punt'</span>, <span class="hljs-string">'Blocked Punt Touchdown'</span>]
 fg_types = [<span class="hljs-string">'Field Goal Good'</span>, <span class="hljs-string">'Field Goal Missed'</span>, <span class="hljs-string">'Blocked Field Goal'</span>]
@@ -370,17 +380,17 @@ call
 <pre><code class="lang-python"><span class="hljs-attribute">punt</span>
 </code></pre>
 <p>Now the model predicts a punt. In these two situations the outputs seem reasonable. </p>
-<hr>
+<br>
 <h2 class="text-2xl font-medium">
 Next Steps for Improvement
 </h2>
 <p>Looking at our results, some changes can be made to improve our results. The sample size of 8 years may be too much. In this time span, the play calling can evolve with the game or depending on the staff changes made within the specific program. Training on 1 or 2 seasons may produce more quality predictons. </p>
-<hr>
+<br>
 <p>Additional changes that can be made: </p>
 <li>Isolating the data by offensive coordinator instead of by head coach.</li>
-<hr>
+<br>
 <li>Look at the list of available data points and determine if adding or modifying them can yield a more accurate model.</li>
-<hr>
+<br>
 <li>Examine the list of probabilities for each outcome and see why these numbers are being returned.</li>
 </ol>
 
