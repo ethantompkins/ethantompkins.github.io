@@ -160,9 +160,9 @@
                      <div class="justify-between flex flex-col">
                          <div>
                              <h2 class="text-2xl font-medium">
-                                 <a href="/">dreamscape</a>
+                                 <a href="/">Blog</a>
                              </h2>
-                             <p class="text-gray-600 mb-2">a blog by Isak Solheim</p>
+                             <p class="text-gray-600 mb-2">a blog by Ethan Tompkins</p>
                          </div>
                          <div class="internal-links flex gap-2">
                              <a href="/" class="text-gray-500">home </a>
@@ -173,10 +173,9 @@
                  </nav>
              </header>
 
-
-             <h1 id="forecasting-football-plays-with-a-random-forest-classifier">
+            <h2 class="text-2xl font-medium">
                 Forecasting Football Plays with a Random Forest Classifier
-            </h1>
+            </h2>
 
     <p>Random forests are a method of ensemble learning for classification, regression, 
         and other tasks that involve decision trees during training time. For ensemble learning, 
@@ -184,14 +183,14 @@
         The several different models are then combined into a single model with the 
         goal of producing a final robust model using the power of many.
     </p>
-    <hr>
+    <br>
 
     <p>Random forests work by generation many decision trees at random. 
         Once a prediction is made, each decision tree is evaluated based on the inputs. 
         The output of each tree gets counted and the modal outcome is selected as the final prediction. 
         Random forests can be used to output classifications and for regression analysis, making them enticing in many scenarios.
     </p>
-    <hr>
+    <br>
 
     <p>Since play calling is so different between programs, 
         we will be using a specific coach and try to predict based on their historical tendencies. 
@@ -248,7 +247,9 @@
     <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> all_plays])
 </code></pre>
 <p><img src="/images/play_prediction_rfc/all_plays_initial.png" alt="All Plays Dataframe"></p>
-<h1 id="cleanup">Cleanup</h1>
+<h2 class="text-2xl font-medium">
+Cleanup
+</h2>
 <p>We would like to know when Clemson was home while calling plays, so we calculate a column called is_home. Next we want to calculate the total seconds remaining instead of the minutes and seconds remaining, so we will combine them into one seconds_remaining category.</p>
 <pre><code class="lang-python">df[<span class="hljs-string">'is_home'</span>] = np.where(df[<span class="hljs-string">'home'</span>] == <span class="hljs-string">'Clemson'</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>)
 
@@ -299,6 +300,7 @@ plays_train.head()
 <p><img src="/images/play_prediction_rfc/training_feature_set.png" alt="Training feature set"></p>
 <p>When training, it is best to have all data in numerical format. While the feature set is, the dependent set of play calls is not. To convert this categorical data into numerical data, we use pd.factorize. </p>
 <p>The factorize method returns two sets, one contained the data as a set of numbers ranging from 0 to 3 and other containing the key mappings telling us which number mapped to which label. We can now build and train the random forest classifier.</p>
+<br>
 <p>Note that we passed in both of our set of features as well as the set of corresponding outputs in numeric format. The validation set of features can be passed through at this point.</p>
 <pre><code class="lang-python"><span class="hljs-comment"># convert the categorical data into numerical data</span>
 y, <span class="hljs-attr">y_keys</span> = pd.factorize(calls_train)
@@ -322,7 +324,10 @@ predicted_calls
 </code></pre>
 <p><img src="/images/play_prediction_rfc/crosstab_image.png" alt="Crosstab Chart"></p>
 <p>In the validation set, each row corresponds to the actual type of play calls, while the columns display the predictions made by the classifier. The classifier is quite effective in forecasting when Dabo opts for punts and field goals. It also shows reasonable accuracy in predicting running plays, though its performance in predicting passing plays is less accurate. This indicates that there&#39;s still potential for enhancing the model&#39;s precision.</p>
-<h1 id="improving-the-model">Improving the Model</h1>
+<h2 class="text-2xl font-medium">
+Improving the Model
+</h2>
+<br>
 <p>Using the <em>feature<em>importances</em></em> property from the classifier, the importance of each feature when forming predictions can be viewed.</p>
 <pre><code class="lang-python">list(<span class="hljs-name">zip</span>(<span class="hljs-name">plays_train</span>, classifier.feature_importances_))
 </code></pre>
@@ -346,6 +351,7 @@ pd.crosstab(calls_validation, predicted_calls, <span class="hljs-attr">rownames=
 </code></pre>
 <p><img src="/images/play_prediction_rfc/predicted_calls_new.png" alt="Predicted Calls Chart"></p>
 <p>The model now shows enhanced accuracy in predicting passing plays. Predictions for rushing plays have remained largely consistent with the previous version of the model. There is very high accuracy in predicting punt calls and are nearing perfection with field goal predictions.</p>
+<br>
 <p>While there are additional improvements that could be made, the next step is to apply the model to real-time scenarios. A function can be written to process inputs such as the yard line, down, distance, time left, and score difference, enabling the model to evaluate situations as they occur in live games.</p>
 <pre><code class="lang-python">def predict_call(yards, down, distance, seconds, margin):
     test_plays = pd.<span class="hljs-symbol">DataFrame</span>({<span class="hljs-string">'yards_to_goal'</span>: [yards], <span class="hljs-string">'down'</span>: [down], <span class="hljs-string">'distance'</span>: [distance], <span class="hljs-string">'seconds_remaining'</span>: [seconds], <span class="hljs-string">'margin'</span>: [margin]})
@@ -364,12 +370,17 @@ call
 <pre><code class="lang-python"><span class="hljs-attribute">punt</span>
 </code></pre>
 <p>Now the model predicts a punt. In these two situations the outputs seem reasonable. </p>
-<h1 id="next-steps-for-improvements">Next Steps for Improvements</h1>
+<hr>
+<h2 class="text-2xl font-medium">
+Next Steps for Improvement
+</h2>
 <p>Looking at our results, some changes can be made to improve our results. The sample size of 8 years may be too much. In this time span, the play calling can evolve with the game or depending on the staff changes made within the specific program. Training on 1 or 2 seasons may produce more quality predictons. </p>
+<hr>
 <p>Additional changes that can be made: </p>
-<ol>
 <li>Isolating the data by offensive coordinator instead of by head coach.</li>
+<hr>
 <li>Look at the list of available data points and determine if adding or modifying them can yield a more accurate model.</li>
+<hr>
 <li>Examine the list of probabilities for each outcome and see why these numbers are being returned.</li>
 </ol>
 
