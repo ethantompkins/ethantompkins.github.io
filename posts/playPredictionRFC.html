@@ -247,6 +247,7 @@
     <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> all_plays])
 </code></pre>
 <p><img src="/images/play_prediction_rfc/all_plays_initial.png" alt="All Plays Dataframe"></p>
+<br>
 <h2 class="text-2xl font-medium">
 Cleanup
 </h2>
@@ -267,13 +268,27 @@ df[<span class="hljs-string">'seconds_remaining'</span>] = (df[<span class="hljs
 ]
 </code></pre>
 
-rush_types = [<span class="hljs-string">'Rush'</span>, <span class="hljs-string">'Rushing Touchdown'</span>]
-punt_types = [<span class="hljs-string">'Punt'</span>, <span class="hljs-string">'Punt Return Touchdown'</span>, <span class="hljs-string">'Blocked Punt'</span>, <span class="hljs-string">'Blocked Punt Touchdown'</span>]
-fg_types = [<span class="hljs-string">'Field Goal Good'</span>, <span class="hljs-string">'Field Goal Missed'</span>, <span class="hljs-string">'Blocked Field Goal'</span>]
+<pre><code class="lang-python">rush_types = [
+    <span class="hljs-string">'Rush'</span>, 
+    <span class="hljs-string">'Rushing Touchdown'</span>
+]
+
+punt_types = [
+    <span class="hljs-string">'Punt'</span>, 
+    <span class="hljs-string">'Punt Return Touchdown'</span>, 
+    <span class="hljs-string">'Blocked Punt'</span>, 
+    <span class="hljs-string">'Blocked Punt Touchdown'</span>
+]
+
+fg_types = [
+    <span class="hljs-string">'Field Goal Good'</span>, 
+    <span class="hljs-string">'Field Goal Missed'</span>, 
+    <span class="hljs-string">'Blocked Field Goal'</span>
+]
 
 <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">getPlayCall</span><span class="hljs-params">(x)</span>:</span>
     <span class="hljs-keyword">if</span> x <span class="hljs-keyword">in</span> pass_types:
-            <span class="hljs-keyword">return</span> <span class="hljs-string">'pass'</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-string">'pass'</span>
     <span class="hljs-keyword">elif</span> x <span class="hljs-keyword">in</span> rush_types:
         <span class="hljs-keyword">return</span> <span class="hljs-string">'rush'</span>
     <span class="hljs-keyword">elif</span> x <span class="hljs-keyword">in</span> punt_types:
@@ -283,8 +298,9 @@ fg_types = [<span class="hljs-string">'Field Goal Good'</span>, <span class="hlj
     <span class="hljs-keyword">else</span>:
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">None</span>
 
-df[<span class="hljs-string">'play_call'</span>] = df[<span class="hljs-string">'play_type'</span>].apply(getPlayCall)
+[<span class="hljs-string">'play_call'</span>] = df[<span class="hljs-string">'play_type'</span>].apply(getPlayCall)
 </code></pre>
+
 <p>What should we do with play types that don&#39;t align with our four main play call categories? For the purposes of this project, these plays are irrelevant. Recall that we assigned a &#39;None&#39; value to these types of plays. Fortunately, Pandas provides a handy function to eliminate rows with missing values. We can even specify which columns to consider when deciding which rows to remove. To clean our data and keep it focused on our study&#39;s scope, execute the following code to discard these irrelevant rows.</p>
 <pre><code class="lang-python">df.dropna(subset=[<span class="hljs-symbol">'play_call</span>'], inplace=<span class="hljs-literal">True</span>)
 </code></pre>
@@ -302,7 +318,10 @@ df[<span class="hljs-string">'play_call'</span>] = df[<span class="hljs-string">
 ]]
 </code></pre>
 <p><img src="/images/play_prediction_rfc/final_all_plays.png" alt="Final All Plays Dataframe"></p>
-<h1 id="building-the-prediction-model">Building the Prediction Model</h1>
+<br>
+<h2 class="text-2xl font-medium">
+Building the Prediction Model
+</h2>
 <p>To set up our prediction model, we will import two  modules from the scikit-learn library. The initial module facilitates the division of data into training and validation sets, a process we&#39;ll delve into shortly. The second module is pivotal for constructing random forest classifiers, serving as the core of our model-building endeavor.</p>
 <pre><code class="lang-python"><span class="hljs-keyword">from</span> sklearn.model_selection <span class="hljs-keyword">import</span> train_test_split
 <span class="hljs-keyword">from</span> sklearn.ensemble <span class="hljs-keyword">import</span> RandomForestClassifier
@@ -350,10 +369,10 @@ predicted_calls
 </code></pre>
 <p><img src="/images/play_prediction_rfc/crosstab_image.png" alt="Crosstab Chart"></p>
 <p>In the validation set, each row corresponds to the actual type of play calls, while the columns display the predictions made by the classifier. The classifier is quite effective in forecasting when Dabo opts for punts and field goals. It also shows reasonable accuracy in predicting running plays, though its performance in predicting passing plays is less accurate. This indicates that there&#39;s still potential for enhancing the model&#39;s precision.</p>
+<br>
 <h2 class="text-2xl font-medium">
 Improving the Model
 </h2>
-<br>
 <p>Using the <em>feature<em>importances</em></em> property from the classifier, the importance of each feature when forming predictions can be viewed.</p>
 <pre><code class="lang-python">list(<span class="hljs-name">zip</span>(<span class="hljs-name">plays_train</span>, classifier.feature_importances_))
 </code></pre>
@@ -375,13 +394,22 @@ plays = plays.drop(columns=[<span class="hljs-string">'offense_score'</span>, <s
 y, <span class="hljs-attr">y_keys</span> = pd.factorize(calls_train)
 </code></pre>
 
-<span class="hljs-attr">classifier</span> = RandomForestClassifier(<span class="hljs-attr">n_estimators=100,</span> <span class="hljs-attr">random_state=0)</span>
+<pre><code class="lang-python"><span class="hljs-attr">classifier</span> = RandomForestClassifier(
+    <span class="hljs-attr">n_estimators=100,</span> 
+    <span class="hljs-attr">random_state=0</span>
+)
 classifier.fit(plays_train, y)
 
 <span class="hljs-attr">predicted_calls</span> = y_keys[classifier.predict(plays_validation)]
 
-pd.crosstab(calls_validation, predicted_calls, <span class="hljs-attr">rownames=['Actual</span> Calls'], <span class="hljs-attr">colnames=['Predicted</span> Calls'])
+pd.crosstab(
+    calls_validation, 
+    predicted_calls, 
+    <span class="hljs-attr">rownames=['Actual Calls'],</span> 
+    <span class="hljs-attr">colnames=['Predicted Calls']</span>
+)
 </code></pre>
+
 <p><img src="/images/play_prediction_rfc/predicted_calls_new.png" alt="Predicted Calls Chart"></p>
 <p>The model now shows enhanced accuracy in predicting passing plays. Predictions for rushing plays have remained largely consistent with the previous version of the model. There is very high accuracy in predicting punt calls and are nearing perfection with field goal predictions.</p>
 <br>
