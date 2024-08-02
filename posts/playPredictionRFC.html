@@ -174,22 +174,52 @@
              </header>
 
 
-    <h1 id="forecasting-football-plays-with-a-random-forest-classifier">Forecasting Football Plays with a Random Forest Classifier</h1>
-    <p>Random forests are a method of ensemble learning for classification, regression, and other tasks that involve decision trees during training time. For ensemble learning, several different predictive models are created to solve a particular problem. The several different models are then combined into a single model with the goal of producing a final robust model using the power of many.</p>
-<p>Random forests work by generation many decision trees at random. Once a prediction is made, each decision tree is evaluated based on the inputs. The output of each tree gets counted and the modal outcome is selected as the final prediction. Random forests can be used to output classifications and for regression analysis, making them enticing in many scenarios.</p>
-<p>Since play calling is so different between programs, we will be using a specific coach and try to predict based on their historical tendencies. Becuase of this, I will be using Dabo Swinney and the Clemson Tigers. </p>
-<h1 id="gathering-and-cleaning-the-data">Gathering and Cleaning the data</h1>
-<p>For this we are using numpy, pandas, and the cfbd libraries.</p>
-<pre><code class="lang-python"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
-<span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
-<span class="hljs-keyword">import</span> requests
-<span class="hljs-keyword">import</span> cfbd
-<span class="hljs-title">from</span> cfbd.rest <span class="hljs-keyword">import</span> ApiException
-</code></pre>
-<p>Within the CFBD API, play data appears to be the most suitable as it encompasses all essential details regarding the game situation and conveniently categorizes each play type, such as runs, passes, kickoffs, among others. Specifically, I will go from 2015 to present day.</p>
-<pre><code class="lang-python">api_instance = cfbd.PlaysApi(cfbd.ApiClient(configuration))
-<span class="hljs-comment"># List to store the lines data for each year</span>
-all_plays = []
+             <h1 id="forecasting-football-plays-with-a-random-forest-classifier">
+                Forecasting Football Plays with a Random Forest Classifier
+            </h1>
+
+    <p>Random forests are a method of ensemble learning for classification, regression, 
+        and other tasks that involve decision trees during training time. For ensemble learning, 
+        several different predictive models are created to solve a particular problem. 
+        The several different models are then combined into a single model with the 
+        goal of producing a final robust model using the power of many.
+    </p>
+    <hr>
+
+    <p>Random forests work by generation many decision trees at random. 
+        Once a prediction is made, each decision tree is evaluated based on the inputs. 
+        The output of each tree gets counted and the modal outcome is selected as the final prediction. 
+        Random forests can be used to output classifications and for regression analysis, making them enticing in many scenarios.
+    </p>
+    <hr>
+
+    <p>Since play calling is so different between programs, 
+        we will be using a specific coach and try to predict based on their historical tendencies. 
+        Becuase of this, I will be using Dabo Swinney and the Clemson Tigers. 
+    </p>
+
+    <h1 id="gathering-and-cleaning-the-data">
+        Gathering and Cleaning the data</h1>
+
+    <p>For this we are using numpy, pandas, and the cfbd libraries.</p>
+
+    <pre><code class="lang-python"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+
+        <span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
+
+        <span class="hljs-keyword">import</span> requests
+
+        <span class="hljs-keyword">import</span> cfbd
+
+        <span class="hljs-title">from</span> cfbd.rest <span class="hljs-keyword">import</span> ApiException
+
+    </code></pre>
+
+    <p>Within the CFBD API, play data appears to be the most suitable as it encompasses all essential details regarding the game situation and conveniently categorizes each play type, such as runs, passes, kickoffs, among others. Specifically, I will go from 2015 to present day.</p>
+
+    <pre><code class="lang-python">api_instance = cfbd.PlaysApi(cfbd.ApiClient(configuration))
+
+        <span class="hljs-comment"># List to store the lines data for each year</span>all_plays = []
 
 <span class="hljs-keyword">for</span> <span class="hljs-built_in">year</span> <span class="hljs-keyword">in</span> range(<span class="hljs-number">2015</span>, <span class="hljs-number">2023</span>):
   <span class="hljs-keyword">for</span> week <span class="hljs-keyword">in</span> range(<span class="hljs-number">1</span>,<span class="hljs-number">15</span>):
