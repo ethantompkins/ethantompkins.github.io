@@ -289,7 +289,17 @@ df[<span class="hljs-string">'play_call'</span>] = df[<span class="hljs-string">
 <pre><code class="lang-python">df.dropna(subset=[<span class="hljs-symbol">'play_call</span>'], inplace=<span class="hljs-literal">True</span>)
 </code></pre>
 <p>Let&#39;s eliminate any unnecessary columns, specifically those used solely for deriving new columns. To preserve these columns for potential future adjustments, I&#39;ll transfer the current data frame into a new variable. This step ensures that we retain access to the original data for any further modifications.</p>
-<pre><code class="lang-python"><span class="hljs-attr">plays</span> = df[[<span class="hljs-string">'offense_score'</span>, <span class="hljs-string">'defense_score'</span>, <span class="hljs-string">'period'</span>, <span class="hljs-string">'yards_to_goal'</span>, <span class="hljs-string">'down'</span>, <span class="hljs-string">'distance'</span>, <span class="hljs-string">'is_home'</span>, <span class="hljs-string">'seconds_remaining'</span>, <span class="hljs-string">'play_call'</span>]]
+<pre><code class="lang-python"><span class="hljs-attr">plays</span> = df[[
+    <span class="hljs-string">'offense_score'</span>, 
+    <span class="hljs-string">'defense_score'</span>, 
+    <span class="hljs-string">'period'</span>, 
+    <span class="hljs-string">'yards_to_goal'</span>, 
+    <span class="hljs-string">'down'</span>, 
+    <span class="hljs-string">'distance'</span>, 
+    <span class="hljs-string">'is_home'</span>, 
+    <span class="hljs-string">'seconds_remaining'</span>, 
+    <span class="hljs-string">'play_call'</span>
+]]
 </code></pre>
 <p><img src="/images/play_prediction_rfc/final_all_plays.png" alt="Final All Plays Dataframe"></p>
 <h1 id="building-the-prediction-model">Building the Prediction Model</h1>
@@ -303,7 +313,14 @@ df[<span class="hljs-string">'play_call'</span>] = df[<span class="hljs-string">
 <span class="hljs-attr">plays</span> = plays.drop(['play_call'], <span class="hljs-attr">axis=1)</span>
 
 <span class="hljs-comment"># split the data into training and validation sets</span>
-plays_train, plays_validation, calls_train, <span class="hljs-attr">calls_validation</span> = train_test_split(plays, play_calls, <span class="hljs-attr">train_size=0.8,</span> <span class="hljs-attr">test_size=0.2,</span> <span class="hljs-attr">random_state=0)</span>
+<pre><code class="lang-python">plays_train, plays_validation, calls_train, <span class="hljs-attr">calls_validation</span> = train_test_split(
+    plays, 
+    play_calls, 
+    <span class="hljs-attr">train_size=0.8,</span> 
+    <span class="hljs-attr">test_size=0.2,</span> 
+    <span class="hljs-attr">random_state=0</span>
+)
+</code></pre>
 plays_train.head()
 </code></pre>
 <p><img src="/images/play_prediction_rfc/training_feature_set.png" alt="Training feature set"></p>
@@ -348,8 +365,15 @@ plays[<span class="hljs-string">'margin'</span>] = plays[<span class="hljs-strin
 plays = plays.drop(columns=[<span class="hljs-string">'offense_score'</span>, <span class="hljs-string">'defense_score'</span>])
 </code></pre>
 <p>Play calling likely depends more on a team&#39;s lead or deficit than on the absolute scores. Because of this, <em>offense_score</em> and <em>defense_score</em> could be combined. Merging these into a single score margin field could provide a more relevant measure for the analysis. </p>
-<pre><code class="lang-python">plays_train, plays_validation, calls_train, <span class="hljs-attr">calls_validation</span> = train_test_split(plays, play_calls, <span class="hljs-attr">train_size=0.8,</span> <span class="hljs-attr">test_size=0.2,</span> <span class="hljs-attr">random_state=0)</span>
+<pre><code class="lang-python">plays_train, plays_validation, calls_train, <span class="hljs-attr">calls_validation</span> = train_test_split(
+    plays, 
+    play_calls, 
+    <span class="hljs-attr">train_size=0.8,</span> 
+    <span class="hljs-attr">test_size=0.2,</span> 
+    <span class="hljs-attr">random_state=0</span>
+)
 y, <span class="hljs-attr">y_keys</span> = pd.factorize(calls_train)
+</code></pre>
 
 <span class="hljs-attr">classifier</span> = RandomForestClassifier(<span class="hljs-attr">n_estimators=100,</span> <span class="hljs-attr">random_state=0)</span>
 classifier.fit(plays_train, y)
@@ -363,7 +387,13 @@ pd.crosstab(calls_validation, predicted_calls, <span class="hljs-attr">rownames=
 <br>
 <p>While there are additional improvements that could be made, the next step is to apply the model to real-time scenarios. A function can be written to process inputs such as the yard line, down, distance, time left, and score difference, enabling the model to evaluate situations as they occur in live games.</p>
 <pre><code class="lang-python">def predict_call(yards, down, distance, seconds, margin):
-    test_plays = pd.<span class="hljs-symbol">DataFrame</span>({<span class="hljs-string">'yards_to_goal'</span>: [yards], <span class="hljs-string">'down'</span>: [down], <span class="hljs-string">'distance'</span>: [distance], <span class="hljs-string">'seconds_remaining'</span>: [seconds], <span class="hljs-string">'margin'</span>: [margin]})
+    test_plays = pd.<span class="hljs-symbol">DataFrame</span>({
+        <span class="hljs-string">'yards_to_goal'</span>: [yards], 
+        <span class="hljs-string">'down'</span>: [down], 
+        <span class="hljs-string">'distance'</span>: [distance], 
+        <span class="hljs-string">'seconds_remaining'</span>: [seconds], 
+        <span class="hljs-string">'margin'</span>: [margin]
+    })
     return y_keys[classifier.predict(test_plays)][<span class="hljs-number">0</span>]
 </code></pre>
 <p>For example, the ball is on the 50 yard line. It&#39;s forth and 1 with 2 minutes left, and Clemson is down by 5 points.</p>
