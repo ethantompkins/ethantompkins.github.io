@@ -1,181 +1,180 @@
 <!DOCTYPE html>
 <html lang="en" class="astro-G6LKM5ZN">
-	<head>
-		<!-- Global Metadata -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width,initial-scale=1">
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-        <link rel="manifest" href="/site.webmanifest">
-        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000">
-        <meta name="msapplication-TileColor" content="#da532c">
-        <meta name="theme-color" content="#ffffff">
-        <meta name="generator" content="Astro v3.6.4">
-        <!-- Canonical URL -->
-        <link rel="canonical" href="https://blog.isak.me/code">
-        <!-- Primary Meta Tags -->
-        <title>Blog, by Ethan Tompkins</title>
-        <meta name="title" content="Blog, by Ethan Tompkins">
-        <meta name="description" content="ios, web, thoughts &#38; notes">
-        <!-- Open Graph / Facebook -->
-        <meta property="og:type" content="website">
-        <meta property="og:url" content="https://ethantompkins.com/">
-        <meta property="og:title" content="Blog, by Ethan Tompkins">
-        <meta property="og:description" content="ios, web, thoughts &#38; notes">
-        <meta property="og:image" content="https://blog.isak.me/blog-placeholder-4.jpg">
-       <!--  Twitter 
-        <meta property="twitter:card" content="summary_large_image">
-        <meta property="twitter:url" content="https://blog.isak.me/">
-        <meta property="twitter:title" content="Dreamscape, a blog by Isak Solheim">
-        <meta property="twitter:description" content="ios, web, thoughts &#38; notes">
-        -->
-        <link rel="stylesheet" href="/styles/main.css">
+<head>
+    <!-- Global Metadata -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="generator" content="Astro v3.6.4">
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://blog.isak.me/code">
+    <!-- Primary Meta Tags -->
+    <title>Blog, by Ethan Tompkins</title>
+    <meta name="title" content="Blog, by Ethan Tompkins">
+    <meta name="description" content="ios, web, thoughts &#38; notes">
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ethantompkins.com/">
+    <meta property="og:title" content="Blog, by Ethan Tompkins">
+    <meta property="og:description" content="ios, web, thoughts &#38; notes">
+    <meta property="og:image" content="https://blog.isak.me/blog-placeholder-4.jpg">
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://blog.isak.me/">
+    <meta property="twitter:title" content="Dreamscape, a blog by Isak Solheim">
+    <meta property="twitter:description" content="ios, web, thoughts &#38; notes">
+    <link rel="stylesheet" href="/styles/main.css">
 
-        <style>
-            pre {
-                font-size: .9em;
-                padding: 1em
+    <style>
+        pre {
+            font-size: .9em;
+            padding: 1em
+        }
+
+        code {
+            font-size: .9em;
+            font-family: Monospace;
+            font-weight: 400!important
+        }
+
+        code:before, code:after {
+            content: ""!important
+        }
+
+        blockquote {
+            font-style: normal!important
+        }
+
+        p:before, p:after {
+            content: ""!important
+        }
+
+        blockquote {
+            border-left: 2px solid #333
+        }
+
+        .margin {
+            position: absolute;
+            box-sizing: border-box;
+            width: 26%
+        }
+
+        .left.margin {
+            left: -28%;
+            padding-right: 10px;
+            text-align: right;
+            border-right: 2px solid rgb(209 213 219 / var(--tw-border-opacity))
+        }
+
+        .left.margin>p {
+            margin: 4px 0 0;
+            line-height: 1rem;
+            font-size: .9rem
+        }
+
+        .right.margin {
+            right: -28%;
+            padding-left: 10px;
+            border-left: 2px solid rgb(209 213 219 / var(--tw-border-opacity))
+        }
+
+        .right.margin>p {
+            margin-bottom: 0;
+            margin-top: 0;
+            font-size: .9rem
+        }
+
+        @media screen and (max-width: 1060px) {
+            .content-wrapper {
+                margin: 0 auto;
+                padding-left: 16px;
+                padding-right: 16px
             }
 
-            code {
-                font-size: .9em;
-                font-family: Monospace;
-                font-weight: 400!important
+            .margin, .margin.left, .margin.right {
+                position: relative;
+                display: block;
+                inset: auto
             }
 
-            code:before,code:after {
-                content: ""!important
+            .margin.left {
+                text-align: left;
+                float: left;
+                border: 0
             }
 
-            blockquote {
-                font-style: normal!important
+            .margin.right {
+                float: right
             }
 
-            p:before,p:after {
-                content: ""!important
+            .margin.right.rel {
+                float: left;
+                width: 100%;
+                padding: 0
             }
+        }
 
-            blockquote {
-                border-left: 2px solid #333
+        @media screen and (max-width: 600px) {
+            .content-wrapper {
+                margin: 1em 0 2rem;
+                padding-top: .5rem;
+                min-width: auto
             }
 
             .margin {
-                position: absolute;
-                box-sizing: border-box;
-                width: 26%
+                width: 40%
             }
 
-            .left.margin {
-                left: -28%;
-                padding-right: 10px;
-                text-align: right;
-                border-right: 2px solid rgb(209 213 219 / var(--tw-border-opacity))
+            .margin.left {
+                padding-right: 16px
             }
 
-            .left.margin>p {
-                margin: 4px 0 0;
-                line-height: 1rem;
-                font-size: .9rem
+            .margin.right {
+                padding-left: 16px
             }
+        }
 
-            .right.margin {
-                right: -28%;
-                padding-left: 10px;
-                border-left: 2px solid rgb(209 213 219 / var(--tw-border-opacity))
-            }
+        tr {
+            border-bottom: 0
+        }
 
-            .right.margin>p {
-                margin-bottom: 0;
-                margin-top: 0;
-                font-size: .9rem
-            }
+        .astro-code {
+            background-color: linen!important;
+            border-radius: 0
+        }
+    </style>
+</head>
+<body class="max-w-prose m-auto px-4 relative">
+    <header>
+        <nav class="flex gap-4 my-16">
+            <a href="/">
+                <img class="w-28 h-28" src="/dreamscape.png" alt="shapes">
+            </a>
+            <div class="justify-between flex flex-col">
+                <div>
+                    <h2 class="text-2xl font-medium">
+                        <a href="/">Blog</a>
+                    </h2>
+                    <p class="text-gray-600 mb-2">a blog by Ethan Tompkins</p>
+                </div>
+                <div class="internal-links flex gap-2">
+                    <a href="/" class="text-gray-500">home </a>
+                    <a href="/code" class="text-gray-500">code </a>
+                    <a href="/about" class="text-gray-500">about </a>
+                </div>
+            </div>
+        </nav>
+    </header>
 
-            @media screen and (max-width: 1060px) {
-                .content-wrapper {
-                    margin:0 auto;
-                    padding-left: 16px;
-                    padding-right: 16px
-                }
-
-                .margin,.margin.left,.margin.right {
-                    position: relative;
-                    display: block;
-                    inset: auto
-                }
-
-                .margin.left {
-                    text-align: left;
-                    float: left;
-                    border: 0
-                }
-
-                .margin.right {
-                    float: right
-                }
-
-                .margin.right.rel {
-                    float: left;
-                    width: 100%;
-                    padding: 0
-                }
-            }
-
-            @media screen and (max-width: 600px) {
-                .content-wrapper {
-                    margin:1em 0 2rem;
-                    padding-top: .5rem;
-                    min-width: auto
-                }
-
-                .margin {
-                    width: 40%
-                }
-
-                .margin.left {
-                    padding-right: 16px
-                }
-
-                .margin.right {
-                    padding-left: 16px
-                }
-            }
-
-            tr {
-                border-bottom: 0
-            }
-
-            .astro-code {
-                background-color: linen!important;
-                border-radius: 0
-            }
-        </style>
-         </head>
-         <body class="max-w-prose m-auto px-4 relative">
-             <header>
-                 <nav class="flex gap-4 my-16">
-                     <a href="/">
-                         <img class="w-28 h-28" src="/dreamscape.png" alt="shapes">
-                     </a>
-                     <div class="justify-between flex flex-col">
-                         <div>
-                             <h2 class="text-2xl font-medium">
-                                 <a href="/">Blog</a>
-                             </h2>
-                             <p class="text-gray-600 mb-2">a blog by Ethan Tompkins</p>
-                         </div>
-                         <div class="internal-links flex gap-2">
-                             <a href="/" class="text-gray-500">home </a>
-                             <a href="/code" class="text-gray-500">code </a>
-                             <a href="/about" class="text-gray-500">about </a>
-                         </div>
-                     </div>
-                 </nav>
-             </header>
-
-            <h2 class="text-2xl font-medium">
-                Forecasting Football Plays with a Random Forest Classifier
-            </h2>
+    <h2 class="text-2xl font-medium">
+        Forecasting Football Plays with a Random Forest Classifier
+    </h2>
 
     <p>Random forests are a method of ensemble learning for classification, regression, 
         and other tasks that involve decision trees during training time. For ensemble learning, 
@@ -197,201 +196,211 @@
         Becuase of this, I will be using Dabo Swinney and the Clemson Tigers. 
     </p>
 
-    <h1 id="gathering-and-cleaning-the-data">
-        Gathering and Cleaning the data</h1>
+    <h1 id="gathering-and-cleaning-the-data">Gathering and Cleaning the data</h1>
 
     <p>For this we are using numpy, pandas, and the cfbd libraries.</p>
 
-    <pre><code class="lang-python"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
-
-        <span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
-
-        <span class="hljs-keyword">import</span> requests
-
-        <span class="hljs-keyword">import</span> cfbd
-
-        <span class="hljs-title">from</span> cfbd.rest <span class="hljs-keyword">import</span> ApiException
-
+    <pre><code class="lang-python">
+import numpy as np
+import pandas as pd
+import requests
+import cfbd
+from cfbd.rest import ApiException
     </code></pre>
 
     <p>Within the CFBD API, play data appears to be the most suitable as it encompasses all essential details regarding the game situation and conveniently categorizes each play type, such as runs, passes, kickoffs, among others. Specifically, I will go from 2015 to present day.</p>
 
-    <pre><code class="lang-python">api_instance = cfbd.PlaysApi(cfbd.ApiClient(configuration))
+    <pre><code class="lang-python">
+api_instance = cfbd.PlaysApi(cfbd.ApiClient(configuration))
 
-        <span class="hljs-comment"># List to store the lines data for each year</span>all_plays = []
+# List to store the lines data for each year
+all_plays = []
 
-<span class="hljs-keyword">for</span> <span class="hljs-built_in">year</span> <span class="hljs-keyword">in</span> range(<span class="hljs-number">2015</span>, <span class="hljs-number">2023</span>):
-  <span class="hljs-keyword">for</span> week <span class="hljs-keyword">in</span> range(<span class="hljs-number">1</span>,<span class="hljs-number">15</span>):
-    <span class="hljs-keyword">try</span>:
-    <span class="hljs-comment"># Play by play data</span>
-      api_response = api_instance.get_plays(<span class="hljs-built_in">year</span>=<span class="hljs-built_in">year</span>, week=week, team='Clemson')
-      all_plays.extend(api_response)
-    except ApiException <span class="hljs-keyword">as</span> e:
-      print(<span class="hljs-string">"Exception when calling PlaysApi-&gt;get_plays: %s\n"</span> % e)
-</code></pre>
-<p>I will put this all into a dataframe for ease of use: </p>
-<pre><code class="lang-python">df = pd.DataFrame([
+for year in range(2015, 2023):
+    for week in range(1, 15):
+        try:
+            # Play by play data
+            api_response = api_instance.get_plays(year=year, week=week, team='Clemson')
+            all_plays.extend(api_response)
+        except ApiException as e:
+            print("Exception when calling PlaysApi->get_plays: %s\n" % e)
+    </code></pre>
+
+    <p>I will put this all into a dataframe for ease of use: </p>
+    <pre><code class="lang-python">
+df = pd.DataFrame([
     dict(
-        home = l<span class="hljs-selector-class">.home</span>,
-        away = l<span class="hljs-selector-class">.away</span>,
-        offense_score = l<span class="hljs-selector-class">.offense_score</span>,
-        defense_score = l<span class="hljs-selector-class">.defense_score</span>,
-        period = l<span class="hljs-selector-class">.period</span>,
-        clock_minutes = l<span class="hljs-selector-class">.clock</span><span class="hljs-selector-class">.minutes</span>,
-        clock_seconds = l<span class="hljs-selector-class">.clock</span><span class="hljs-selector-class">.seconds</span>,
-        yards_to_goal = l<span class="hljs-selector-class">.yards_to_goal</span>,
-        down = l<span class="hljs-selector-class">.down</span>,
-        distance = l<span class="hljs-selector-class">.distance</span>,
-        play_type = l<span class="hljs-selector-class">.play_type</span>
-        )
-    <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> all_plays])
-</code></pre>
-<p><img src="/images/play_prediction_rfc/all_plays_initial.png" alt="All Plays Dataframe"></p>
-<h2 class="text-2xl font-medium">
-Cleanup
-</h2>
-<p>We would like to know when Clemson was home while calling plays, so we calculate a column called is_home. Next we want to calculate the total seconds remaining instead of the minutes and seconds remaining, so we will combine them into one seconds_remaining category.</p>
-<pre><code class="lang-python">df[<span class="hljs-string">'is_home'</span>] = np.where(df[<span class="hljs-string">'home'</span>] == <span class="hljs-string">'Clemson'</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>)
-
-df[<span class="hljs-string">'seconds_remaining'</span>] = (df[<span class="hljs-string">'clock_minutes'</span>] * <span class="hljs-number">60</span>) + df[<span class="hljs-string">'clock_seconds'</span>]
-</code></pre>
-<p><img src="/images/play_prediction_rfc/after_cleanup.png" alt="All Plays Post Cleanup"></p>
-<p>Before constructing our random forest classifier, there&#39;s a bit more preparation needed. The &#39;play_type&#39; field, as it currently stands, is too detailed, outlining both the play&#39;s type and outcome (like &quot;Pass Incompletion&quot; or &quot;Rush TD&quot;). We&#39;ll refine this to focus solely on the play calls we&#39;re interested in: rush, pass, punt, and field goal (FG). I&#39;ve created a function to categorize plays into these four groups. It&#39;s worth noting that some plays, such as kickoffs, timeouts, and penalties, don&#39;t fit these categories and will be classified as &#39;None&#39;. This function should now be run to modify our data frame, adding a new column for the simplified play call classification.</p>
-
-<pre><code class="lang-python">pass_types = [
-    <span class="hljs-string">'Pass Reception'</span>, 
-    <span class="hljs-string">'Pass Interception Return'</span>, 
-    <span class="hljs-string">'Pass Incompletion'</span>, 
-    <span class="hljs-string">'Sack'</span>, 
-    <span class="hljs-string">'Passing Touchdown'</span>, 
-    <span class="hljs-string">'Interception Return Touchdown'</span>
+        home=l.home,
+        away=l.away,
+        offense_score=l.offense_score,
+        defense_score=l.defense_score,
+        period=l.period,
+        clock_minutes=l.clock.minutes,
+        clock_seconds=l.clock.seconds,
+        yards_to_goal=l.yards_to_goal,
+        down=l.down,
+        distance=l.distance,
+        play_type=l.play_type
+    )
+    for l in all_plays])
+    </code></pre>
+    <p><img src="/images/play_prediction_rfc/all_plays_initial.png" alt="All Plays Dataframe"></p>
+    <h2 class="text-2xl font-medium">Cleanup</h2>
+    <p>We would like to know when Clemson was home while calling plays, so we calculate a column called is_home. Next we want to calculate the total seconds remaining instead of the minutes and seconds remaining, so we will combine them into one seconds_remaining category.</p>
+    <pre><code class="lang-python">
+df['is_home'] = np.where(df['home'] == 'Clemson', 1, 0)
+df['seconds_remaining'] = (df['clock_minutes'] * 60) + df['clock_seconds']
+    </code></pre>
+    <p><img src="/images/play_prediction_rfc/after_cleanup.png" alt="All Plays Post Cleanup"></p>
+    <p>Before constructing our random forest classifier, there&#39;s a bit more preparation needed. The &#39;play_type&#39; field, as it currently stands, is too detailed, outlining both the play&#39;s type and outcome (like &quot;Pass Incompletion&quot; or &quot;Rush TD&quot;). We&#39;ll refine this to focus solely on the play calls we&#39;re interested in: rush, pass, punt, and field goal (FG). I&#39;ve created a function to categorize plays into these four groups. It&#39;s worth noting that some plays, such as kickoffs, timeouts, and penalties, don&#39;t fit these categories and will be classified as &#39;None&#39;. This function should now be run to modify our data frame, adding a new column for the simplified play call classification.</p>
+    <pre><code class="lang-python">
+pass_types = [
+    'Pass Reception', 
+    'Pass Interception Return', 
+    'Pass Incompletion', 
+    'Sack', 
+    'Passing Touchdown', 
+    'Interception Return Touchdown'
 ]
-</code></pre>
+    </code></pre>
+    <pre><code class="lang-python">
+rush_types = ['Rush', 'Rushing Touchdown']
+punt_types = ['Punt', 'Punt Return Touchdown', 'Blocked Punt', 'Blocked Punt Touchdown']
+fg_types = ['Field Goal Good', 'Field Goal Missed', 'Blocked Field Goal']
 
-rush_types = [<span class="hljs-string">'Rush'</span>, <span class="hljs-string">'Rushing Touchdown'</span>]
-punt_types = [<span class="hljs-string">'Punt'</span>, <span class="hljs-string">'Punt Return Touchdown'</span>, <span class="hljs-string">'Blocked Punt'</span>, <span class="hljs-string">'Blocked Punt Touchdown'</span>]
-fg_types = [<span class="hljs-string">'Field Goal Good'</span>, <span class="hljs-string">'Field Goal Missed'</span>, <span class="hljs-string">'Blocked Field Goal'</span>]
+def getPlayCall(x):
+    if x in pass_types:
+        return 'pass'
+    elif x in rush_types:
+        return 'rush'
+    elif x in punt_types:
+        return 'punt'
+    elif x in fg_types:
+        return 'fg'
+    else:
+        return None
 
-<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">getPlayCall</span><span class="hljs-params">(x)</span>:</span>
-    <span class="hljs-keyword">if</span> x <span class="hljs-keyword">in</span> pass_types:
-            <span class="hljs-keyword">return</span> <span class="hljs-string">'pass'</span>
-    <span class="hljs-keyword">elif</span> x <span class="hljs-keyword">in</span> rush_types:
-        <span class="hljs-keyword">return</span> <span class="hljs-string">'rush'</span>
-    <span class="hljs-keyword">elif</span> x <span class="hljs-keyword">in</span> punt_types:
-        <span class="hljs-keyword">return</span> <span class="hljs-string">'punt'</span>
-    <span class="hljs-keyword">elif</span> x <span class="hljs-keyword">in</span> fg_types:
-        <span class="hljs-keyword">return</span> <span class="hljs-string">'fg'</span>
-    <span class="hljs-keyword">else</span>:
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">None</span>
+df['play_call'] = df['play_type'].apply(getPlayCall)
+    </code></pre>
+    <p>What should we do with play types that don&#39;t align with our four main play call categories? For the purposes of this project, these plays are irrelevant. Recall that we assigned a &#39;None&#39; value to these types of plays. Fortunately, Pandas provides a handy function to eliminate rows with missing values. We can even specify which columns to consider when deciding which rows to remove. To clean our data and keep it focused on our study&#39;s scope, execute the following code to discard these irrelevant rows.</p>
+    <pre><code class="lang-python">
+df.dropna(subset=['play_call'], inplace=True)
+    </code></pre>
+    <p>Let&#39;s eliminate any unnecessary columns, specifically those used solely for deriving new columns. To preserve these columns for potential future adjustments, I&#39;ll transfer the current data frame into a new variable. This step ensures that we retain access to the original data for any further modifications.</p>
+    <pre><code class="lang-python">
+plays = df[['offense_score', 'defense_score', 'period', 'yards_to_goal', 'down', 'distance', 'is_home', 'seconds_remaining', 'play_call']]
+    </code></pre>
+    <p><img src="/images/play_prediction_rfc/final_all_plays.png" alt="Final All Plays Dataframe"></p>
+    <h1 id="building-the-prediction-model">Building the Prediction Model</h1>
+    <p>To set up our prediction model, we will import two modules from the scikit-learn library. The initial module facilitates the division of data into training and validation sets, a process we&#39;ll delve into shortly. The second module is pivotal for constructing random forest classifiers, serving as the core of our model-building endeavor.</p>
+    <pre><code class="lang-python">
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+    </code></pre>
+    <p>We&#39;re now going to organize our data to better suit our model&#39;s development. Initially, we&#39;ll differentiate between our features (independent variables) and the desired output (dependent variable) of our model. The features will contain various game situation inputs, while the model aims to predict play calls, our dependent variable. Next, we&#39;ll divide the data into training and validation subsets. Employing the train_test_split module, previously imported, we&#39;ll allocate 20% of our data as the validation set, ensuring we have a robust framework for testing and refining our model.</p>
+    <pre><code class="lang-python">
+# split the data set between our independent variables (i.e. features) and our dependent variable or output
+play_calls = plays['play_call']
+plays = plays.drop(['play_call'], axis=1)
 
-df[<span class="hljs-string">'play_call'</span>] = df[<span class="hljs-string">'play_type'</span>].apply(getPlayCall)
-</code></pre>
-<p>What should we do with play types that don&#39;t align with our four main play call categories? For the purposes of this project, these plays are irrelevant. Recall that we assigned a &#39;None&#39; value to these types of plays. Fortunately, Pandas provides a handy function to eliminate rows with missing values. We can even specify which columns to consider when deciding which rows to remove. To clean our data and keep it focused on our study&#39;s scope, execute the following code to discard these irrelevant rows.</p>
-<pre><code class="lang-python">df.dropna(subset=[<span class="hljs-symbol">'play_call</span>'], inplace=<span class="hljs-literal">True</span>)
-</code></pre>
-<p>Let&#39;s eliminate any unnecessary columns, specifically those used solely for deriving new columns. To preserve these columns for potential future adjustments, I&#39;ll transfer the current data frame into a new variable. This step ensures that we retain access to the original data for any further modifications.</p>
-<pre><code class="lang-python"><span class="hljs-attr">plays</span> = df[[<span class="hljs-string">'offense_score'</span>, <span class="hljs-string">'defense_score'</span>, <span class="hljs-string">'period'</span>, <span class="hljs-string">'yards_to_goal'</span>, <span class="hljs-string">'down'</span>, <span class="hljs-string">'distance'</span>, <span class="hljs-string">'is_home'</span>, <span class="hljs-string">'seconds_remaining'</span>, <span class="hljs-string">'play_call'</span>]]
-</code></pre>
-<p><img src="/images/play_prediction_rfc/final_all_plays.png" alt="Final All Plays Dataframe"></p>
-<h1 id="building-the-prediction-model">Building the Prediction Model</h1>
-<p>To set up our prediction model, we will import two  modules from the scikit-learn library. The initial module facilitates the division of data into training and validation sets, a process we&#39;ll delve into shortly. The second module is pivotal for constructing random forest classifiers, serving as the core of our model-building endeavor.</p>
-<pre><code class="lang-python"><span class="hljs-keyword">from</span> sklearn.model_selection <span class="hljs-keyword">import</span> train_test_split
-<span class="hljs-keyword">from</span> sklearn.ensemble <span class="hljs-keyword">import</span> RandomForestClassifier
-</code></pre>
-<p>We&#39;re now going to organize our data to better suit our model&#39;s development. Initially, we&#39;ll differentiate between our features (independent variables) and the desired output (dependent variable) of our model. The features will contain various game situation inputs, while the model aims to predict play calls, our dependent variable. Next, we&#39;ll divide the data into training and validation subsets. Employing the train_test_split module, previously imported, we&#39;ll allocate 20% of our data as the validation set, ensuring we have a robust framework for testing and refining our model.</p>
-<pre><code class="lang-python"><span class="hljs-comment"># split the data set between our independent variables (i.e. features) and our dependent variable or output</span>
-<span class="hljs-attr">play_calls</span> = plays['play_call']
-<span class="hljs-attr">plays</span> = plays.drop(['play_call'], <span class="hljs-attr">axis=1)</span>
-
-<span class="hljs-comment"># split the data into training and validation sets</span>
-plays_train, plays_validation, calls_train, <span class="hljs-attr">calls_validation</span> = train_test_split(plays, play_calls, <span class="hljs-attr">train_size=0.8,</span> <span class="hljs-attr">test_size=0.2,</span> <span class="hljs-attr">random_state=0)</span>
+# split the data into training and validation sets
+plays_train, plays_validation, calls_train, calls_validation = train_test_split(plays, play_calls, train_size=0.8, test_size=0.2, random_state=0)
 plays_train.head()
-</code></pre>
-<p><img src="/images/play_prediction_rfc/training_feature_set.png" alt="Training feature set"></p>
-<p>When training, it is best to have all data in numerical format. While the feature set is, the dependent set of play calls is not. To convert this categorical data into numerical data, we use pd.factorize. </p>
-<p>The factorize method returns two sets, one contained the data as a set of numbers ranging from 0 to 3 and other containing the key mappings telling us which number mapped to which label. We can now build and train the random forest classifier.</p>
-<br>
-<p>Note that we passed in both of our set of features as well as the set of corresponding outputs in numeric format. The validation set of features can be passed through at this point.</p>
-<pre><code class="lang-python"><span class="hljs-comment"># convert the categorical data into numerical data</span>
-y, <span class="hljs-attr">y_keys</span> = pd.factorize(calls_train)
-<span class="hljs-comment"># build the classifier</span>
-<span class="hljs-attr">classifier</span> = RandomForestClassifier(<span class="hljs-attr">random_state=0,</span> <span class="hljs-attr">n_estimators=100)</span>
-<span class="hljs-comment">#train the classifier with our test set</span>
+    </code></pre>
+    <p><img src="/images/play_prediction_rfc/training_feature_set.png" alt="Training feature set"></p>
+    <p>When training, it is best to have all data in numerical format. While the feature set is, the dependent set of play calls is not. To convert this categorical data into numerical data, we use pd.factorize.</p>
+    <p>The factorize method returns two sets, one contained the data as a set of numbers ranging from 0 to 3 and other containing the key mappings telling us which number mapped to which label. We can now build and train the random forest classifier.</p>
+    <br>
+    <p>Note that we passed in both of our set of features as well as the set of corresponding outputs in numeric format. The validation set of features can be passed through at this point.</p>
+    <pre><code class="lang-python">
+# convert the categorical data into numerical data
+y, y_keys = pd.factorize(calls_train)
+# build the classifier
+classifier = RandomForestClassifier(random_state=0, n_estimators=100)
+# train the classifier with our test set
 classifier.fit(plays_train, y)
-<span class="hljs-comment"># pass validation set of features and see what classifier outputs</span>
+# pass validation set of features and see what classifier outputs
 classifier.predict(plays_validation)
-</code></pre>
-<p>This outputs the raw inputs, so they still need to be converted into labels using the <em>y_keys</em> mapping object created earlier. Before doing this, <em>predict_proba</em> within the scikit-learn library provides a greater level of granularity by outputting the probabilities within each set of inputs. There are four probabilities for each set of inputs which correspond to our four different output labels (pass/rush/fg/punt).</p>
-<pre><code class="lang-python"><span class="hljs-selector-tag">classifier</span><span class="hljs-selector-class">.predict_proba</span>(<span class="hljs-selector-tag">plays_validation</span>)<span class="hljs-selector-attr">[0:10]</span>
-</code></pre>
-<p><img src="/images/play_prediction_rfc/predict_proba.png" alt="predict_proba"></p>
-<p>To map our original set of outputs to our category labels, this can be done:</p>
-<pre><code class="lang-python">predicted_calls = y_keys<span class="hljs-string">[classifier.predict(plays_validation)]</span>
+    </code></pre>
+    <p>This outputs the raw inputs, so they still need to be converted into labels using the <em>y_keys</em> mapping object created earlier. Before doing this, <em>predict_proba</em> within the scikit-learn library provides a greater level of granularity by outputting the probabilities within each set of inputs. There are four probabilities for each set of inputs which correspond to our four different output labels (pass/rush/fg/punt).</p>
+    <pre><code class="lang-python">
+classifier.predict_proba(plays_validation)[0:10]
+    </code></pre>
+    <p><img src="/images/play_prediction_rfc/predict_proba.png" alt="predict_proba"></p>
+    <p>To map our original set of outputs to our category labels, this can be done:</p>
+    <pre><code class="lang-python">
+predicted_calls = y_keys[classifier.predict(plays_validation)]
 predicted_calls
-</code></pre>
-<p>This is not useful until the predicted outputs can be compared to the actual outputs within the validation set. The <em>crosstab</em> functionality allows this to be done.</p>
-<pre><code class="lang-python">pd.crosstab(calls_validation, predicted_calls, rownames=[<span class="hljs-string">'Actual Calls'</span>], colnames=[<span class="hljs-string">'Predicted Calls'</span>])
-</code></pre>
-<p><img src="/images/play_prediction_rfc/crosstab_image.png" alt="Crosstab Chart"></p>
-<p>In the validation set, each row corresponds to the actual type of play calls, while the columns display the predictions made by the classifier. The classifier is quite effective in forecasting when Dabo opts for punts and field goals. It also shows reasonable accuracy in predicting running plays, though its performance in predicting passing plays is less accurate. This indicates that there&#39;s still potential for enhancing the model&#39;s precision.</p>
-<h2 class="text-2xl font-medium">
-Improving the Model
-</h2>
-<br>
-<p>Using the <em>feature<em>importances</em></em> property from the classifier, the importance of each feature when forming predictions can be viewed.</p>
-<pre><code class="lang-python">list(<span class="hljs-name">zip</span>(<span class="hljs-name">plays_train</span>, classifier.feature_importances_))
-</code></pre>
-<p><img src="/images/play_prediction_rfc/feature_importance.png" alt="Feature Importance"></p>
-<p>The model is prioritizing factors like the seconds remaining in the quarter, the current down, and the distance to the goal line. However, it seems to be minimally utilizing the home/away indicator, which might just be contributing confusion. So, let&#39;s remove that column and observe the impact. Additionally, considering the model&#39;s limited use of the period field, this could be integrated into the seconds remaining, similar to our earlier adjustment with the minutes. This could streamline the data further for potentially better model performance.</p>
-<pre><code class="lang-python"># incorporate period into seconds_remaining
-plays[<span class="hljs-string">'margin'</span>] = plays[<span class="hljs-string">'offense_score'</span>] - plays[<span class="hljs-string">'defense_score'</span>]
+    </code></pre>
+    <p>This is not useful until the predicted outputs can be compared to the actual outputs within the validation set. The <em>crosstab</em> functionality allows this to be done.</p>
+    <pre><code class="lang-python">
+pd.crosstab(calls_validation, predicted_calls, rownames=['Actual Calls'], colnames=['Predicted Calls'])
+    </code></pre>
+    <p><img src="/images/play_prediction_rfc/crosstab_image.png" alt="Crosstab Chart"></p>
+    <p>In the validation set, each row corresponds to the actual type of play calls, while the columns display the predictions made by the classifier. The classifier is quite effective in forecasting when Dabo opts for punts and field goals. It also shows reasonable accuracy in predicting running plays, though its performance in predicting passing plays is less accurate. This indicates that there&#39;s still potential for enhancing the model&#39;s precision.</p>
+    <h2 class="text-2xl font-medium">Improving the Model</h2>
+    <br>
+    <p>Using the <em>feature<em>importances</em></em> property from the classifier, the importance of each feature when forming predictions can be viewed.</p>
+    <pre><code class="lang-python">
+list(zip(plays_train, classifier.feature_importances_))
+    </code></pre>
+    <p><img src="/images/play_prediction_rfc/feature_importance.png" alt="Feature Importance"></p>
+    <p>The model is prioritizing factors like the seconds remaining in the quarter, the current down, and the distance to the goal line. However, it seems to be minimally utilizing the home/away indicator, which might just be contributing confusion. So, let&#39;s remove that column and observe the impact. Additionally, considering the model&#39;s limited use of the period field, this could be integrated into the seconds remaining, similar to our earlier adjustment with the minutes. This could streamline the data further for potentially better model performance.</p>
+    <pre><code class="lang-python">
+# incorporate period into seconds_remaining
+plays['margin'] = plays['offense_score'] - plays['defense_score']
 # drop is_home and period columns
-plays = plays.drop(columns=[<span class="hljs-string">'offense_score'</span>, <span class="hljs-string">'defense_score'</span>])
-</code></pre>
-<p>Play calling likely depends more on a team&#39;s lead or deficit than on the absolute scores. Because of this, <em>offense_score</em> and <em>defense_score</em> could be combined. Merging these into a single score margin field could provide a more relevant measure for the analysis. </p>
-<pre><code class="lang-python">plays_train, plays_validation, calls_train, <span class="hljs-attr">calls_validation</span> = train_test_split(plays, play_calls, <span class="hljs-attr">train_size=0.8,</span> <span class="hljs-attr">test_size=0.2,</span> <span class="hljs-attr">random_state=0)</span>
-y, <span class="hljs-attr">y_keys</span> = pd.factorize(calls_train)
+plays = plays.drop(columns=['offense_score', 'defense_score'])
+    </code></pre>
+    <p>Play calling likely depends more on a team&#39;s lead or deficit than on the absolute scores. Because of this, <em>offense_score</em> and <em>defense_score</em> could be combined. Merging these into a single score margin field could provide a more relevant measure for the analysis. </p>
+    <pre><code class="lang-python">
+plays_train, plays_validation, calls_train, calls_validation = train_test_split(plays, play_calls, train_size=0.8, test_size=0.2, random_state=0)
+y, y_keys = pd.factorize(calls_train)
 
-<span class="hljs-attr">classifier</span> = RandomForestClassifier(<span class="hljs-attr">n_estimators=100,</span> <span class="hljs-attr">random_state=0)</span>
+classifier = RandomForestClassifier(n_estimators=100, random_state=0)
 classifier.fit(plays_train, y)
 
-<span class="hljs-attr">predicted_calls</span> = y_keys[classifier.predict(plays_validation)]
+predicted_calls = y_keys[classifier.predict(plays_validation)]
 
-pd.crosstab(calls_validation, predicted_calls, <span class="hljs-attr">rownames=['Actual</span> Calls'], <span class="hljs-attr">colnames=['Predicted</span> Calls'])
-</code></pre>
-<p><img src="/images/play_prediction_rfc/predicted_calls_new.png" alt="Predicted Calls Chart"></p>
-<p>The model now shows enhanced accuracy in predicting passing plays. Predictions for rushing plays have remained largely consistent with the previous version of the model. There is very high accuracy in predicting punt calls and are nearing perfection with field goal predictions.</p>
-<br>
-<p>While there are additional improvements that could be made, the next step is to apply the model to real-time scenarios. A function can be written to process inputs such as the yard line, down, distance, time left, and score difference, enabling the model to evaluate situations as they occur in live games.</p>
-<pre><code class="lang-python">def predict_call(yards, down, distance, seconds, margin):
-    test_plays = pd.<span class="hljs-symbol">DataFrame</span>({<span class="hljs-string">'yards_to_goal'</span>: [yards], <span class="hljs-string">'down'</span>: [down], <span class="hljs-string">'distance'</span>: [distance], <span class="hljs-string">'seconds_remaining'</span>: [seconds], <span class="hljs-string">'margin'</span>: [margin]})
-    return y_keys[classifier.predict(test_plays)][<span class="hljs-number">0</span>]
-</code></pre>
-<p>For example, the ball is on the 50 yard line. It&#39;s forth and 1 with 2 minutes left, and Clemson is down by 5 points.</p>
-<pre><code class="lang-python">call = predict_call(<span class="hljs-number">50</span>, <span class="hljs-number">4</span>, <span class="hljs-number">1</span>, <span class="hljs-number">120</span>, <span class="hljs-number">-5</span>)
+pd.crosstab(calls_validation, predicted_calls, rownames=['Actual Calls'], colnames=['Predicted Calls'])
+    </code></pre>
+    <p><img src="/images/play_prediction_rfc/predicted_calls_new.png" alt="Predicted Calls Chart"></p>
+    <p>The model now shows enhanced accuracy in predicting passing plays. Predictions for rushing plays have remained largely consistent with the previous version of the model. There is very high accuracy in predicting punt calls and are nearing perfection with field goal predictions.</p>
+    <br>
+    <p>While there are additional improvements that could be made, the next step is to apply the model to real-time scenarios. A function can be written to process inputs such as the yard line, down, distance, time left, and score difference, enabling the model to evaluate situations as they occur in live games.</p>
+    <pre><code class="lang-python">
+def predict_call(yards, down, distance, seconds, margin):
+    test_plays = pd.DataFrame({'yards_to_goal': [yards], 'down': [down], 'distance': [distance], 'seconds_remaining': [seconds], 'margin': [margin]})
+    return y_keys[classifier.predict(test_plays)][0]
+    </code></pre>
+    <p>For example, the ball is on the 50 yard line. It&#39;s forth and 1 with 2 minutes left, and Clemson is down by 5 points.</p>
+    <pre><code class="lang-python">
+call = predict_call(50, 4, 1, 120, -5)
 call
-</code></pre>
-<pre><code class="lang-python"><span class="hljs-attribute">rush</span>
-</code></pre>
-<p>The model predicts Clemson will call a run play. Now imagine the exact same scenario but Clemson is up by 9.</p>
-<pre><code class="lang-python">call = predict_call(<span class="hljs-number">50</span>, <span class="hljs-number">4</span>, <span class="hljs-number">1</span>, <span class="hljs-number">120</span>, <span class="hljs-number">9</span>)
+    </code></pre>
+    <pre><code class="lang-python">
+rush
+    </code></pre>
+    <p>The model predicts Clemson will call a run play. Now imagine the exact same scenario but Clemson is up by 9.</p>
+    <pre><code class="lang-python">
+call = predict_call(50, 4, 1, 120, 9)
 call
-</code></pre>
-<pre><code class="lang-python"><span class="hljs-attribute">punt</span>
-</code></pre>
-<p>Now the model predicts a punt. In these two situations the outputs seem reasonable. </p>
-<br>
-<h2 class="text-2xl font-medium">
-Next Steps for Improvement
-</h2>
-<p>Looking at our results, some changes can be made to improve our results. The sample size of 8 years may be too much. In this time span, the play calling can evolve with the game or depending on the staff changes made within the specific program. Training on 1 or 2 seasons may produce more quality predictons. </p>
-<br>
-<p>Additional changes that can be made: </p>
-<li>Isolating the data by offensive coordinator instead of by head coach.</li>
-<br>
-<li>Look at the list of available data points and determine if adding or modifying them can yield a more accurate model.</li>
-<br>
-<li>Examine the list of probabilities for each outcome and see why these numbers are being returned.</li>
-</ol>
+    </code></pre>
+    <pre><code class="lang-python">
+punt
+    </code></pre>
+    <p>Now the model predicts a punt. In these two situations the outputs seem reasonable. </p>
+    <br>
+    <h2 class="text-2xl font-medium">Next Steps for Improvement</h2>
+    <p>Looking at our results, some changes can be made to improve our results. The sample size of 8 years may be too much. In this time span, the play calling can evolve with the game or depending on the staff changes made within the specific program. Training on 1 or 2 seasons may produce more quality predictons. </p>
+    <br>
+    <p>Additional changes that can be made: </p>
+    <li>Isolating the data by offensive coordinator instead of by head coach.</li>
+    <br>
+    <li>Look at the list of available data points and determine if adding or modifying them can yield a more accurate model.</li>
+    <br>
+    <li>Examine the list of probabilities for each outcome and see why these numbers are being returned.</li>
+    </ol>
 
-</header>
+</body>
+</html>
