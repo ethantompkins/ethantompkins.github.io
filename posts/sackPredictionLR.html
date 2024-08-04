@@ -185,28 +185,38 @@
 
 <br>
 
-<h1 class="text-2xl font-medium">
+<h2 class="text-2xl font-medium">
 Installing and Importing Libraries
-</h1>
+</h2>
 
 <p>The first step involves setting up the necessary Python libraries. Among these are:</p>
+
 <ul>
 <li><code>nfl_data_py</code>: A  package for fetching NFL data.</li>
 <li><code>pandas</code>, <code>numpy</code>: For data manipulation.</li>
 <li><code>matplotlib</code>, <code>seaborn</code>: For visualization.</li>
 <li><code>sklearn</code>, <code>xgboost</code>: For machine learning.</li>
 </ul>
-<hr>
-<h4 id="2-fetching-the-data">2. Fetching the Data</h4>
+
+<br>
+
+<h2 class="text-2xl font-medium">
+Fetching the Data
+</h2>
+
 <p>For this we are using NFL play-by-play data from the years 2020, 2021, and 2022.</p>
 <pre><code class="lang-python">pbp = nfl.import_pbp_data([<span class="hljs-number">2020</span>, <span class="hljs-number">2021</span>, <span class="hljs-number">2022</span>])
 </code></pre>
-<hr>
-<h4 id="3-data-cleaning-and-preprocessing">3. Data Cleaning and Preprocessing</h4>
+<br>
+
+<h2 class="text-2xl font-medium">
+Data Cleaning and Preprocessing    
+</h2>
+
 <p>The dataset undergoes a cleaning process, filtering out non-passing plays and plays labeled as &quot;no_play&quot;. This ensures that the data used for modeling is relevant and noise-free.</p>
 <pre><code class="lang-python">pbp_clean = pbp[(pbp[<span class="hljs-string">'pass'</span>] == <span class="hljs-number">1</span>) &amp; (pbp[<span class="hljs-string">'play_type'</span>] != <span class="hljs-string">"no_play"</span>)]
 </code></pre>
-<hr>
+<br>
 <h4 id="4-exploratory-data-analysis-eda-">4. Exploratory Data Analysis (EDA)</h4>
 <p>Visualization plays a crucial role in understanding the dataset. Through EDA:</p>
 <ul>
@@ -227,9 +237,13 @@ Installing and Importing Libraries
 
 </div>
 
-<hr>
-<h4 id="5-feature-engineering">5. Feature Engineering</h4>
-<p>Looking at the data, we think about features we can add to make predicting a sack easier. From our EDA, a sack is most likely to happen on third down. From this we can define an &quot;obvious pass&quot; variable to help with analysis. An obvious pass is going to be one where it is third down and there is atleast 6 yards to go for a first down. </p>
+<br>
+
+<h2 class="text-2xl font-medium">
+Feature Engineering
+</h2>
+    
+    <p>Looking at the data, we think about features we can add to make predicting a sack easier. From our EDA, a sack is most likely to happen on third down. From this we can define an &quot;obvious pass&quot; variable to help with analysis. An obvious pass is going to be one where it is third down and there is atleast 6 yards to go for a first down. </p>
 <pre><code class="lang-python">pbp_clean[<span class="hljs-string">'obvious_pass'</span>] = np.where((pbp_clean[<span class="hljs-string">'down'</span>] == <span class="hljs-number">3</span>) &amp; (pbp_clean[<span class="hljs-string">'ydstogo'</span>] &gt;= <span class="hljs-number">6</span>), <span class="hljs-number">1</span>,<span class="hljs-number">0</span>)
 </code></pre>
 <ul>
@@ -246,8 +260,12 @@ df_no_ids = pd.get_dummies(df_no_ids, columns = [<span class="hljs-string">'down
 </code></pre>
 </li>
 </ul>
-<hr>
-<h4 id="6-modeling-and-evaluation">6. Modeling and Evaluation</h4>
+<br>
+
+<h2 class="text-2xl font-medium">
+Modeling and Evaluation    
+</h2>
+    
 <p>Before we run our machine learning models, stratified training and test datasets need to be created. This ensures that the training and test datasets have a similar distribution of the target variable. When working with unbalanced classes this is especially useful. </p>
 <pre><code class="lang-python"><span class="hljs-attr">sss</span> = StratifiedShuffleSplit(<span class="hljs-attr">n_splits=1,</span> <span class="hljs-attr">test_size=0.25,</span> <span class="hljs-attr">random_state=42)</span>
 for train_index, test_index <span class="hljs-keyword">in</span> sss.split(df_no_ids, df_no_ids['sack']):
@@ -259,13 +277,25 @@ for train_index, test_index <span class="hljs-keyword">in</span> sss.split(df_no
 <span class="hljs-attr">X_test</span> = strat_test_set.drop(<span class="hljs-attr">columns</span> = ['sack'])
 <span class="hljs-attr">Y_test</span> = strat_test_set['sack']
 </code></pre>
-<p>Three machine learning models were trained on the data. Each model&#39;s performance is evaluated using the Brier Score, which measures the mean squared difference between the predicted probabilities and the actual outcomes.</p>
+
+<p>Three machine learning models were trained on the data. Each model&#39;s performance is 
+    evaluated using the Brier Score, which measures the mean 
+    squared difference between the predicted probabilities 
+    and the actual outcomes.</p>
+
+<br>
+
 <ol>
 <li><strong>Logistic Regression:</strong> Brier Score: 0.056650718844646</li>
 <li><strong>Random Forest:</strong> Brier Score: 0.059645596501199945</li>
 <li><strong>XGBoost:</strong> Brier Score: 0.05711192786011701</li>
 </ol>
+
+<br>
+
 <p>We can also take visual insight into the significance of different features used by an XGBClassifier model. The values are fetched then sorted to determine the ranking of features based on their influence on the model&#39;s predictions.</p>
 <p><img src="/images/sack_prediction_lr/XGBClassifierFeatureImportance.png" alt="XGBClassifier Feature Importance"></p>
-<hr>
+<br>
 <p><em>Link to the full github repo located <a href="https://github.com/ethantompkins/jupyter-notebooks-fb/blob/main/logistic_regression_sack_prediction.ipynb">here</a></em></p>
+
+<br>
