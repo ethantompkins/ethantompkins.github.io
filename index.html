@@ -2,16 +2,21 @@
 <html lang="en">
     <head>
         <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                fetch('/header.html')
-                    .then(response => response.text())
-                    .then(data => {
-                        document.head.innerHTML += data;
-                    });
+            async function loadHeader() {
+                const response = await fetch('/header.html');
+                const data = await response.text();
+                document.head.innerHTML += data;
+            }
+
+            Promise.all([loadHeader()]).then(() => {
+                document.documentElement.style.display = 'block';
             });
+
+            // Hide the document until it's fully loaded
+            document.documentElement.style.display = 'none';
+        
         </script>
     </head>
-    
     <body class="max-w-prose m-auto px-4 relative">
         <header>
             <nav class="flex gap-4 my-16">
