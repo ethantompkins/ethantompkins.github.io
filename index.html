@@ -2,14 +2,16 @@
 <html lang="en">
     <head>
         <script>
-            fetch('/header.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.write(data);
-                    document.close();
-                });
+            document.addEventListener("DOMContentLoaded", function() {
+                fetch('/header.html')
+                    .then(response => response.text())
+                    .then(data => {
+                        document.head.innerHTML += data;
+                    });
+            });
         </script>
     </head>
+    
     <body class="max-w-prose m-auto px-4 relative">
         <header>
             <nav class="flex gap-4 my-16">
