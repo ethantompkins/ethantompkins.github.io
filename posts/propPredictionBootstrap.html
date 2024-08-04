@@ -1,57 +1,177 @@
 <!DOCTYPE html>
 <html lang="en" class="astro-G6LKM5ZN">
 	<head>
-		<!-- Global Metadata --><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="icon" type="image/svg+xml" href="/favicon.ico">
-<meta name="generator" content="Astro v1.8.0">
+		<!-- Global Metadata -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="manifest" href="/site.webmanifest">
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000">
+        <meta name="msapplication-TileColor" content="#da532c">
+        <meta name="theme-color" content="#ffffff">
+        <meta name="generator" content="Astro v3.6.4">
+        <!-- Canonical URL -->
+        <link rel="canonical" href="https://ethantompkins.com/code">
+        <!-- Primary Meta Tags -->
+        <title>Blog, by Ethan Tompkins</title>
+        <meta name="title" content="Blog, by Ethan Tompkins">
+        <meta name="description" content="ios, web, thoughts &#38; notes">
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://ethantompkins.com/">
+        <meta property="og:title" content="Blog, by Ethan Tompkins">
+        <meta property="og:description" content="">
+        <meta property="og:image" content="">
+       <!--  Twitter 
+        <meta property="twitter:card" content="summary_large_image">
+        <meta property="twitter:url" content="">
+        <meta property="twitter:title" content="">
+        <meta property="twitter:description" content="">
+        -->
+        <link rel="stylesheet" href="/styles/main.css">
 
-<!-- Canonical URL -->
-<link rel="canonical" href="https://ethantompkins.github.io/blog">
+        <style>
+            pre {
+                font-size: .9em;
+                padding: 1em
+            }
 
-<!-- Primary Meta Tags -->
-<title>Ethan Tompkins</title>
-<meta name="title" content="Ethan Tompkins">
-<meta name="description" content="Ethan Tompkins's Personal Site">
+            code {
+                font-size: .9em;
+                font-family: Monospace;
+                font-weight: 400!important
+            }
 
-<!-- Open Graph / Facebook -->
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://ethantompkins.github.io/blog">
-<meta property="og:title" content="Ethan Tompkins">
-<meta property="og:description" content="Ethan Tompkins's Personal Site">
-<!-- <meta property="og:image" content="https://www.siddubey.com/cabin.png"> -->
-		
-<link rel="stylesheet" href="/assets/batman.8450471a.css" />
-<link rel="stylesheet" href="/assets/batman.55875584.css" />
-<link rel="stylesheet" href="/assets/blog.css" /></head>
-	<body class="astro-G6LKM5ZN">
-		<header class="astro-G7TF3WX4">
-	<h2 class="astro-G7TF3WX4">
-		Ethan Tompkins
-	</h2>
-	<nav class="astro-G7TF3WX4">
-        <a href="/" class="astro-G7TF3WX4 astro-XSYHFBHC">
-            Home
-        </a>
-        
-                <a href="/blog" class="astro-G7TF3WX4 active astro-XSYHFBHC">
-            Blog
-        </a>
-        
-        <a href="/docs/EthanTompkinsResume.pdf" class="astro-G7TF3WX4 astro-XSYHFBHC" target="_blank">
-            Resume
-        </a>
-        
-                <a href="https://github.com/ethantompkins" class="astro-G7TF3WX4 astro-XSYHFBHC" target="_blank">
-            GitHub
-        </a>
-        
-                <a href="https://www.linkedin.com/in/ethantompkins/" class="astro-G7TF3WX4 astro-XSYHFBHC" target="_blank">
-            LinkedIn
-        </a>
+            code:before,code:after {
+                content: ""!important
+            }
 
-	</nav>
-</header>
+            blockquote {
+                font-style: normal!important
+            }
+
+            p:before,p:after {
+                content: ""!important
+            }
+
+            blockquote {
+                border-left: 2px solid #333
+            }
+
+            .margin {
+                position: absolute;
+                box-sizing: border-box;
+                width: 26%
+            }
+
+            .left.margin {
+                left: -28%;
+                padding-right: 10px;
+                text-align: right;
+                border-right: 2px solid rgb(209 213 219 / var(--tw-border-opacity))
+            }
+
+            .left.margin>p {
+                margin: 4px 0 0;
+                line-height: 1rem;
+                font-size: .9rem
+            }
+
+            .right.margin {
+                right: -28%;
+                padding-left: 10px;
+                border-left: 2px solid rgb(209 213 219 / var(--tw-border-opacity))
+            }
+
+            .right.margin>p {
+                margin-bottom: 0;
+                margin-top: 0;
+                font-size: .9rem
+            }
+
+            @media screen and (max-width: 1060px) {
+                .content-wrapper {
+                    margin:0 auto;
+                    padding-left: 16px;
+                    padding-right: 16px
+                }
+
+                .margin,.margin.left,.margin.right {
+                    position: relative;
+                    display: block;
+                    inset: auto
+                }
+
+                .margin.left {
+                    text-align: left;
+                    float: left;
+                    border: 0
+                }
+
+                .margin.right {
+                    float: right
+                }
+
+                .margin.right.rel {
+                    float: left;
+                    width: 100%;
+                    padding: 0
+                }
+            }
+
+            @media screen and (max-width: 600px) {
+                .content-wrapper {
+                    margin:1em 0 2rem;
+                    padding-top: .5rem;
+                    min-width: auto
+                }
+
+                .margin {
+                    width: 40%
+                }
+
+                .margin.left {
+                    padding-right: 16px
+                }
+
+                .margin.right {
+                    padding-left: 16px
+                }
+            }
+
+            tr {
+                border-bottom: 0
+            }
+
+            .astro-code {
+                background-color: linen!important;
+                border-radius: 0
+            }
+        </style>
+         </head>
+         <body class="max-w-prose m-auto px-4 relative">
+             <header>
+                 <nav class="flex gap-4 my-16">
+                     <a href="/">
+                        <img class="w-28 h-28" src="images/camo.jpeg" alt="camo">
+                    </a>
+                     <div class="justify-between flex flex-col">
+                         <div>
+                             <h2 class="text-2xl font-medium">
+                                 <a href="/">Blog</a>
+                             </h2>
+                             <p class="text-gray-600 mb-2">a blog by Ethan Tompkins</p>
+                         </div>
+                         <div class="internal-links flex gap-2">
+                             <a href="/" class="text-gray-500">home </a>
+                             <a href="/code" class="text-gray-500">code </a>
+                             <a href="/about" class="text-gray-500">about </a>
+                         </div>
+                     </div>
+                 </nav>
+             </header>
 
 <h1 id="taking-positive-expected-value-bets">Taking Positive Expected Value Bets</h1>
 <p>Expected value (EV) is when the calculated probability is greater than the implied probability. The calculated odds can be considered the &quot;true line&quot; should be, and the difference between that and the implied odds is the extra value. This can be applied in the worlds of trading and investing, along with in our case sports betting.</p>
