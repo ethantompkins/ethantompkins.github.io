@@ -173,12 +173,52 @@
                  </nav>
              </header>
 
-<h1 id="taking-positive-expected-value-bets">Taking Positive Expected Value Bets</h1>
-<p>Expected value (EV) is when the calculated probability is greater than the implied probability. The calculated odds can be considered the &quot;true line&quot; should be, and the difference between that and the implied odds is the extra value. This can be applied in the worlds of trading and investing, along with in our case sports betting.</p>
-<p>Takine a positive EV bet does not mean it will actually hit. EV gives you an advantage over time as the positive EV value with be realized after a series of bets. There is always the variable of randomness that can prevent predictability around individual bets.</p>
-<p>We are implying the probabilities from the lines, but what the line is <i>explicitly</i> telling us is our reward-to-risk ratio (for each unit of risk, how much do we win?). If we have a bet that&#39;s +300, that&#39;s a 3 to 1 payout, and a 25% implied probability (100/(300+100)). 25% is also our breakeven point on any 3-1 bet. Which means, if we consistently took +300 bets, we would need a 25% win rate to breakeven. If we are able to push our win rate above 25%, even to say 27%, then we&#39;ve developed an edge and positive EV.</p>
-<p>This also means, that by definition, just taking sports bets at random, your EV is 0 and you are expected to lose no money and gain no money assuming Vegas is right over the long run, which is usually the fair assumption.</p>
-<p>We&#39;ll only be covering a single player prop here, since this post will end up being quite long. We&#39;ll be looking at the O/U for Jalen Hurts pass attempts, which is currently +100 for over 31.5 attempts on DraftKings. However, you&#39;re welcome to also apply this code to other player props that might be well-modeled by the distribution we&#39;ll discuss (Poisson), or even other types of props that may be well-modeled by different distributions (ie. Anytime TD scorer and a Binomial distribution).</p>
+
+         <h2 class="text-2xl font-medium">
+            Taking Positive Expected Value Bets
+        </h2>
+
+<p>
+    Expected value (EV) is when the calculated probability is greater than the implied probability. 
+    The calculated odds can be considered the &quot;true line&quot; should be, 
+    and the difference between that and the implied odds is the extra value. 
+    This can be applied in the worlds of trading and investing, along with in our 
+    case sports betting.
+</p>
+<br>
+<p>
+    Takine a positive EV bet does not mean it will actually hit. 
+    EV gives you an advantage over time as the positive EV value with be realized 
+    after a series of bets. There is always the variable of randomness that can 
+    prevent predictability around individual bets.
+</p>
+<br>
+<p>
+    We are implying the probabilities from the lines, but what the line is 
+    <i>explicitly</i> telling us is our reward-to-risk ratio (for each unit of risk, 
+    how much do we win?). If we have a bet that&#39;s +300, that&#39;s a 3 to 1 payout, 
+    and a 25% implied probability (100/(300+100)). 25% is also our breakeven point on 
+    any 3-1 bet. Which means, if we consistently took +300 bets, we would need a 25% win 
+    rate to breakeven. If we are able to push our win rate above 25%, even to say 27%, 
+    then we&#39;ve developed an edge and positive EV.
+</p>
+<br>
+<p>
+    This also means, that by definition, just taking sports bets at random, your EV 
+    is 0 and you are expected to lose no money and gain no money assuming Vegas is 
+    right over the long run, which is usually the fair assumption.
+</p>
+<br>
+<p>
+    We&#39;ll only be covering a single player prop here, since this post will end 
+    up being quite long. We&#39;ll be looking at the O/U for Jalen Hurts pass attempts, 
+    which is currently +100 for over 31.5 attempts on DraftKings. However, you&#39;re 
+    welcome to also apply this code to other player props that might be well-modeled 
+    by the distribution we&#39;ll discuss (Poisson), or even other types of props that 
+    may be well-modeled by different distributions (ie. Anytime TD scorer and a Binomial 
+    distribution).
+</p>
+
 <pre><code class="lang-python"><span class="hljs-keyword">import</span> nfl_data_py <span class="hljs-keyword">as</span> nfl
 <span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 from matplotlib <span class="hljs-keyword">import</span> pyplot <span class="hljs-keyword">as</span> plt
@@ -221,8 +261,12 @@ plt.hist(hurts_pa, bins=<span class="hljs-number">25</span>);
 <code>print(&#39;Mean: &#39;, hurts_pa.mean())</code>
 <code>print(&#39;Median: &#39;, np.median(hurts_pa))</code>
 <code>print(&#39;Standard deviation: &#39;, hurts_pa.std())</code></p>
-<h1 id="bootstrap-resampling">Bootstrap Resampling</h1>
-<p>This plots Hurts passing attempt data and prints out some summary statistics to better understand how his pass attempts are distributed. Of these statistics the mean is most useful for our analysis.</p>
+
+<h2 class="text-2xl font-medium">
+Bootstrap Reesampling    
+</h2>
+    
+    <p>This plots Hurts passing attempt data and prints out some summary statistics to better understand how his pass attempts are distributed. Of these statistics the mean is most useful for our analysis.</p>
 <p>Bootstrap resampling is a method for establishing a confidence interval for the parameters in shaping our data distribution. It is particularly useful in scenarios where precise estimates of statistics are necessary, but the ability to gather additional samples is either impractical or expensive.</p>
 <p>In this approach, we repeatedly draw samples from our dataset, mimicking Hurts&#39; pass attempt outcomes, with replacement (allowing duplicates) for n iterations. Here, n corresponds to the length of our dataset, representing the available samples of actual pass attempts in his career. For each bootstrapped dataset, we calculate the desired statistic, such as the mean, storing these results in a separate array.</p>
 <p>After conducting multiple rounds of this process, we look at the collection of summary statistics we&#39;ve generated. This dataset allows us to explore a range of possibilities and have a better understanding of the parameter we are seeking, or in this case the mean.</p>
@@ -247,7 +291,11 @@ lower_bound, upper_bound
 </code></pre>
 <p><code>(27.676470588235293, 32.411764705882355)</code></p>
 <p>We can be fairly certain that Hurts long-run passing attempt average lies somewhere between 27.39 and 32.21 (only 2.5% of values fell below the former, and only 2.5% of values fell above the latter).</p>
-<h1 id="modeling-pass-attempts">Modeling Pass Attempts</h1>
+
+<h2 class="text-2xl font-medium">
+Modeling Pass Attempts    
+</h2>
+    
 <p>Next, we&#39;re going to model Jalen Hurts&#39; pass attempts using a Poisson distribution. A Poisson distribution is a discrete probability distribution where the timing of events are independent from each other. It has one parameter, lambda, which is the rate at which events occur per unit time. pass attempts per game is the lambda for this. We&#39;ll start off by using Hurts mean pass attempts / gm, but then we&#39;ll bring in the results of our bootstrap to model different, but also-likely, values for lambda.</p>
 <p>First, we&#39;ll essentially stress test our model by calculating that long-run frequency of pass attempts / gm with the lower and upper bounds of our confidence interval for the bootstrap above.</p>
 <pre><code class="lang-python"><span class="hljs-selector-id">#drawing</span> from <span class="hljs-selector-tag">a</span> Poisson distribution
