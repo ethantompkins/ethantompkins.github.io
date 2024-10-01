@@ -184,6 +184,7 @@
     
             <br>
             <pre><code class="lang-r">
+                # Calculate the percentage of run plays for each play
                 games_SF_2023_perc <- games_SF_2023 %>%
                 filter(posteam == "SF") %>%
                 select(game_id, posteam, play_type, game_seconds_remaining) %>%
@@ -248,4 +249,5 @@
                 By comparing the two visualizations, we can clearly see the contrast between the best and worst run offenses in the league.
                 While the 49ers consistently utilized their effective run game to control games, the Vikings' lack of a reliable ground attack ultimately led to predictable play-calling and poor overall performance.
             </p>
+            <br>
         </body>
