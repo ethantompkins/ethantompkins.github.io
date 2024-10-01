@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en" class="astro-G6LKM5ZN">
+	<head>
+		<!-- Global Metadata -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="icon" type="image/svg+xml" href="/favicon.ico">
+        <link rel="manifest" href="/site.webmanifest">
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000">
+        <meta name="msapplication-TileColor" content="#da532c">
+        <meta name="theme-color" content="#ffffff">
+        <meta name="generator" content="Astro v3.6.4">
+        <!-- Canonical URL -->
+        <link rel="canonical" href="https://ethantompkins.com/blog">
+        <!-- Primary Meta Tags -->
+        <title>Blog, by Ethan Tompkins</title>
+        <meta name="title" content="Blog, by Ethan Tompkins">
+        <meta name="description" content="ios, web, thoughts &#38; notes">
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://ethantompkins.com/">
+        <meta property="og:title" content="Blog, by Ethan Tompkins">
+        <meta property="og:description" content="">
+        <meta property="og:image" content="">
+       <!--  Twitter 
+        <meta property="twitter:card" content="summary_large_image">
+        <meta property="twitter:url" content="">
+        <meta property="twitter:title" content="">
+        <meta property="twitter:description" content="">
+        -->
+        <link rel="stylesheet" href="/styles/main.css">
+
+        <style>
+            pre {
+                font-size: .9em;
+                padding: 1em
+            }
+
+            code {
+                font-size: .9em;
+                font-family: Monospace;
+                font-weight: 400!important
+            }
+
+            code:before,code:after {
+                content: ""!important
+            }
+
+            blockquote {
+                font-style: normal!important
+            }
+
+            p:before,p:after {
+                content: ""!important
+            }
+
+            blockquote {
+                border-left: 2px solid #333
+            }
+
+            .margin {
+                position: absolute;
+                box-sizing: border-box;
+                width: 26%
+            }
+
+            .left.margin {
+                left: -28%;
+                padding-right: 10px;
+                text-align: right;
+                border-right: 2px solid rgb(209 213 219 / var(--tw-border-opacity))
+            }
+
+            .left.margin>p {
+                margin: 4px 0 0;
+                line-height: 1rem;
+                font-size: .9rem
+            }
+
+            .right.margin {
+                right: -28%;
+                padding-left: 10px;
+                border-left: 2px solid rgb(209 213 219 / var(--tw-border-opacity))
+            }
+
+            .right.margin>p {
+                margin-bottom: 0;
+                margin-top: 0;
+                font-size: .9rem
+            }
+
+            @media screen and (max-width: 1060px) {
+                .content-wrapper {
+                    margin:0 auto;
+                    padding-left: 16px;
+                    padding-right: 16px
+                }
+
+                .margin,.margin.left,.margin.right {
+                    position: relative;
+                    display: block;
+                    inset: auto
+                }
+
+                .margin.left {
+                    text-align: left;
+                    float: left;
+                    border: 0
+                }
+
+                .margin.right {
+                    float: right
+                }
+
+                .margin.right.rel {
+                    float: left;
+                    width: 100%;
+                    padding: 0
+                }
+            }
+
+            @media screen and (max-width: 600px) {
+                .content-wrapper {
+                    margin:1em 0 2rem;
+                    padding-top: .5rem;
+                    min-width: auto
+                }
+
+                .margin {
+                    width: 40%
+                }
+
+                .margin.left {
+                    padding-right: 16px
+                }
+
+                .margin.right {
+                    padding-left: 16px
+                }
+            }
+
+            tr {
+                border-bottom: 0
+            }
+
+            .astro-code {
+                background-color: linen!important;
+                border-radius: 0
+            }
+        </style>
+         </head>
+         <body class="max-w-prose m-auto px-4 relative">
+             <header>
+                 <nav class="flex gap-4 my-16">
+                     <a href="/">
+                        <img class="w-28 h-28" src="/images/camo.jpeg" alt="camo">
+                    </a>
+                     <div class="justify-between flex flex-col">
+                         <div>
+                             <h2 class="text-2xl font-medium">
+                                 <a href="/">Blog</a>
+                             </h2>
+                             <p class="text-gray-600 mb-2">a blog by Ethan Tompkins</p>
+                         </div>
+                         <div class="internal-links flex gap-2">
+                             <a href="/" class="text-black">blog </a>
+                             <a href="/shinyapps" class="text-gray-500">shiny apps </a>
+                             <a href="/about" class="text-gray-500">about </a>
+                         </div>
+                     </div>
+                 </nav>
+             </header>
+
+            <h2 class="text-2xl font-medium">
+                Percentage Run Offense
+            </h2>
+            <p>
+                In the 2023 NFL season, the San Francisco 49ers boasted the league's best run offense. Several factors contributed to their dominance on the ground.
+                The 49ers have long been known for their effective running schemes under head coach Kyle Shanahan, but in 2023, they took it to another level.
+                Key reasons for their success include a healthy offensive line, the emergence of young star running back Christian McCaffrey, and the creative play-calling that kept defenses off balance.
+                The team often utilized motion and pre-snap shifts to create mismatches, while leveraging outside zone schemes and gap-based runs to exploit defenses.
+            </p>
+    
+            <p>
+                The R code provided above performs an analysis on the 49ers’ run-play percentage throughout each game in the 2023 season.
+                The steps below outline what the code is doing:
+            </p>
+            <br>
+            <ul>
+                <li><b>Load and Filter Data</b>: The code begins by loading the 49ers' play-by-play data for the 2023 season, using <code>nflfastR</code> and <code>nflreadr</code> packages.</li>
+                <li><b>Calculate Run Play Percentage</b>: It calculates the cumulative percentage of run plays after each play in a game, focusing only on plays by the 49ers. This provides insight into how often the 49ers ran the ball compared to passing.</li>
+                <li><b>Visualize the Data</b>: A step plot is created to visualize the percentage of run plays over the course of each game. The x-axis represents the time remaining in the game, with quarters clearly marked, and the y-axis shows the percentage of run plays.</li>
+            </ul>
+    
+            <p>
+                This visualization helps in understanding the 49ers’ play-calling tendencies. For example, it may reveal whether the team tends to run more when leading or passes more when trailing. 
+                With a strong run game, it’s expected that the 49ers leaned heavily on their running attack, especially in the second halves of games where they likely had the lead.
+            </p>
+    
+            <h2 class="text-2xl font-medium">
+                Minnesota Vikings Run Offense Analysis - 2023
+            </h2>
+    
+            <p>
+                In contrast, the Minnesota Vikings struggled mightily with their run game in 2023, finishing the season with the worst run offense in the league.
+                A combination of a porous offensive line, injuries at the running back position, and an overall lack of consistency in the ground game led to their struggles.
+                The Vikings often found themselves abandoning the run early in games due to falling behind, further diminishing their effectiveness.
+                Additionally, the lack of a consistent run game made their offense one-dimensional, making it easier for defenses to anticipate passing plays.
+            </p>
+    
+            <p>
+                The following R code performs the same analysis as above but for the Minnesota Vikings' 2023 season.
+                It provides a visualization that illustrates just how rarely the Vikings leaned on their run game:
+            </p>
+    
+            <pre><code class="lang-r">
+    # Get Minnesota Vikings 2023 games ID
+    ID_games_2023_vikings <- fast_scraper_schedules(2023) %>%
+      filter(away_team == "MIN" | home_team == "MIN") %>%
+      mutate(week = as.numeric(substr(game_id, 6, 7)),  # Extract week number from game_id
+             opponent = if_else(home_team == "MIN", away_team, home_team),  # Determine opponent team
+             week_label = paste("Week", week, "vs", opponent))  # Create a custom label
+    
+    # Load the entire play-by-play data for the 2023 season
+    pbp_2023_vikings <- load_pbp(seasons = 2023)
+    
+    # Filter play-by-play data to include only the Minnesota Vikings games
+    games_MIN_2023 <- pbp_2023_vikings %>%
+      filter(game_id %in% ID_games_2023_vikings$game_id)
+    
+    # Merge play-by-play data with the custom labels from ID_games_2023_vikings
+    games_MIN_2023 <- games_MIN_2023 %>%
+      left_join(ID_games_2023_vikings %>% select(game_id, week_label), by = "game_id")
+    
+    # Calculate the percentage of run plays for each play
+    games_MIN_2023_perc <- games_MIN_2023 %>%
+      filter(posteam == "MIN") %>%
+      select(game_id, week_label, posteam, play_type, game_seconds_remaining) %>%
+      filter(play_type == "run" | play_type == "pass") %>%
+      group_by(game_id, play_type) %>%
+      mutate(count_plays = row_number()) %>%
+      group_by(game_id) %>%
+      mutate(count_all = row_number()) %>%
+      ungroup() %>%
+      mutate(count_run = ifelse(play_type == "run", count_plays, NA)) %>%
+      fill(count_run) %>%
+      mutate(perc = (count_run / count_all) * 100)
+            </code></pre>
+    
+            <p>
+                The visualization produced for the Vikings reveals that they rarely leaned on their run game throughout their 2023 season.
+                This step plot illustrates that the percentage of run plays remained low even in situations where they may have benefited from a balanced approach.
+                The code demonstrates how to track play-calling tendencies and offers insight into a team's strategic decisions, revealing the imbalance that contributed to the Vikings’ struggles on offense.
+            </p>
+    
+            <p>
+                By comparing the two visualizations, we can clearly see the contrast between the best and worst run offenses in the league.
+                While the 49ers consistently utilized their effective run game to control games, the Vikings' lack of a reliable ground attack ultimately led to predictable play-calling and poor overall performance.
+            </p>
+        </body>
