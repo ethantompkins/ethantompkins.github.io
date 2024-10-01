@@ -178,21 +178,32 @@
             <p>
                 In the 2023 NFL season, the San Francisco 49ers boasted the league's best run offense. Several factors contributed to their dominance on the ground.
                 The 49ers have long been known for their effective running schemes under head coach Kyle Shanahan, but in 2023, they took it to another level.
-                Key reasons for their success include a healthy offensive line, the emergence of young star running back Christian McCaffrey, and the creative play-calling that kept defenses off balance.
+                Key reasons for their success include a healthy offensive line, star running back Christian McCaffrey, and the creative play-calling that kept defenses off balance.
                 The team often utilized motion and pre-snap shifts to create mismatches, while leveraging outside zone schemes and gap-based runs to exploit defenses.
             </p>
     
-            <p>
-                The R code provided above performs an analysis on the 49ers’ run-play percentage throughout each game in the 2023 season.
-                The steps below outline what the code is doing:
-            </p>
             <br>
-            <ul>
-                <li><b>Load and Filter Data</b>: The code begins by loading the 49ers' play-by-play data for the 2023 season, using <code>nflfastR</code> and <code>nflreadr</code> packages.</li>
-                <li><b>Calculate Run Play Percentage</b>: It calculates the cumulative percentage of run plays after each play in a game, focusing only on plays by the 49ers. This provides insight into how often the 49ers ran the ball compared to passing.</li>
-                <li><b>Visualize the Data</b>: A step plot is created to visualize the percentage of run plays over the course of each game. The x-axis represents the time remaining in the game, with quarters clearly marked, and the y-axis shows the percentage of run plays.</li>
-            </ul>
-    
+            <pre><code class="lang-r">
+                games_SF_2023_perc <- games_SF_2023 %>%
+                filter(posteam == "SF") %>%
+                select(game_id, posteam, play_type, game_seconds_remaining) %>%
+                filter(play_type == "run" | play_type == "pass") %>%
+                group_by(game_id, play_type) %>%
+                mutate(count_plays = row_number()) %>%
+                group_by(game_id) %>%
+                mutate(count_all = row_number()) %>%
+                ungroup() %>%
+                mutate(count_run = ifelse(play_type == "run", count_plays, NA)) %>%
+                fill(count_run) %>%
+                mutate(perc = (count_run / count_all) * 100)
+            </code></pre>
+
+            <br>
+
+            <p><img src="/images/percentage_run_offense/percentage-49ers.png" alt="Percentage Run Offense San Francisco 49ers"></p>
+            
+            <br>
+
             <p>
                 This visualization helps in understanding the 49ers’ play-calling tendencies. For example, it may reveal whether the team tends to run more when leading or passes more when trailing. 
                 With a strong run game, it’s expected that the 49ers leaned heavily on their running attack, especially in the second halves of games where they likely had the lead.
@@ -201,59 +212,38 @@
             <h2 class="text-2xl font-medium">
                 Minnesota Vikings Run Offense Analysis - 2023
             </h2>
-    
+            <br>
             <p>
-                In contrast, the Minnesota Vikings struggled mightily with their run game in 2023, finishing the season with the worst run offense in the league.
-                A combination of a porous offensive line, injuries at the running back position, and an overall lack of consistency in the ground game led to their struggles.
+                In contrast, the Minnesota Vikings struggled with their run game in 2023, finishing the season with the worst run offense in the league.
+                A combination of a poor offensive line play, injuries at the running back position, and an overall lack of consistency in the ground game led to their struggles.
                 The Vikings often found themselves abandoning the run early in games due to falling behind, further diminishing their effectiveness.
                 Additionally, the lack of a consistent run game made their offense one-dimensional, making it easier for defenses to anticipate passing plays.
             </p>
-    
-            <p>
-                The following R code performs the same analysis as above but for the Minnesota Vikings' 2023 season.
-                It provides a visualization that illustrates just how rarely the Vikings leaned on their run game:
-            </p>
+            <br>
     
             <pre><code class="lang-r">
-    # Get Minnesota Vikings 2023 games ID
-    ID_games_2023_vikings <- fast_scraper_schedules(2023) %>%
-      filter(away_team == "MIN" | home_team == "MIN") %>%
-      mutate(week = as.numeric(substr(game_id, 6, 7)),  # Extract week number from game_id
-             opponent = if_else(home_team == "MIN", away_team, home_team),  # Determine opponent team
-             week_label = paste("Week", week, "vs", opponent))  # Create a custom label
-    
-    # Load the entire play-by-play data for the 2023 season
-    pbp_2023_vikings <- load_pbp(seasons = 2023)
-    
-    # Filter play-by-play data to include only the Minnesota Vikings games
-    games_MIN_2023 <- pbp_2023_vikings %>%
-      filter(game_id %in% ID_games_2023_vikings$game_id)
-    
-    # Merge play-by-play data with the custom labels from ID_games_2023_vikings
-    games_MIN_2023 <- games_MIN_2023 %>%
-      left_join(ID_games_2023_vikings %>% select(game_id, week_label), by = "game_id")
-    
-    # Calculate the percentage of run plays for each play
-    games_MIN_2023_perc <- games_MIN_2023 %>%
-      filter(posteam == "MIN") %>%
-      select(game_id, week_label, posteam, play_type, game_seconds_remaining) %>%
-      filter(play_type == "run" | play_type == "pass") %>%
-      group_by(game_id, play_type) %>%
-      mutate(count_plays = row_number()) %>%
-      group_by(game_id) %>%
-      mutate(count_all = row_number()) %>%
-      ungroup() %>%
-      mutate(count_run = ifelse(play_type == "run", count_plays, NA)) %>%
-      fill(count_run) %>%
-      mutate(perc = (count_run / count_all) * 100)
+                # Calculate the percentage of run plays for each play
+                games_MIN_2023_perc <- games_MIN_2023 %>%
+                filter(posteam == "MIN") %>%
+                select(game_id, week_label, posteam, play_type, game_seconds_remaining) %>%
+                filter(play_type == "run" | play_type == "pass") %>%
+                group_by(game_id, play_type) %>%
+                mutate(count_plays = row_number()) %>%
+                group_by(game_id) %>%
+                mutate(count_all = row_number()) %>%
+                ungroup() %>%
+                mutate(count_run = ifelse(play_type == "run", count_plays, NA)) %>%
+                fill(count_run) %>%
+                mutate(perc = (count_run / count_all) * 100)
             </code></pre>
-    
+            <br>
+            <p><img src="/images/percentage_run_offense/percentage-vikings.png" alt="Percentage Run Offense Minnesota Vikings"></p>
+            <br>
             <p>
                 The visualization produced for the Vikings reveals that they rarely leaned on their run game throughout their 2023 season.
                 This step plot illustrates that the percentage of run plays remained low even in situations where they may have benefited from a balanced approach.
-                The code demonstrates how to track play-calling tendencies and offers insight into a team's strategic decisions, revealing the imbalance that contributed to the Vikings’ struggles on offense.
             </p>
-    
+            <br>
             <p>
                 By comparing the two visualizations, we can clearly see the contrast between the best and worst run offenses in the league.
                 While the 49ers consistently utilized their effective run game to control games, the Vikings' lack of a reliable ground attack ultimately led to predictable play-calling and poor overall performance.
