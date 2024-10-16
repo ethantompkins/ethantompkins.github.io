@@ -175,4 +175,97 @@
             <h2 class="text-2xl font-medium">
                 Exploring Wins based on Season EPA Metrics
             </h2>
-            <br>
+            
+            <h2 class="text-2xl font-medium">Exploring Wins with nflfastR</h2>
+
+<p>The nflfastR package has proven to be a powerful tool for exploring NFL game data, helping us understand and predict team performances. In this post, we'll walk through an analysis to explore which metrics contribute most to wins in the NFL. By using the nflfastR package, we'll extract the necessary play-by-play data and create visualizations that shed light on trends among winning teams.</p>
+
+<br>
+<h3 class="text-xl font-medium">Table of Contents</h3>
+<nav class="d-toc" id="TOC">
+<ul>
+<li><a href="#loading-libraries-and-data">Loading Libraries and Data</a></li>
+<li><a href="#transforming-the-data">Transforming the Data</a></li>
+<li><a href="#visualizing-metrics-and-wins">Visualizing Metrics and Wins</a></li>
+<li><a href="#total-yards-vs-win-probability">Total Yards vs. Win Probability</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul>
+</nav>
+
+<br>
+<h3 class="text-xl font-medium" id="loading-libraries-and-data">Loading Libraries and Data</h3>
+
+<p>First, let's load the libraries and get the play-by-play data for the last few NFL seasons. We'll use nflfastR to download the data and then transform it into a format that can be used for our analysis.</p>
+
+<pre><code class="lang-r">library(nflfastR)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+
+# Load play-by-play data from the 2018-2023 seasons
+pbp_data &lt;- load_pbp(2018:2023)</code></pre>
+
+<p>Using nflfastR's <code>load_pbp()</code> function, we loaded the data from the 2018 to 2023 seasons. This data is crucial for understanding the key metrics associated with wins.</p>
+
+<br>
+<h3 class="text-xl font-medium" id="transforming-the-data">Transforming the Data</h3>
+
+<p>To explore what leads to a win, we need to create a dataset that summarizes key metrics per game. We’ll group the play-by-play data by game and team, then calculate metrics such as total yards, turnovers, and the success rate of passing and rushing plays.</p>
+
+<pre><code class="lang-r"># Transform the data to calculate metrics for each game
+team_summary &lt;- pbp_data %&gt;%
+  filter(!is.na(posteam)) %&gt;%
+  group_by(game_id, season, week, home_team, away_team, posteam, result) %&gt;%
+  summarise(
+    total_yards = sum(yards_gained, na.rm = TRUE),
+    turnovers = sum(interception + fumble_lost, na.rm = TRUE),
+    pass_success_rate = mean(pass == 1 &amp; success == 1, na.rm = TRUE),
+    rush_success_rate = mean(rush == 1 &amp; success == 1, na.rm = TRUE),
+    .groups = 'drop'
+  )</code></pre>
+
+<p>In the above code, we calculated some common metrics for each team in each game, such as total yards, number of turnovers, and success rates for passing and rushing plays. We used the <code>group_by()</code> function to aggregate data by game, and <code>summarise()</code> to calculate these metrics.</p>
+
+<br>
+<h3 class="text-xl font-medium" id="visualizing-metrics-and-wins">Visualizing Metrics and Wins</h3>
+
+<p>Next, we want to visualize how these metrics relate to wins. Let’s create some visualizations to better understand how factors like turnovers and total yards gained influence winning outcomes.</p>
+
+<pre><code class="lang-r"># Create a win indicator
+team_summary &lt;- team_summary %&gt;%
+  mutate(win = ifelse(result &gt; 0, 1, 0))
+
+# Visualize relationship between turnovers and winning percentage
+ggplot(team_summary, aes(x = turnovers, y = win)) +
+  geom_jitter(width = 0.1, height = 0.05, alpha = 0.3) +
+  geom_smooth(method = "glm", method.args = list(family = "binomial"), se = FALSE, color = "red") +
+  labs(title = "Relationship Between Turnovers and Winning Percentage",
+       x = "Number of Turnovers",
+       y = "Winning Percentage")</code></pre>
+
+<p>Here, we used a logistic regression model to show how the probability of winning changes as the number of turnovers increases. As expected, the more turnovers a team commits, the lower their chances of winning.</p>
+
+<br>
+<h3 class="text-xl font-medium" id="total-yards-vs-win-probability">Total Yards vs. Win Probability</h3>
+
+<p>We also want to see if gaining more yards contributes to a higher chance of winning. Let's create another plot for this relationship:</p>
+
+<pre><code class="lang-r"># Visualize relationship between total yards and winning percentage
+ggplot(team_summary, aes(x = total_yards, y = win)) +
+  geom_jitter(width = 0.1, height = 0.05, alpha = 0.3) +
+  geom_smooth(method = "glm", method.args = list(family = "binomial"), se = FALSE, color = "blue") +
+  labs(title = "Total Yards vs Winning Probability",
+       x = "Total Yards Gained",
+       y = "Winning Percentage")</code></pre>
+
+<p>From the above graph, we can see that gaining more yards generally increases a team's chances of winning the game, but it isn't the only determining factor. Teams need to excel in multiple areas to secure a win consistently.</p>
+
+<br>
+<h3 class="text-xl font-medium" id="conclusion">Conclusion</h3>
+
+<p>Our analysis shows that minimizing turnovers and gaining more total yards both contribute to a higher chance of winning NFL games. However, the relationship is not strictly linear, as other factors like defense, special teams, and in-game decisions also play a role in determining the outcome.</p>
+
+<p>We have only scratched the surface here. By using nflfastR, more sophisticated models can be built to better predict game outcomes and understand deeper patterns within the data. If you're interested in more detailed exploration, consider incorporating EPA metrics, play success rates by situation, or advanced machine learning models to uncover even more insights.</p>
+
+<h3 id="updates-and-corrections">Corrections</h3>
+<p>If you see mistakes or want to suggest changes, please <a href="https://github.com/mrcaseb/open-source-football/issues/new">create an issue</a> on the source repository.</p>
