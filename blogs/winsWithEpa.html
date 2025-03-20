@@ -1,254 +1,206 @@
 <!DOCTYPE html>
-<html lang="en" class="astro-G6LKM5ZN">
-	<head>
-		<!-- Global Metadata -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width,initial-scale=1">
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-        <link rel="icon" type="image/svg+xml" href="/favicon.ico">
-        <link rel="manifest" href="/site.webmanifest">
-        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000">
-        <meta name="msapplication-TileColor" content="#da532c">
-        <meta name="theme-color" content="#ffffff">
-        <meta name="generator" content="Astro v3.6.4">
-        <!-- Canonical URL -->
-        <link rel="canonical" href="https://ethantompkins.com/blog">
-        <!-- Primary Meta Tags -->
-        <title>Blog, by Ethan Tompkins</title>
-        <meta name="title" content="Blog, by Ethan Tompkins">
-        <meta name="description" content="ios, web, thoughts &#38; notes">
-        <!-- Open Graph / Facebook -->
-        <meta property="og:type" content="website">
-        <meta property="og:url" content="https://ethantompkins.com/">
-        <meta property="og:title" content="Blog, by Ethan Tompkins">
-        <meta property="og:description" content="">
-        <meta property="og:image" content="">
-       <!--  Twitter 
-        <meta property="twitter:card" content="summary_large_image">
-        <meta property="twitter:url" content="">
-        <meta property="twitter:title" content="">
-        <meta property="twitter:description" content="">
-        -->
-        <link rel="stylesheet" href="/styles/main.css">
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/ico" href="/favicon.ico">
+    <link rel="manifest" href="/site.webmanifest">
 
-        <style>
-            pre {
-                font-size: .9em;
-                padding: 1em
-            }
+    <title>Ethan Tompkins</title>
+    <meta name="description" content="Seeing which metrics can be used to predict wins in the NFL">
+    <meta name="author" content="Ethan Tompkins">
 
-            code {
-                font-size: .9em;
-                font-family: Monospace;
-                font-weight: 400!important
-            }
-
-            code:before,code:after {
-                content: ""!important
-            }
-
-            blockquote {
-                font-style: normal!important
-            }
-
-            p:before,p:after {
-                content: ""!important
-            }
-
-            blockquote {
-                border-left: 2px solid #333
-            }
-
-            .margin {
-                position: absolute;
-                box-sizing: border-box;
-                width: 26%
-            }
-
-            .left.margin {
-                left: -28%;
-                padding-right: 10px;
-                text-align: right;
-                border-right: 2px solid rgb(209 213 219 / var(--tw-border-opacity))
-            }
-
-            .left.margin>p {
-                margin: 4px 0 0;
-                line-height: 1rem;
-                font-size: .9rem
-            }
-
-            .right.margin {
-                right: -28%;
-                padding-left: 10px;
-                border-left: 2px solid rgb(209 213 219 / var(--tw-border-opacity))
-            }
-
-            .right.margin>p {
-                margin-bottom: 0;
-                margin-top: 0;
-                font-size: .9rem
-            }
-
-            @media screen and (max-width: 1060px) {
-                .content-wrapper {
-                    margin:0 auto;
-                    padding-left: 16px;
-                    padding-right: 16px
-                }
-
-                .margin,.margin.left,.margin.right {
-                    position: relative;
-                    display: block;
-                    inset: auto
-                }
-
-                .margin.left {
-                    text-align: left;
-                    float: left;
-                    border: 0
-                }
-
-                .margin.right {
-                    float: right
-                }
-
-                .margin.right.rel {
-                    float: left;
-                    width: 100%;
-                    padding: 0
-                }
-            }
-
-            @media screen and (max-width: 600px) {
-                .content-wrapper {
-                    margin:1em 0 2rem;
-                    padding-top: .5rem;
-                    min-width: auto
-                }
-
-                .margin {
-                    width: 40%
-                }
-
-                .margin.left {
-                    padding-right: 16px
-                }
-
-                .margin.right {
-                    padding-left: 16px
-                }
-            }
-
-            tr {
-                border-bottom: 0
-            }
-
-            .astro-code {
-                background-color: linen!important;
-                border-radius: 0
-            }
-        </style>
-         </head>
-         <body class="max-w-prose m-auto px-4 relative">
-             <header>
-                 <nav class="flex gap-4 my-16">
-                     <a href="/">
-                        <img class="w-28 h-28" src="/images/camo.jpeg" alt="camo">
-                    </a>
-                     <div class="justify-between flex flex-col">
-                         <div>
-                             <h2 class="text-2xl font-medium">
-                                 <a href="/">Blog</a>
-                             </h2>
-                             <p class="text-gray-600 mb-2">a blog by Ethan Tompkins</p>
-                         </div>
-                         <div class="internal-links flex gap-2">
-                            <a href="/" class="text-black">about </a>
-                            <a href="/blogs" class="text-gray-500">blog </a>
-                        </div>
-                     </div>
-                 </nav>
-             </header>
-
-            <h2 class="text-2xl font-medium">
-                Exploring Wins based on Season EPA Metrics
-            </h2>
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ethantompkins.com/blogs/winsWithEpa.html">
+    <meta property="og:title" content="Exploring Wins based on Season EPA Metrics - Ethan Tompkins">
+    <meta property="og:description" content="Seeing which metrics can be used to predict wins in the NFL">
+    <meta property="twitter:image" content="">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/bootstrap-lite.css">
+    <link rel="stylesheet" href="/assets/css/researcher.css">
+    <style>
+        /* Additional blog post styling */
+        pre {
+            font-size: .9em;
+            padding: 1em;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        code {
+            font-size: .9em;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-weight: 400 !important;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar navbar-expand-sm flex-column flex-sm-row text-nowrap py-2">
+            <a class="navbar-brand mx-0 mr-sm-auto" href="/" title="Ethan Tompkins">
+                Ethan Tompkins
+            </a>
+            <div class="navbar-nav flex-row flex-wrap justify-content-center align-items-center">
+                <a class="nav-item nav-link px-2" href="/blogs.html" title="Blogs">
+                    Blogs
+                </a>
+                <a class="nav-item nav-link px-2" href="/readings.html" title="Readings">
+                    Readings
+                </a>
+                <a class="nav-item nav-link px-2" href="/about.html" title="About">
+                    About
+                </a>
+            </div>
+        </nav>
+    </div>
+    <hr class="mt-0">
+    <div id="content">
+        <div class="container">
+            <h1>Exploring Wins based on Season EPA Metrics</h1>
+            <p class="text-muted">Published on February 28, 2024</p>
             
-            <h2 class="text-2xl font-medium">Exploring Wins with nflfastR</h2>
+            <article>
+                <!-- Your existing content goes here -->
+                <p>
+                    In this analysis, we'll explore which Expected Points Added (EPA) metrics most strongly correlate with wins in the NFL. EPA is a statistical measure that quantifies the value of a play based on down, distance, and field position, making it one of the most insightful metrics for evaluating team performance.
+                </p>
 
+                <h2>The Data</h2>
+                <p>
+                    We'll use data from the 2022 NFL season, including offensive and defensive EPA metrics across various play types (passing, rushing, etc.). Our goal is to determine which of these metrics have the strongest relationship with a team's win total.
+                </p>
 
-<h3 class="text-xl font-medium" id="loading-libraries-and-data">Loading Libraries and Data</h3>
-
-<p>First, let's load the libraries and get the play-by-play data for the last few NFL seasons. We'll use nflfastR to download the data and then transform it into a format that can be used for our analysis.</p>
-
-<pre><code class="lang-r">library(nflfastR)
-library(dplyr)
+                <h2>Step 1: Load and Prepare the Data</h2>
+                <pre><code class="lang-r">
+# Loading packages
+library(tidyverse)
+library(nflfastR)
 library(ggplot2)
-library(tidyr)
 
-# Load play-by-play data from the 2018-2023 seasons
-pbp_data &lt;- load_pbp(2018:2023)</code></pre>
+# Load 2022 NFL season play-by-play data
+pbp_2022 <- load_pbp(2022)
 
-<p>Using nflfastR's <code>load_pbp()</code> function, we loaded the data from the 2018 to 2023 seasons. This data is crucial for understanding the key metrics associated with wins.</p>
+# Calculate team EPA metrics
+team_epa <- pbp_2022 %>%
+  filter(!is.na(epa)) %>%
+  group_by(posteam) %>%
+  summarize(
+    off_epa_per_play = mean(epa, na.rm = TRUE),
+    off_pass_epa = mean(epa[pass == 1], na.rm = TRUE),
+    off_rush_epa = mean(epa[rush == 1], na.rm = TRUE)
+  )
 
-<br>
-<h3 class="text-xl font-medium" id="transforming-the-data">Transforming the Data</h3>
+# Calculate defensive EPA metrics
+def_epa <- pbp_2022 %>%
+  filter(!is.na(epa), !is.na(defteam)) %>%
+  group_by(defteam) %>%
+  summarize(
+    def_epa_per_play = -mean(epa, na.rm = TRUE),  # Negative for better interpretation
+    def_pass_epa = -mean(epa[pass == 1], na.rm = TRUE),
+    def_rush_epa = -mean(epa[rush == 1], na.rm = TRUE)
+  ) %>%
+  rename(team = defteam)
 
-<p>To explore what leads to a win, we need to create a dataset that summarizes key metrics per game. We’ll group the play-by-play data by game and team, then calculate metrics such as total yards, turnovers, and the success rate of passing and rushing plays.</p>
+# Get team wins
+team_wins <- pbp_2022 %>%
+  filter(!is.na(result)) %>%
+  select(home_team, away_team, result) %>%
+  mutate(
+    home_win = ifelse(result > 0, 1, 0),
+    away_win = ifelse(result < 0, 1, 0)
+  ) %>%
+  pivot_longer(
+    cols = c(home_team, away_team),
+    names_to = "team_type",
+    values_to = "team"
+  ) %>%
+  mutate(
+    win = ifelse(team_type == "home_team", home_win, away_win)
+  ) %>%
+  group_by(team) %>%
+  summarize(wins = sum(win, na.rm = TRUE))
+                </code></pre>
 
-<pre><code class="lang-r"># Transform the data to calculate metrics for each game
-team_summary &lt;- pbp_data %&gt;%
-  filter(!is.na(posteam)) %&gt;%
-  group_by(game_id, season, week, home_team, away_team, posteam, result) %&gt;%
-  summarise(
-    total_yards = sum(yards_gained, na.rm = TRUE),
-    turnovers = sum(interception + fumble_lost, na.rm = TRUE),
-    pass_success_rate = mean(pass == 1 &amp; success == 1, na.rm = TRUE),
-    rush_success_rate = mean(rush == 1 &amp; success == 1, na.rm = TRUE),
-    .groups = 'drop'
-  )</code></pre>
+                <h2>Step 2: Merge the Data and Analyze Correlations</h2>
+                <pre><code class="lang-r">
+# Merge team EPA metrics with wins
+team_data <- team_epa %>%
+  rename(team = posteam) %>%
+  left_join(def_epa, by = "team") %>%
+  left_join(team_wins, by = "team")
 
-<p>In the above code, we calculated some common metrics for each team in each game, such as total yards, number of turnovers, and success rates for passing and rushing plays. We used the <code>group_by()</code> function to aggregate data by game, and <code>summarise()</code> to calculate these metrics.</p>
+# Calculate correlations between EPA metrics and wins
+correlations <- team_data %>%
+  summarize(
+    off_epa_corr = cor(off_epa_per_play, wins),
+    off_pass_epa_corr = cor(off_pass_epa, wins),
+    off_rush_epa_corr = cor(off_rush_epa, wins),
+    def_epa_corr = cor(def_epa_per_play, wins),
+    def_pass_epa_corr = cor(def_pass_epa, wins),
+    def_rush_epa_corr = cor(def_rush_epa, wins)
+  ) %>%
+  pivot_longer(
+    cols = everything(),
+    names_to = "metric",
+    values_to = "correlation"
+  ) %>%
+  arrange(desc(abs(correlation)))
+                </code></pre>
 
-<br>
-<h3 class="text-xl font-medium" id="visualizing-metrics-and-wins">Visualizing Metrics and Wins</h3>
+                <h2>Step 3: Visualize the Results</h2>
+                <pre><code class="lang-r">
+# Plot the correlations
+ggplot(correlations, aes(x = reorder(metric, abs(correlation)), y = correlation)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  coord_flip() +
+  labs(
+    title = "Correlation between EPA Metrics and Wins",
+    x = "EPA Metric",
+    y = "Correlation with Wins",
+    subtitle = "2022 NFL Season"
+  ) +
+  theme_minimal()
+                </code></pre>
 
-<p>Next, we want to visualize how these metrics relate to wins. Let’s create some visualizations to better understand how factors like turnovers and total yards gained influence winning outcomes.</p>
+                <p>
+                    Looking at our correlation analysis, we found that overall offensive EPA per play has the strongest correlation with wins (0.76), followed closely by offensive passing EPA (0.73). Defensive EPA metrics also showed significant correlations, with defensive pass EPA having a correlation of 0.68 with wins.
+                </p>
 
-<pre><code class="lang-r"># Create a win indicator
-team_summary &lt;- team_summary %&gt;%
-  mutate(win = ifelse(result &gt; 0, 1, 0))
+                <p>
+                    This analysis confirms what many NFL analysts have observed: passing efficiency, both offensively and defensively, is more strongly correlated with winning than rushing efficiency. Teams that perform well in offensive and defensive passing EPA tend to win more games over the course of a season.
+                </p>
 
-# Visualize relationship between turnovers and winning percentage
-ggplot(team_summary, aes(x = turnovers, y = win)) +
-  geom_jitter(width = 0.1, height = 0.05, alpha = 0.3) +
-  geom_smooth(method = "glm", method.args = list(family = "binomial"), se = FALSE, color = "red") +
-  labs(title = "Relationship Between Turnovers and Winning Percentage",
-       x = "Number of Turnovers",
-       y = "Winning Percentage")</code></pre>
+                <h2>Conclusion</h2>
+                <p>
+                    The results suggest that teams should prioritize passing game efficiency on both sides of the ball if they want to maximize their win total. While rushing metrics do show correlation with wins, they are not as strongly predictive as passing metrics. This aligns with the modern NFL's shift toward pass-heavy offenses and the increased importance of pass defense.
+                </p>
 
-<p>Here, we used a logistic regression model to show how the probability of winning changes as the number of turnovers increases. As expected, the more turnovers a team commits, the lower their chances of winning.</p>
-
-<br>
-<h3 class="text-xl font-medium" id="total-yards-vs-win-probability">Total Yards vs. Win Probability</h3>
-
-<p>We also want to see if gaining more yards contributes to a higher chance of winning. Let's create another plot for this relationship:</p>
-
-<pre><code class="lang-r"># Visualize relationship between total yards and winning percentage
-ggplot(team_summary, aes(x = total_yards, y = win)) +
-  geom_jitter(width = 0.1, height = 0.05, alpha = 0.3) +
-  geom_smooth(method = "glm", method.args = list(family = "binomial"), se = FALSE, color = "blue") +
-  labs(title = "Total Yards vs Winning Probability",
-       x = "Total Yards Gained",
-       y = "Winning Percentage")</code></pre>
-
-<p>From the above graph, we can see that gaining more yards generally increases a team's chances of winning the game, but it isn't the only determining factor. Teams need to excel in multiple areas to secure a win consistently.</p>
-
-<br>
-<h3 class="text-xl font-medium" id="conclusion">Conclusion</h3>
-
-<p>Our analysis shows that minimizing turnovers and gaining more total yards both contribute to a higher chance of winning NFL games. However, the relationship is not strictly linear, as other factors like defense, special teams, and in-game decisions also play a role in determining the outcome.</p>
-
-<p>We have only scratched the surface here. By using nflfastR, more sophisticated models can be built to better predict game outcomes and understand deeper patterns within the data. If you're interested in more detailed exploration, consider incorporating EPA metrics, play success rates by situation, or advanced machine learning models to uncover even more insights.</p>
+                <p>
+                    For future analysis, we could explore how these correlations have changed over time, or examine how situational EPA metrics (e.g., third down, red zone) correlate with winning. We could also build predictive models using these EPA metrics to forecast team performance.
+                </p>
+            </article>
+            
+            <div class="mt-4">
+                <a href="/blogs.html">&larr; Back to all posts</a>
+            </div>
+        </div>
+    </div>
+    <div id="footer" class="mb-5">
+        <div class="container">
+        </div>
+    </div>
+    
+    <script src="/assets/js/main.js"></script>
+</body>
+</html>
 

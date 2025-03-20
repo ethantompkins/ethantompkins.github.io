@@ -3,7 +3,7 @@
 <head>
     <!-- Global Metadata -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/svg+xml" href="/favicon.ico">
     <link rel="manifest" href="/site.webmanifest">
@@ -14,9 +14,9 @@
     <!-- Canonical URL -->
     <link rel="canonical" href="https://ethantompkins.com/">
     <!-- Primary Meta Tags -->
-    <title>About - Ethan Tompkins</title>
-    <meta name="title" content="About - Ethan Tompkins">
-    <meta name="description" content="">
+    <title>Ethan Tompkins</title>
+    <meta name="description" content="Ethan Tompkins - Personal Site">
+    <meta name="author" content="Ethan Tompkins">
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://ethantompkins.com/">
@@ -25,7 +25,9 @@
     <meta property="og:image" content="">
     <!-- Twitter -->
     <meta property="twitter:image" content="">
-    <link rel="stylesheet" href="/styles/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/bootstrap-lite.css">
+    <link rel="stylesheet" href="/assets/css/researcher.css">
     <style>
         pre {
             font-size: .9em;
@@ -124,58 +126,42 @@
         }
     </style>
 </head>
-<body class="max-w-prose m-auto px-4 relative">
-    <header>
-        <nav class="flex gap-4 my-16">
-            <a href="/">
-                <img class="w-28 h-28" src="images/camo.jpeg" alt="shapes">
+<body>
+    <div class="container">
+        <nav class="navbar navbar-expand-sm flex-column flex-sm-row text-nowrap py-2">
+            <a class="navbar-brand mx-0 mr-sm-auto" href="/" title="Ethan Tompkins">
+                Ethan Tompkins
             </a>
-            <div class="justify-between flex flex-col">
-                <div>
-                    <h2 class="text-2xl font-medium">
-                        <a href="/">Blog</a>
-                    </h2>
-                    <p class="text-gray-600 mb-2">a blog by Ethan Tompkins</p>
-                </div>
-                <div class="internal-links flex gap-2">
-                    <a href="/" class="text-black">about </a>
-                    <a href="/blogs" class="text-gray-500">blog </a>
-                </div>
+            <div class="navbar-nav flex-row flex-wrap justify-content-center align-items-center">
+                <a class="nav-item nav-link px-2" href="/blogs.html" title="Blogs">
+                    Blogs
+                </a>
+                <a class="nav-item nav-link px-2" href="/readings.html" title="Readings">
+                    Readings
+                </a>
+                <a class="nav-item nav-link px-2" href="/about.html" title="About">
+                    About
+                </a>
             </div>
         </nav>
-    </header>
-    <main>
-        <article>
-            <div class="prose">
-                
-                <p> I am a software engineer and solutions architect based in Washington D.C. 
-                    with industry experience working in early stage startup environments, IoT technologies, and technical consulting.
-                    I am most proficient in Python, Java, Go, and am currently learning Rust.
-                </p>
-                <p> I hold a B.S. in Computer Science from Clemson University and am  
-                    obtaining my M.S. in Computer Science from Georgia Institute of Technology.
-                </p>
-                <p>
-                    Posts are written in Markdown, and the site is hosted on GitHub Pages.
-                </p>
-                <a href="mailto:ethantompkins55@yahoo.com?subject=RE: About">Email Me</a>
-            </div>
-        </article>
-    </main>
-    <footer class="flex flex-col-reverse gap-4 sm:flex-row sm:gap-0 my-16 text-xs justify-between">
-        <p>&copy;2025 — Ethan Tompkins</p>
-        <div class="flex gap-2">
-            <a href="https://github.com/ethantompkins/" target="_blank" class="flex items-center">
-                GitHub
-                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link">
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                    <polyline points="15 3 21 3 21 9"></polyline>
-                    <line x1="10" y1="14" x2="21" y2="3"></line>
-                </svg>
-            </a>
-            <a href="/">About</a>
-            <a href="/blogs">Blog</a>
+    </div>
+    <hr class="mt-0">
+    <div id="content">
+        <div class="container">
+            
+            <p>I am currently an Engineer at Pariveda Solutions where I do software development and 
+                solutions architecting. I am currently learning Rust and am reading about software 
+                architecture and design.
+            </p>
+            
+            <p>More about what I am doing is available <a href="/about.html" style="color: #007bff;">here</a>.</p>
         </div>
-    </footer>
+    </div>
+    <div id="footer" class="mb-5">
+        <div class="container">
+        </div>
+    </div>
+    
+    <script src="/assets/js/main.js"></script>
 </body>
 </html>
