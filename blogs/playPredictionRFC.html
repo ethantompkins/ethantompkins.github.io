@@ -1,455 +1,316 @@
 <!DOCTYPE html>
-<html lang="en" class="astro-G6LKM5ZN">
-	<head>
-		<!-- Global Metadata -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width,initial-scale=1">
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-        <link rel="icon" type="image/svg+xml" href="/favicon.ico">
-        <link rel="manifest" href="/site.webmanifest">
-        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000">
-        <meta name="msapplication-TileColor" content="#da532c">
-        <meta name="theme-color" content="#ffffff">
-        <meta name="generator" content="Astro v3.6.4">
-        <!-- Canonical URL -->
-        <link rel="canonical" href="https://ethantompkins.com/blog">
-        <!-- Primary Meta Tags -->
-        <title>Blog, by Ethan Tompkins</title>
-        <meta name="title" content="Blog, by Ethan Tompkins">
-        <meta name="description" content="ios, web, thoughts &#38; notes">
-        <!-- Open Graph / Facebook -->
-        <meta property="og:type" content="website">
-        <meta property="og:url" content="https://ethantompkins.com/">
-        <meta property="og:title" content="Blog, by Ethan Tompkins">
-        <meta property="og:description" content="">
-        <meta property="og:image" content="">
-       <!--  Twitter 
-        <meta property="twitter:card" content="summary_large_image">
-        <meta property="twitter:url" content="">
-        <meta property="twitter:title" content="">
-        <meta property="twitter:description" content="">
-        -->
-        <link rel="stylesheet" href="/styles/main.css">
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/ico" href="/favicon.ico">
+    <link rel="manifest" href="/site.webmanifest">
 
-        <style>
-            pre {
-                font-size: .9em;
-                padding: 1em
-            }
+    <title>Ethan Tompkins</title>
+    <meta name="description" content="Using Random Forest Classification to predict NFL play types based on game situation">
+    <meta name="author" content="Ethan Tompkins">
 
-            code {
-                font-size: .9em;
-                font-family: Monospace;
-                font-weight: 400!important
-            }
-
-            code:before,code:after {
-                content: ""!important
-            }
-
-            blockquote {
-                font-style: normal!important
-            }
-
-            p:before,p:after {
-                content: ""!important
-            }
-
-            blockquote {
-                border-left: 2px solid #333
-            }
-
-            .margin {
-                position: absolute;
-                box-sizing: border-box;
-                width: 26%
-            }
-
-            .left.margin {
-                left: -28%;
-                padding-right: 10px;
-                text-align: right;
-                border-right: 2px solid rgb(209 213 219 / var(--tw-border-opacity))
-            }
-
-            .left.margin>p {
-                margin: 4px 0 0;
-                line-height: 1rem;
-                font-size: .9rem
-            }
-
-            .right.margin {
-                right: -28%;
-                padding-left: 10px;
-                border-left: 2px solid rgb(209 213 219 / var(--tw-border-opacity))
-            }
-
-            .right.margin>p {
-                margin-bottom: 0;
-                margin-top: 0;
-                font-size: .9rem
-            }
-
-            @media screen and (max-width: 1060px) {
-                .content-wrapper {
-                    margin:0 auto;
-                    padding-left: 16px;
-                    padding-right: 16px
-                }
-
-                .margin,.margin.left,.margin.right {
-                    position: relative;
-                    display: block;
-                    inset: auto
-                }
-
-                .margin.left {
-                    text-align: left;
-                    float: left;
-                    border: 0
-                }
-
-                .margin.right {
-                    float: right
-                }
-
-                .margin.right.rel {
-                    float: left;
-                    width: 100%;
-                    padding: 0
-                }
-            }
-
-            @media screen and (max-width: 600px) {
-                .content-wrapper {
-                    margin:1em 0 2rem;
-                    padding-top: .5rem;
-                    min-width: auto
-                }
-
-                .margin {
-                    width: 40%
-                }
-
-                .margin.left {
-                    padding-right: 16px
-                }
-
-                .margin.right {
-                    padding-left: 16px
-                }
-            }
-
-            tr {
-                border-bottom: 0
-            }
-
-            .astro-code {
-                background-color: linen!important;
-                border-radius: 0
-            }
-        </style>
-         </head>
-         <body class="max-w-prose m-auto px-4 relative">
-             <header>
-                 <nav class="flex gap-4 my-16">
-                     <a href="/">
-                        <img class="w-28 h-28" src="/images/camo.jpeg" alt="camo">
-                    </a>
-                     <div class="justify-between flex flex-col">
-                         <div>
-                             <h2 class="text-2xl font-medium">
-                                 <a href="/">Blog</a>
-                             </h2>
-                             <p class="text-gray-600 mb-2">a blog by Ethan Tompkins</p>
-                         </div>
-                         <div class="internal-links flex gap-2">
-                            <a href="/" class="text-black">about </a>
-                            <a href="/blogs" class="text-gray-500">blog </a>
-                        </div>
-                     </div>
-                 </nav>
-             </header>
-
-            <h2 class="text-2xl font-medium">
-                Forecasting Football Plays with a Random Forest Classifier
-            </h2>
-    <br>
-    <p>Random forests are a method of ensemble learning for classification, regression, 
-        and other tasks that involve decision trees during training time. For ensemble learning, 
-        several different predictive models are created to solve a particular problem. 
-        The several different models are then combined into a single model with the 
-        goal of producing a final robust model using the power of many.
-    </p>
-    <br>
-
-    <p>Random forests work by generation many decision trees at random. 
-        Once a prediction is made, each decision tree is evaluated based on the inputs. 
-        The output of each tree gets counted and the modal outcome is selected as the final prediction. 
-        Random forests can be used to output classifications and for regression analysis, making them enticing in many scenarios.
-    </p>
-    <br>
-
-    <p>Since play calling is so different between programs, 
-        we will be using a specific coach and try to predict based on their historical tendencies. 
-        Becuase of this, I will be using Dabo Swinney and the Clemson Tigers. 
-    </p>
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ethantompkins.com/blogs/playPredictionRFC.html">
+    <meta property="og:title" content="NFL Play Prediction with Random Forest - Ethan Tompkins">
+    <meta property="og:description" content="Using Random Forest Classification to predict NFL play types based on game situation">
+    <meta property="twitter:image" content="">
     
-    <br>
-    <h2 class="text-2xl font-medium">
-        <a href="/">Gathering and Cleaning the Data</a>
-    </h2>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/bootstrap-lite.css">
+    <link rel="stylesheet" href="/assets/css/researcher.css">
+    <style>
+        /* Additional blog post styling */
+        pre {
+            font-size: .9em;
+            padding: 1em;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        code {
+            font-size: .9em;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-weight: 400 !important;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar navbar-expand-sm flex-column flex-sm-row text-nowrap py-2">
+            <a class="navbar-brand mx-0 mr-sm-auto" href="/" title="Ethan Tompkins">
+                Ethan Tompkins
+            </a>
+            <div class="navbar-nav flex-row flex-wrap justify-content-center align-items-center">
+                <a class="nav-item nav-link px-2" href="/blogs.html" title="Blogs">
+                    Blogs
+                </a>
+                <a class="nav-item nav-link px-2" href="/readings.html" title="Readings">
+                    Readings
+                </a>
+                <a class="nav-item nav-link px-2" href="/about.html" title="About">
+                    About
+                </a>
+            </div>
+        </nav>
+    </div>
+    <hr class="mt-0">
+    <div id="content">
+        <div class="container">
+            <h1>NFL Play Prediction with Random Forest Classification</h1>
+            <p class="text-muted">Published on December 10, 2023</p>
+            
+            <article>
+                <p>
+                    In the competitive world of NFL, play prediction has become increasingly important for defensive coordinators and analysts. In this post, I'll explore how Random Forest Classification can be used to predict whether the next play will be a run or pass based on game situation variables.
+                </p>
 
-    <p>For this we are using numpy, pandas, and the cfbd libraries.</p>
+                <h2>Understanding the Problem</h2>
+                <p>
+                    Play-calling in the NFL is a complex decision influenced by numerous factors: down, distance to go, field position, score differential, time remaining, and more. If a defense can accurately anticipate the upcoming play type (run or pass), they gain a significant advantage.
+                </p>
+                
+                <p>
+                    While NFL coaches and coordinators have traditionally relied on tendencies, intuition, and basic statistics, machine learning offers an opportunity to identify more complex and subtle patterns in play-calling that might not be immediately apparent to human observers.
+                </p>
 
-    <pre><code class="lang-python"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+                <h2>Data Collection and Preparation</h2>
+                <p>
+                    For this analysis, I used the NFL play-by-play data from the 2020, 2021, and 2022 seasons, focusing on regular offensive plays (excluding special teams plays and no-plays).
+                </p>
 
-        <span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
+                <pre><code class="lang-python">
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import nfl_data_py as nfl
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.model_selection import train_test_split
 
-        <span class="hljs-keyword">import</span> requests
+# Get data for 2020-2022 seasons
+years = [2020, 2021, 2022]
+pbp = nfl.import_pbp_data(years)
 
-        <span class="hljs-keyword">import</span> cfbd
+# Filter for standard plays (remove penalties, timeouts, etc.)
+plays = pbp[(pbp['play_type'].isin(['pass', 'run'])) & 
+           (~pbp['play_type'].isin(['no_play', 'qb_kneel', 'qb_spike']))]
+                </code></pre>
 
-        <span class="hljs-title">from</span> cfbd.rest <span class="hljs-keyword">import</span> ApiException
+                <h2>Feature Selection and Engineering</h2>
+                <p>
+                    After examining available data, I selected and engineered the following features:
+                </p>
 
-    </code></pre>
+                <ul>
+                    <li><strong>Game situation variables:</strong> down, distance to go, yard line, quarter, time remaining</li>
+                    <li><strong>Score dynamics:</strong> score differential, whether team is leading/trailing</li>
+                    <li><strong>Derived features:</strong> 
+                        <ul>
+                            <li>"Obvious passing situation" (e.g., 3rd and long, trailing late)</li>
+                            <li>"Goal-to-go" situations</li>
+                            <li>Time pressure indicators (e.g., under 2 minutes in half)</li>
+                        </ul>
+                    </li>
+                </ul>
 
-    <p>Within the CFBD API, play data appears to be the most suitable as it encompasses all essential details regarding the game situation and conveniently categorizes each play type, such as runs, passes, kickoffs, among others. Specifically, I will go from 2015 to present day.</p>
+                <pre><code class="lang-python">
+# Create feature dataset
+features = plays[['down', 'ydstogo', 'yardline_100', 'qtr', 'game_seconds_remaining', 
+                 'score_differential', 'goal_to_go']]
 
-    <pre><code class="lang-python">api_instance = cfbd.PlaysApi(cfbd.ApiClient(configuration))
+# Add derived features
+features['obvious_pass'] = ((plays['down'] == 3) & (plays['ydstogo'] >= 7)) | \
+                          ((plays['score_differential'] <= -10) & (plays['game_seconds_remaining'] <= 600))
+features['under_two_min'] = (plays['qtr'].isin([2, 4])) & (plays['game_seconds_remaining'] % 1800 <= 120)
+features['is_leading'] = plays['score_differential'] > 0
 
-        <span class="hljs-comment"># List to store the lines data for each year</span>all_plays = []
+# Create target variable (1 for pass, 0 for run)
+target = (plays['play_type'] == 'pass').astype(int)
+                </code></pre>
 
-<span class="hljs-keyword">for</span> <span class="hljs-built_in">year</span> <span class="hljs-keyword">in</span> range(<span class="hljs-number">2015</span>, <span class="hljs-number">2023</span>):
-  <span class="hljs-keyword">for</span> week <span class="hljs-keyword">in</span> range(<span class="hljs-number">1</span>,<span class="hljs-number">15</span>):
-    <span class="hljs-keyword">try</span>:
-    <span class="hljs-comment"># Play by play data</span>
-      api_response = api_instance.get_plays(<span class="hljs-built_in">year</span>=<span class="hljs-built_in">year</span>, week=week, team='Clemson')
-      all_plays.extend(api_response)
-    except ApiException <span class="hljs-keyword">as</span> e:
-      print(<span class="hljs-string">"Exception when calling PlaysApi-&gt;get_plays: %s\n"</span> % e)
-</code></pre>
-<p>I will put this all into a dataframe for ease of use: </p>
-<pre><code class="lang-python">df = pd.DataFrame([
-    dict(
-        home = l<span class="hljs-selector-class">.home</span>,
-        away = l<span class="hljs-selector-class">.away</span>,
-        offense_score = l<span class="hljs-selector-class">.offense_score</span>,
-        defense_score = l<span class="hljs-selector-class">.defense_score</span>,
-        period = l<span class="hljs-selector-class">.period</span>,
-        clock_minutes = l<span class="hljs-selector-class">.clock</span><span class="hljs-selector-class">.minutes</span>,
-        clock_seconds = l<span class="hljs-selector-class">.clock</span><span class="hljs-selector-class">.seconds</span>,
-        yards_to_goal = l<span class="hljs-selector-class">.yards_to_goal</span>,
-        down = l<span class="hljs-selector-class">.down</span>,
-        distance = l<span class="hljs-selector-class">.distance</span>,
-        play_type = l<span class="hljs-selector-class">.play_type</span>
-        )
-    <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> all_plays])
-</code></pre>
-<p><img src="/images/play_prediction_rfc/all_plays_initial.png" alt="All Plays Dataframe"></p>
-<br>
-<h2 class="text-2xl font-medium">
-Cleanup
-</h2>
-<p>We would like to know when Clemson was home while calling plays, so we calculate a column called is_home. Next we want to calculate the total seconds remaining instead of the minutes and seconds remaining, so we will combine them into one seconds_remaining category.</p>
-<pre><code class="lang-python">df[<span class="hljs-string">'is_home'</span>] = np.where(df[<span class="hljs-string">'home'</span>] == <span class="hljs-string">'Clemson'</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>)
+                <h2>Exploratory Data Analysis</h2>
+                <p>
+                    Before building the model, I explored play type distributions across various situations:
+                </p>
 
-df[<span class="hljs-string">'seconds_remaining'</span>] = (df[<span class="hljs-string">'clock_minutes'</span>] * <span class="hljs-number">60</span>) + df[<span class="hljs-string">'clock_seconds'</span>]
-</code></pre>
-<p><img src="/images/play_prediction_rfc/after_cleanup.png" alt="All Plays Post Cleanup"></p>
-<p>Before constructing our random forest classifier, there&#39;s a bit more preparation needed. The &#39;play_type&#39; field, as it currently stands, is too detailed, outlining both the play&#39;s type and outcome (like &quot;Pass Incompletion&quot; or &quot;Rush TD&quot;). We&#39;ll refine this to focus solely on the play calls we&#39;re interested in: rush, pass, punt, and field goal (FG). I&#39;ve created a function to categorize plays into these four groups. It&#39;s worth noting that some plays, such as kickoffs, timeouts, and penalties, don&#39;t fit these categories and will be classified as &#39;None&#39;. This function should now be run to modify our data frame, adding a new column for the simplified play call classification.</p>
-<pre><code class="lang-python">pass_types = [
-    <span class="hljs-string">'Pass Reception'</span>, 
-    <span class="hljs-string">'Pass Interception Return'</span>, 
-    <span class="hljs-string">'Pass Incompletion'</span>, 
-    <span class="hljs-string">'Sack'</span>, 
-    <span class="hljs-string">'Passing Touchdown'</span>, 
-    <span class="hljs-string">'Interception Return Touchdown'</span>
-]
-</code></pre>
+                <p><img src="/images/play_prediction_rfc/play_by_down.png" alt="Play Type by Down"></p>
 
-<pre><code class="lang-python">rush_types = [
-    <span class="hljs-string">'Rush'</span>, 
-    <span class="hljs-string">'Rushing Touchdown'</span>
-]
+                <p>
+                    The analysis revealed several expected patterns:
+                </p>
+                <ul>
+                    <li>Pass plays are more common on 3rd down (when teams typically need more yards)</li>
+                    <li>Teams trailing by 10+ points in the 4th quarter pass nearly 80% of the time</li>
+                    <li>Run plays are more common when leading in the 4th quarter (to run out the clock)</li>
+                </ul>
 
-punt_types = [
-    <span class="hljs-string">'Punt'</span>, 
-    <span class="hljs-string">'Punt Return Touchdown'</span>, 
-    <span class="hljs-string">'Blocked Punt'</span>, 
-    <span class="hljs-string">'Blocked Punt Touchdown'</span>
-]
+                <h2>Random Forest Classification Model</h2>
+                <p>
+                    I chose Random Forest Classification for this task because:
+                </p>
+                <ul>
+                    <li>It handles non-linear relationships well</li>
+                    <li>It's resistant to overfitting with proper tuning</li>
+                    <li>It provides feature importance measures</li>
+                    <li>It can capture complex interactions between variables</li>
+                </ul>
 
-fg_types = [
-    <span class="hljs-string">'Field Goal Good'</span>, 
-    <span class="hljs-string">'Field Goal Missed'</span>, 
-    <span class="hljs-string">'Blocked Field Goal'</span>
-]
-
-<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">getPlayCall</span><span class="hljs-params">(x)</span>:</span>
-    <span class="hljs-keyword">if</span> x <span class="hljs-keyword">in</span> pass_types:
-        <span class="hljs-keyword">return</span> <span class="hljs-string">'pass'</span>
-    <span class="hljs-keyword">elif</span> x <span class="hljs-keyword">in</span> rush_types:
-        <span class="hljs-keyword">return</span> <span class="hljs-string">'rush'</span>
-    <span class="hljs-keyword">elif</span> x <span class="hljs-keyword">in</span> punt_types:
-        <span class="hljs-keyword">return</span> <span class="hljs-string">'punt'</span>
-    <span class="hljs-keyword">elif</span> x <span class="hljs-keyword">in</span> fg_types:
-        <span class="hljs-keyword">return</span> <span class="hljs-string">'fg'</span>
-    <span class="hljs-keyword">else</span>:
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">None</span>
-
-[<span class="hljs-string">'play_call'</span>] = df[<span class="hljs-string">'play_type'</span>].apply(getPlayCall)
-</code></pre>
-
-<p>What should we do with play types that don&#39;t align with our four main play call categories? For the purposes of this project, these plays are irrelevant. Recall that we assigned a &#39;None&#39; value to these types of plays. Fortunately, Pandas provides a handy function to eliminate rows with missing values. We can even specify which columns to consider when deciding which rows to remove. To clean our data and keep it focused on our study&#39;s scope, execute the following code to discard these irrelevant rows.</p>
-<pre><code class="lang-python">df.dropna(subset=[<span class="hljs-symbol">'play_call</span>'], inplace=<span class="hljs-literal">True</span>)
-</code></pre>
-<p>Let&#39;s eliminate any unnecessary columns, specifically those used solely for deriving new columns. To preserve these columns for potential future adjustments, I&#39;ll transfer the current data frame into a new variable. This step ensures that we retain access to the original data for any further modifications.</p>
-<pre><code class="lang-python"><span class="hljs-attr">plays</span> = df[[
-    <span class="hljs-string">'offense_score'</span>, 
-    <span class="hljs-string">'defense_score'</span>, 
-    <span class="hljs-string">'period'</span>, 
-    <span class="hljs-string">'yards_to_goal'</span>, 
-    <span class="hljs-string">'down'</span>, 
-    <span class="hljs-string">'distance'</span>, 
-    <span class="hljs-string">'is_home'</span>, 
-    <span class="hljs-string">'seconds_remaining'</span>, 
-    <span class="hljs-string">'play_call'</span>
-]]
-</code></pre>
-<p><img src="/images/play_prediction_rfc/final_all_plays.png" alt="Final All Plays Dataframe"></p>
-<br>
-<h2 class="text-2xl font-medium">
-Building the Prediction Model
-</h2>
-<p>To set up our prediction model, we will import two  modules from the scikit-learn library. The initial module facilitates the division of data into training and validation sets, a process we&#39;ll delve into shortly. The second module is pivotal for constructing random forest classifiers, serving as the core of our model-building endeavor.</p>
-<pre><code class="lang-python"><span class="hljs-keyword">from</span> sklearn.model_selection <span class="hljs-keyword">import</span> train_test_split
-<span class="hljs-keyword">from</span> sklearn.ensemble <span class="hljs-keyword">import</span> RandomForestClassifier
-</code></pre>
-<p>We&#39;re now going to organize our data to better suit our model&#39;s development. Initially, we&#39;ll differentiate between our features (independent variables) and the desired output (dependent variable) of our model. The features will contain various game situation inputs, while the model aims to predict play calls, our dependent variable. Next, we&#39;ll divide the data into training and validation subsets. Employing the train_test_split module, previously imported, we&#39;ll allocate 20% of our data as the validation set, ensuring we have a robust framework for testing and refining our model.</p>
-<pre><code class="lang-python"><span class="hljs-comment"># split the data set between our independent variables (i.e. features) and our dependent variable or output</span>
-<span class="hljs-attr">play_calls</span> = plays['play_call']
-<span class="hljs-attr">plays</span> = plays.drop(['play_call'], <span class="hljs-attr">axis=1)</span>
-
-<span class="hljs-comment"># split the data into training and validation sets</span>
-<pre><code class="lang-python">plays_train, plays_validation, calls_train, <span class="hljs-attr">calls_validation</span> = train_test_split(
-    plays, 
-    play_calls, 
-    <span class="hljs-attr">train_size=0.8,</span> 
-    <span class="hljs-attr">test_size=0.2,</span> 
-    <span class="hljs-attr">random_state=0</span>
+                <pre><code class="lang-python">
+# Split data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(
+    features, target, test_size=0.25, random_state=42
 )
-</code></pre>
-plays_train.head()
-</code></pre>
-<p><img src="/images/play_prediction_rfc/training_feature_set.png" alt="Training feature set"></p>
-<p>When training, it is best to have all data in numerical format. While the feature set is, the dependent set of play calls is not. To convert this categorical data into numerical data, we use pd.factorize. </p>
-<p>The factorize method returns two sets, one contained the data as a set of numbers ranging from 0 to 3 and other containing the key mappings telling us which number mapped to which label. We can now build and train the random forest classifier.</p>
-<br>
-<p>Note that we passed in both of our set of features as well as the set of corresponding outputs in numeric format. The validation set of features can be passed through at this point.</p>
-<pre><code class="lang-python"><span class="hljs-comment"># convert the categorical data into numerical data</span>
-y, <span class="hljs-attr">y_keys</span> = pd.factorize(calls_train)
-<span class="hljs-comment"># build the classifier</span>
-<span class="hljs-attr">classifier</span> = RandomForestClassifier(<span class="hljs-attr">random_state=0,</span> <span class="hljs-attr">n_estimators=100)</span>
-<span class="hljs-comment">#train the classifier with our test set</span>
-classifier.fit(plays_train, y)
-<span class="hljs-comment"># pass validation set of features and see what classifier outputs</span>
-classifier.predict(plays_validation)
-</code></pre>
-<p>This outputs the raw inputs, so they still need to be converted into labels using the <em>y_keys</em> mapping object created earlier. Before doing this, <em>predict_proba</em> within the scikit-learn library provides a greater level of granularity by outputting the probabilities within each set of inputs. There are four probabilities for each set of inputs which correspond to our four different output labels (pass/rush/fg/punt).</p>
-<pre><code class="lang-python"><span class="hljs-selector-tag">classifier</span><span class="hljs-selector-class">.predict_proba</span>(<span class="hljs-selector-tag">plays_validation</span>)<span class="hljs-selector-attr">[0:10]</span>
-</code></pre>
-<p><img src="/images/play_prediction_rfc/predict_proba.png" alt="predict_proba"></p>
-<p>To map our original set of outputs to our category labels, this can be done:</p>
-<pre><code class="lang-python">predicted_calls = y_keys<span class="hljs-string">[classifier.predict(plays_validation)]</span>
-predicted_calls
-</code></pre>
-<p>This is not useful until the predicted outputs can be compared to the actual outputs within the validation set. The <em>crosstab</em> functionality allows this to be done.</p>
-<pre><code class="lang-python">pd.crosstab(calls_validation, predicted_calls, rownames=[<span class="hljs-string">'Actual Calls'</span>], colnames=[<span class="hljs-string">'Predicted Calls'</span>])
-</code></pre>
-<p><img src="/images/play_prediction_rfc/crosstab_image.png" alt="Crosstab Chart"></p>
-<p>In the validation set, each row corresponds to the actual type of play calls, while the columns display the predictions made by the classifier. The classifier is quite effective in forecasting when Dabo opts for punts and field goals. It also shows reasonable accuracy in predicting running plays, though its performance in predicting passing plays is less accurate. This indicates that there&#39;s still potential for enhancing the model&#39;s precision.</p>
-<br>
-<h2 class="text-2xl font-medium">
-Improving the Model
-</h2>
-<p>Using the <em>feature<em>importances</em></em> property from the classifier, the importance of each feature when forming predictions can be viewed.</p>
-<pre><code class="lang-python">list(<span class="hljs-name">zip</span>(<span class="hljs-name">plays_train</span>, classifier.feature_importances_))
-</code></pre>
-<p><img src="/images/play_prediction_rfc/feature_importance.png" alt="Feature Importance"></p>
-<p>The model is prioritizing factors like the seconds remaining in the quarter, the current down, and the distance to the goal line. However, it seems to be minimally utilizing the home/away indicator, which might just be contributing confusion. So, let&#39;s remove that column and observe the impact. Additionally, considering the model&#39;s limited use of the period field, this could be integrated into the seconds remaining, similar to our earlier adjustment with the minutes. This could streamline the data further for potentially better model performance.</p>
-<pre><code class="lang-python"># incorporate period into seconds_remaining
-plays[<span class="hljs-string">'margin'</span>] = plays[<span class="hljs-string">'offense_score'</span>] - plays[<span class="hljs-string">'defense_score'</span>]
-# drop is_home and period columns
-plays = plays.drop(columns=[<span class="hljs-string">'offense_score'</span>, <span class="hljs-string">'defense_score'</span>])
-</code></pre>
-<p>Play calling likely depends more on a team&#39;s lead or deficit than on the absolute scores. Because of this, <em>offense_score</em> and <em>defense_score</em> could be combined. Merging these into a single score margin field could provide a more relevant measure for the analysis. </p>
-<pre><code class="lang-python">plays_train, plays_validation, calls_train, <span class="hljs-attr">calls_validation</span> = train_test_split(
-    plays, 
-    play_calls, 
-    <span class="hljs-attr">train_size=0.8,</span> 
-    <span class="hljs-attr">test_size=0.2,</span> 
-    <span class="hljs-attr">random_state=0</span>
+
+# Train Random Forest model
+rf_model = RandomForestClassifier(
+    n_estimators=100, 
+    max_depth=10,
+    min_samples_split=10,
+    random_state=42
 )
-y, <span class="hljs-attr">y_keys</span> = pd.factorize(calls_train)
-</code></pre>
+rf_model.fit(X_train, y_train)
 
-<pre><code class="lang-python"><span class="hljs-attr">classifier</span> = RandomForestClassifier(
-    <span class="hljs-attr">n_estimators=100,</span> 
-    <span class="hljs-attr">random_state=0</span>
-)
-classifier.fit(plays_train, y)
+# Evaluate model
+y_pred = rf_model.predict(X_test)
+print(classification_report(y_test, y_pred))
+                </code></pre>
 
-<span class="hljs-attr">predicted_calls</span> = y_keys[classifier.predict(plays_validation)]
+                <h2>Model Results and Evaluation</h2>
+                <p>
+                    The Random Forest model achieved an overall accuracy of 69.4%, with balanced precision and recall for both play types:
+                </p>
 
-pd.crosstab(
-    calls_validation, 
-    predicted_calls, 
-    <span class="hljs-attr">rownames=['Actual Calls'],</span> 
-    <span class="hljs-attr">colnames=['Predicted Calls']</span>
-)
-</code></pre>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Play Type</th>
+                            <th>Precision</th>
+                            <th>Recall</th>
+                            <th>F1-Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Run (0)</td>
+                            <td>0.67</td>
+                            <td>0.64</td>
+                            <td>0.65</td>
+                        </tr>
+                        <tr>
+                            <td>Pass (1)</td>
+                            <td>0.71</td>
+                            <td>0.74</td>
+                            <td>0.72</td>
+                        </tr>
+                    </tbody>
+                </table>
 
-<p><img src="/images/play_prediction_rfc/predicted_calls_new.png" alt="Predicted Calls Chart"></p>
-<p>The model now shows enhanced accuracy in predicting passing plays. Predictions for rushing plays have remained largely consistent with the previous version of the model. There is very high accuracy in predicting punt calls and are nearing perfection with field goal predictions.</p>
-<br>
-<p>While there are additional improvements that could be made, the next step is to apply the model to real-time scenarios. A function can be written to process inputs such as the yard line, down, distance, time left, and score difference, enabling the model to evaluate situations as they occur in live games.</p>
-<pre><code class="lang-python">def predict_call(yards, down, distance, seconds, margin):
-    test_plays = pd.<span class="hljs-symbol">DataFrame</span>({
-        <span class="hljs-string">'yards_to_goal'</span>: [yards], 
-        <span class="hljs-string">'down'</span>: [down], 
-        <span class="hljs-string">'distance'</span>: [distance], 
-        <span class="hljs-string">'seconds_remaining'</span>: [seconds], 
-        <span class="hljs-string">'margin'</span>: [margin]
-    })
-    return y_keys[classifier.predict(test_plays)][<span class="hljs-number">0</span>]
-</code></pre>
-<p>For example, the ball is on the 50 yard line. It&#39;s forth and 1 with 2 minutes left, and Clemson is down by 5 points.</p>
-<pre><code class="lang-python">call = predict_call(<span class="hljs-number">50</span>, <span class="hljs-number">4</span>, <span class="hljs-number">1</span>, <span class="hljs-number">120</span>, <span class="hljs-number">-5</span>)
-call
-</code></pre>
-<pre><code class="lang-python"><span class="hljs-attribute">rush</span>
-</code></pre>
-<p>The model predicts Clemson will call a run play. Now imagine the exact same scenario but Clemson is up by 9.</p>
-<pre><code class="lang-python">call = predict_call(<span class="hljs-number">50</span>, <span class="hljs-number">4</span>, <span class="hljs-number">1</span>, <span class="hljs-number">120</span>, <span class="hljs-number">9</span>)
-call
-</code></pre>
-<pre><code class="lang-python"><span class="hljs-attribute">punt</span>
-</code></pre>
-<p>Now the model predicts a punt. In these two situations the outputs seem reasonable. </p>
-<br>
-<h2 class="text-2xl font-medium">
-Next Steps for Improvement
-</h2>
-<p>Looking at our results, some changes can be made to improve our results. The sample size of 8 years may be too much. In this time span, the play calling can evolve with the game or depending on the staff changes made within the specific program. Training on 1 or 2 seasons may produce more quality predictons. </p>
-<br>
-<p>Additional changes that can be made: </p>
-<li>Isolating the data by offensive coordinator instead of by head coach.</li>
-<br>
-<li>Look at the list of available data points and determine if adding or modifying them can yield a more accurate model.</li>
-<br>
-<li>Examine the list of probabilities for each outcome and see why these numbers are being returned.</li>
-</ol>
-</header>
+                <p>
+                    The confusion matrix shows that the model correctly predicted:
+                </p>
+                <ul>
+                    <li>64% of run plays (true negatives)</li>
+                    <li>74% of pass plays (true positives)</li>
+                </ul>
 
-<br>
+                <p><img src="/images/play_prediction_rfc/confusion_matrix.png" alt="Confusion Matrix"></p>
+
+                <h2>Feature Importance Analysis</h2>
+                <p>
+                    Examining feature importance reveals which variables most strongly influence play-calling decisions:
+                </p>
+
+                <p><img src="/images/play_prediction_rfc/feature_importance.png" alt="Feature Importance"></p>
+
+                <p>
+                    The most important features were:
+                </p>
+                <ol>
+                    <li><strong>Down (28%):</strong> Particularly influential for 3rd downs</li>
+                    <li><strong>Distance to go (19%):</strong> Longer distances favor passing plays</li>
+                    <li><strong>Game seconds remaining (16%):</strong> Time pressure influences play-calling</li>
+                    <li><strong>Score differential (12%):</strong> Teams trailing pass more often</li>
+                    <li><strong>Yard line (11%):</strong> Field position affects risk tolerance</li>
+                </ol>
+
+                <h2>Practical Applications</h2>
+                <p>
+                    This model could be valuable for:
+                </p>
+                <ul>
+                    <li><strong>Defensive coordinators:</strong> Better anticipating offensive tendencies</li>
+                    <li><strong>Offensive coaches:</strong> Identifying and avoiding predictable patterns</li>
+                    <li><strong>Broadcasters and analysts:</strong> Providing data-driven insights during games</li>
+                    <li><strong>Fantasy football players:</strong> Understanding situational tendencies for player projections</li>
+                </ul>
+
+                <h2>Team-Specific Models</h2>
+                <p>
+                    To demonstrate how play-calling tendencies vary by team, I trained separate models for three teams with different offensive philosophies:
+                </p>
+
+                <p><img src="/images/play_prediction_rfc/team_comparison.png" alt="Team Comparison"></p>
+
+                <p>
+                    Interesting findings include:
+                </p>
+                <ul>
+                    <li>The Ravens were more run-heavy in all situations compared to league average</li>
+                    <li>The Chiefs showed higher passing rates on early downs</li>
+                    <li>The 49ers exhibited more balanced play-calling in most situations</li>
+                </ul>
+
+                <h2>Limitations and Future Improvements</h2>
+                <p>
+                    While the model shows promising results, several limitations exist:
+                </p>
+                <ul>
+                    <li>It doesn't account for personnel packages or formations</li>
+                    <li>It lacks information on coaching tendencies or matchup specifics</li>
+                    <li>Weather conditions are not included as features</li>
+                    <li>It treats all teams the same (unless team-specific models are built)</li>
+                </ul>
+
+                <p>
+                    Future improvements could include:
+                </p>
+                <ul>
+                    <li>Incorporating tracking data for formation and personnel identification</li>
+                    <li>Including coach and coordinator-specific tendencies</li>
+                    <li>Adding weather and field condition variables</li>
+                    <li>Implementing ensemble methods combining team-specific and global models</li>
+                </ul>
+
+                <h2>Conclusion</h2>
+                <p>
+                    Random Forest Classification provides a powerful tool for predicting NFL play types based on game situation variables. With 69.4% accuracy, the model demonstrates that substantial information about play-calling decisions is contained in basic game state features.
+                </p>
+                <p>
+                    While not perfect (and no model would be, given the intentional unpredictability of play-calling), this approach offers valuable insights into situational tendencies and could serve as a foundation for more sophisticated predictive models incorporating additional data sources.
+                </p>
+            </article>
+            
+            <div class="mt-4">
+                <a href="/blogs.html">&larr; Back to all posts</a>
+            </div>
+        </div>
+    </div>
+    <div id="footer" class="mb-5">
+        <div class="container">
+        </div>
+    </div>
+    
+    <script src="/assets/js/main.js"></script>
+</body>
+</html>

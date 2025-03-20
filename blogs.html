@@ -3,9 +3,9 @@
 <head>
     <!-- Global Metadata -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/svg+xml" href="/favicon.ico">
+    <link rel="icon" type="image/ico" href="/favicon.ico">
     <link rel="manifest" href="/site.webmanifest">
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000">
     <meta name="msapplication-TileColor" content="#da532c">
@@ -14,18 +14,20 @@
     <!-- Canonical URL -->
     <link rel="canonical" href="https://ethantompkins.com/blogs.html">
     <!-- Primary Meta Tags -->
-    <title>Blog, by Ethan Tompkins</title>
-    <meta name="title" content="Blog, by Ethan Tompkins">
-    <meta name="description" content="">
+    <title>Ethan Tompkins</title>
+    <meta name="description" content="Ethan Tompkins - Personal Site">
+    <meta name="author" content="Ethan Tompkins">
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://ethantompkins.com/blogs.html">
-    <meta property="og:title" content="Blog, by Ethan Tompkins">
-    <meta property="og:description" content="">
+    <meta property="og:title" content="Blog - Ethan Tompkins">
+    <meta property="og:description" content="Ethan Tompkins - Personal Blog">
     <meta property="og:image" content="">
     <!-- Twitter -->
     <meta property="twitter:image" content="">
-    <link rel="stylesheet" href="/styles/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/bootstrap-lite.css">
+    <link rel="stylesheet" href="/assets/css/researcher.css">
     <style>
         pre {
             font-size: .9em;
@@ -125,97 +127,65 @@
     </style>
 </head>
 <body class="max-w-prose m-auto px-4 relative">
-    <header>
-        <nav class="flex gap-4 my-16">
-            <a href="/">
-                <img class="w-28 h-28" src="images/camo.jpeg" alt="shapes">
+    <div class="container">
+        <nav class="navbar navbar-expand-sm flex-column flex-sm-row text-nowrap py-2">
+            <a class="navbar-brand mx-0 mr-sm-auto" href="/" title="Ethan Tompkins">
+                Ethan Tompkins
             </a>
-            <div class="justify-between flex flex-col">
-                <div>
-                    <h2 class="text-2xl font-medium">
-                        <a href="/">Blog</a>
-                    </h2>
-                    <p class="text-gray-600 mb-2">a blog by Ethan Tompkins</p>
-                </div>
-                <div class="internal-links flex gap-2">
-                    <a href="/" class="text-gray-500">about </a>
-                    <a href="/blogs" class="text-black">blog </a>
-                </div>
+            <div class="navbar-nav flex-row flex-wrap justify-content-center align-items-center">
+                <a class="nav-item nav-link px-2" href="/blogs.html" title="Blogs">
+                    Blogs
+                </a>
+                <a class="nav-item nav-link px-2" href="/readings.html" title="Readings">
+                    Readings
+                </a>
+                <a class="nav-item nav-link px-2" href="/about.html" title="About">
+                    About
+                </a>
             </div>
         </nav>
-    </header>
-    <main>
-        <section>
-            <ul>
-                <li class="mb-8">
-                    <a href="/blogs/percentageRunOffense.html">
-                        <h1 class="text-xl font-bold hover:underline">Percentage Run Offense</h1>
-                    </a>
-                    <p class="mb-2 text-gray-700">Seeing the best and worst of run game percentage in 2023.</p>
-                    <a href="/blogs/percentageRunOffense.html" class="text-blue-600 hover:text-blue-500 font-medium">Read post →</a>
-                </li>
-            </ul>
-            <ul>
-                <li class="mb-8">
-                    <a href="/blogs/winsWithEpa.html">
-                        <h1 class="text-xl font-bold hover:underline">Exploring Wins based on Season EPA Metrics</h1>
-                    </a>
-                    <p class="mb-2 text-gray-700">Seeing which metrics can be used to predict wins in the NFL.</p>
-                    <a href="/blogs/winsWithEpa.html" class="text-blue-600 hover:text-blue-500 font-medium">Read post →</a>
-                </li>
-            </ul>
-            <ul>
-                <li class="mb-8">
-                    <a href="/blogs/receivingPositions.html">
-                        <h1 class="text-xl font-bold hover:underline">Receiving by Position in the NFL</h1>
-                    </a>
-                    <p class="mb-2 text-gray-700">Breakdown of the NFL Receiving Game by Position.</p>
-                    <a href="/blogs/receivingPositions.html" class="text-blue-600 hover:text-blue-500 font-medium">Read post →</a>
-                </li>
-            </ul>
-            <ul>
-                <li class="mb-8">
-                    <a href="/blogs/sackPredictionLR.html">
-                        <h1 class="text-xl font-bold hover:underline">NFL Sack Probability with Logistic Regression </h1>
-                    </a>
-                    <p class="mb-2 text-gray-700">Predicting sack probability every down with logistic regression.</p>
-                    <a href="/blogs/sackPredictionLR.html" class="text-blue-600 hover:text-blue-500 font-medium">Read post →</a>
-                </li>
-            </ul>
-            <ul>
-                <li class="mb-8">
-                    <a href="/blogs/propPredictionBootstrap.html">
-                        <h1 class="text-xl font-bold hover:underline">Taking Positive Expected Value Prop Bets</h1>
-                    </a>
-                    <p class="mb-2 text-gray-700">Finding underlying value in prop bets with bootstrap resampling.</p>
-                    <a href="/blogs/propPredictionBootstrap.html" class="text-blue-600 hover:text-blue-500 font-medium">Read post →</a>
-                </li>
-            </ul>
-            <ul>
-                <li class="mb-8">
-                    <a href="/blogs/playPredictionRFC.html">
-                        <h1 class="text-xl font-bold hover:underline">Forecasting Football Plays with a Random Forest Classifier </h1>
-                    </a>
-                    <p class="mb-2 text-gray-700">Predicting college football plays with a Random Forest Classifier.</p>
-                    <a href="/blogs/playPredictionRFC.html" class="text-blue-600 hover:text-blue-500 font-medium">Read post →</a>
-                </li>
-            </ul>
-        </section>
-    </main>
-    <footer class="flex flex-col-reverse gap-4 sm:flex-row sm:gap-0 my-16 text-xs justify-between">
-        <p>&copy;2025 — Ethan Tompkins</p>
-        <div class="flex gap-2">
-            <a href="https://github.com/ethantompkins/" target="_blank" class="flex items-center">
-                GitHub
-                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link">
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                    <polyline points="15 3 21 3 21 9"></polyline>
-                    <line x1="10" y1="14" x2="21" y2="3"></line>
-                </svg>
-            </a>
-            <a href="/">About</a>
-            <a href="/blogs.html">Blog</a>
+    </div>
+    <hr class="mt-0">
+    <div id="content">
+        <div class="container">
+            <h3 id="blog">Blogs</h3>
+            <p>Things I wrote about</p>
+            
+            <table>
+                <tbody>
+                    <tr>
+                        <td style="text-align:left"><a href="/blogs/percentageRunOffense.html">Percentage Run Offense</a></td>
+                        <td style="text-align:right"><!--03-14-2024--></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:left"><a href="/blogs/winsWithEpa.html">Exploring Wins based on Season EPA Metrics</a></td>
+                        <td style="text-align:right"><!--02-28-2024--></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:left"><a href="/blogs/receivingPositions.html">Receiving by Position in the NFL</a></td>
+                        <td style="text-align:right"><!--02-15-2024--></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:left"><a href="/blogs/sackPredictionLR.html">NFL Sack Probability with Logistic Regression</a></td>
+                        <td style="text-align:right"><!--02-01-2024--></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:left"><a href="/blogs/propPredictionBootstrap.html">Taking Positive Expected Value Prop Bets</a></td>
+                        <td style="text-align:right"><!--01-15-2024--></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:left"><a href="/blogs/playPredictionRFC.html">NFL Play Prediction with Random Forest</a></td>
+                        <td style="text-align:right"><!--01-01-2024--></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-    </footer>
+    </div>
+    <div id="footer" class="mb-5">
+        <div class="container">
+        </div>
+    </div>
+    
+    <script src="/assets/js/main.js"></script>
 </body>
 </html> 
