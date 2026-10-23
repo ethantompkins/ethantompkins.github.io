@@ -7,44 +7,22 @@
     <link rel="icon" type="image/ico" href="/favicon.ico">
     <link rel="manifest" href="/site.webmanifest">
 
-    <title>Ethan Tompkins</title>
-    <meta name="description" content="Using Random Forest Classification to predict NFL play types based on game situation">
+    <title>Run/Pass Prediction with a Random Forest - Ethan Tompkins</title>
+    <meta name="description" content="A random forest trained on 100,000 plays predicts run vs. pass correctly 74% of the time in 2023, and one pre-snap clue does most of the work.">
     <meta name="author" content="Ethan Tompkins">
 
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://ethantompkins.com/blogs/playPredictionRFC.html">
-    <meta property="og:title" content="NFL Play Prediction with Random Forest - Ethan Tompkins">
-    <meta property="og:description" content="Using Random Forest Classification to predict NFL play types based on game situation">
+    <meta property="og:title" content="Run/Pass Prediction with a Random Forest - Ethan Tompkins">
+    <meta property="og:description" content="A random forest trained on 100,000 plays predicts run vs. pass correctly 74% of the time in 2023, and one pre-snap clue does most of the work.">
     <meta property="twitter:image" content="">
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/bootstrap-lite.css">
     <link rel="stylesheet" href="/assets/css/researcher.css">
-    <style>
-        /* Additional blog post styling */
-        pre {
-            font-size: .9em;
-            padding: 1em;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-            overflow-x: auto;
-        }
-        
-        code {
-            font-size: .9em;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            font-weight: 400 !important;
-        }
-        
-        img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 1rem auto;
-        }
-    </style>
+    <link rel="stylesheet" href="/assets/css/blog.css">
 </head>
-<body>
+<body data-charts="/assets/data/blog/playPredictionRFC.json">
     <div class="container">
         <nav class="navbar navbar-expand-sm flex-column flex-sm-row text-nowrap py-2">
             <a class="navbar-brand mx-0 mr-sm-auto" href="/" title="Ethan Tompkins">
@@ -66,250 +44,218 @@
     <hr class="mt-0">
     <div id="content">
         <div class="container">
-            <h1>NFL Play Prediction with Random Forest Classification</h1>
-            
-            <article>
+            <article class="post">
+                <header class="post-header">
+                    <h1>Run/Pass Prediction with a Random Forest</h1>
+                    <p class="post-date"><time datetime="2023-09-24">September 2023</time></p>
+                    <p class="post-intro">
+                        Down, distance, score, and clock tell a defense a lot about whether a run or a pass is coming. I trained a random forest
+                        on three seasons of play-by-play and tested it on every 2023 play to measure exactly how much.
+                    </p>
+                </header>
+
+                <h2>Why a random forest</h2>
                 <p>
-                    In the competitive world of NFL, play prediction has become increasingly important for defensive coordinators and analysts. In this post, I'll explore how Random Forest Classification can be used to predict whether the next play will be a run or pass based on game situation variables.
+                    Play-calling is full of interactions. 3rd &amp; 2 means something very different when a team is up 14 with three minutes left than when it's
+                    down 4 in the second quarter. A <strong>random forest</strong> handles this without hand-built interaction terms: it trains hundreds of
+                    decision trees on random subsets of the plays and features, then averages their votes. It captures non-linear thresholds (like "it's 3rd
+                    and more than 2") on its own, and it outputs a probability rather than just a label.
+                </p>
+                <p>
+                    The previous version of this project modeled Clemson's play-calling with college data. This one uses every NFL team, trains
+                    on <strong>100,082</strong> designed runs and dropbacks from 2020&ndash;2022, and tests on all <strong>33,836</strong> from 2023. Testing on a
+                    later season, instead of a random split, is the honest version: the model only knows what a team could have known going into that season.
                 </p>
 
-                <h2>Understanding the Problem</h2>
-                <p>
-                    Play-calling in the NFL is a complex decision influenced by numerous factors: down, distance to go, field position, score differential, time remaining, and more. If a defense can accurately anticipate the upcoming play type (run or pass), they gain a significant advantage.
-                </p>
-                
-                <p>
-                    While NFL coaches and coordinators have traditionally relied on tendencies, intuition, and basic statistics, machine learning offers an opportunity to identify more complex and subtle patterns in play-calling that might not be immediately apparent to human observers.
-                </p>
+                <h2>The tendencies the model learns</h2>
 
-                <h2>Data Collection and Preparation</h2>
-                <p>
-                    For this analysis, I used the NFL play-by-play data from the 2020, 2021, and 2022 seasons, focusing on regular offensive plays (excluding special teams plays and no-plays).
-                </p>
-
-                <pre><code class="lang-python">
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-import nfl_data_py as nfl
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, confusion_matrix
-from sklearn.model_selection import train_test_split
-
-# Get data for 2020-2022 seasons
-years = [2020, 2021, 2022]
-pbp = nfl.import_pbp_data(years)
-
-# Filter for standard plays (remove penalties, timeouts, etc.)
-plays = pbp[(pbp['play_type'].isin(['pass', 'run'])) & 
-           (~pbp['play_type'].isin(['no_play', 'qb_kneel', 'qb_spike']))]
-                </code></pre>
-
-                <h2>Feature Selection and Engineering</h2>
-                <p>
-                    After examining available data, I selected and engineered the following features:
-                </p>
-
-                <ul>
-                    <li><strong>Game situation variables:</strong> down, distance to go, yard line, quarter, time remaining</li>
-                    <li><strong>Score dynamics:</strong> score differential, whether team is leading/trailing</li>
-                    <li><strong>Derived features:</strong> 
-                        <ul>
-                            <li>"Obvious passing situation" (e.g., 3rd and long, trailing late)</li>
-                            <li>"Goal-to-go" situations</li>
-                            <li>Time pressure indicators (e.g., under 2 minutes in half)</li>
-                        </ul>
-                    </li>
-                </ul>
-
-                <pre><code class="lang-python">
-# Create feature dataset
-features = plays[['down', 'ydstogo', 'yardline_100', 'qtr', 'game_seconds_remaining', 
-                 'score_differential', 'goal_to_go']]
-
-# Add derived features
-features['obvious_pass'] = ((plays['down'] == 3) & (plays['ydstogo'] >= 7)) | \
-                          ((plays['score_differential'] <= -10) & (plays['game_seconds_remaining'] <= 600))
-features['under_two_min'] = (plays['qtr'].isin([2, 4])) & (plays['game_seconds_remaining'] % 1800 <= 120)
-features['is_leading'] = plays['score_differential'] > 0
-
-# Create target variable (1 for pass, 0 for run)
-target = (plays['play_type'] == 'pass').astype(int)
-                </code></pre>
-
-                <h2>Exploratory Data Analysis</h2>
-                <p>
-                    Before building the model, I explored play type distributions across various situations:
-                </p>
-
-                <p><img src="/images/play_prediction_rfc/play_by_down.png" alt="Play Type by Down"></p>
+                <figure class="fig">
+                    <div class="chart" data-chart="downDistance"></div>
+                    <figcaption>Figure 1: League pass rate by down and distance, 2020–2023. Scrambles and sacks count as pass calls.</figcaption>
+                </figure>
 
                 <p>
-                    The analysis revealed several expected patterns:
+                    The jump from 3rd &amp; 1&ndash;2 (41% pass) to 3rd &amp; 3&ndash;4 (85%) is the sharpest edge on the grid, and exactly the kind of threshold
+                    a tree-based model is good at finding. Early downs are where play-callers mix it up: 1st &amp; 10 is close to a coin flip.
                 </p>
-                <ul>
-                    <li>Pass plays are more common on 3rd down (when teams typically need more yards)</li>
-                    <li>Teams trailing by 10+ points in the 4th quarter pass nearly 80% of the time</li>
-                    <li>Run plays are more common when leading in the 4th quarter (to run out the clock)</li>
-                </ul>
 
-                <h2>Random Forest Classification Model</h2>
+                <h2>Features</h2>
                 <p>
-                    I chose Random Forest Classification for this task because:
+                    The base model sees only the game situation: down, distance, field position, quarter, time left in the half and game, score differential,
+                    goal-to-go, home/away, and two derived flags: an "obvious pass" flag (3rd &amp; 7+, or down 10+ in the last ten minutes) and a two-minute-drill flag. A second model adds two things a
+                    defense can see before the snap: <strong>shotgun formation</strong> and <strong>no-huddle</strong>.
                 </p>
-                <ul>
-                    <li>It handles non-linear relationships well</li>
-                    <li>It's resistant to overfitting with proper tuning</li>
-                    <li>It provides feature importance measures</li>
-                    <li>It can capture complex interactions between variables</li>
-                </ul>
 
-                <pre><code class="lang-python">
-# Split data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(
-    features, target, test_size=0.25, random_state=42
-)
+                <pre><code>from sklearn.ensemble import RandomForestClassifier
 
-# Train Random Forest model
-rf_model = RandomForestClassifier(
-    n_estimators=100, 
-    max_depth=10,
-    min_samples_split=10,
-    random_state=42
-)
-rf_model.fit(X_train, y_train)
+plays["obvious_pass"] = (((plays.down == 3) & (plays.ydstogo >= 7)) |
+                         ((plays.score_differential <= -10) & (plays.game_seconds_remaining <= 600))).astype(int)
+plays["two_minute"] = (plays.half_seconds_remaining <= 120).astype(int)
+plays["is_home"] = (plays.posteam == plays.home_team).astype(int)
 
-# Evaluate model
-y_pred = rf_model.predict(X_test)
-print(classification_report(y_test, y_pred))
-                </code></pre>
+SITUATION = ["down", "ydstogo", "yardline_100", "qtr", "half_seconds_remaining",
+             "game_seconds_remaining", "score_differential", "goal_to_go",
+             "obvious_pass", "two_minute", "is_home"]
+PRESNAP = SITUATION + ["shotgun", "no_huddle"]
 
-                <h2>Model Results and Evaluation</h2>
+train, test = plays[plays.season < 2023], plays[plays.season == 2023]
+rf = RandomForestClassifier(n_estimators=300, max_depth=12, min_samples_leaf=20,
+                            n_jobs=-1, random_state=42)
+rf.fit(train[PRESNAP], train.is_pass)
+p_pass = rf.predict_proba(test[PRESNAP])[:, 1]
+accuracy = ((p_pass >= 0.5) == test.is_pass).mean()   # 0.736</code></pre>
+
+                <h2>Results</h2>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="accuracy"></div>
+                    <figcaption>Figure 2: Accuracy on every 2023 run/pass play. Gray bars are benchmarks. nflfastR's <code>xpass</code> is a published pass-probability model built on similar inputs.</figcaption>
+                </figure>
+
                 <p>
-                    The Random Forest model achieved an overall accuracy of 69.4%, with balanced precision and recall for both play types:
+                    The situational random forest (70.3%) lands essentially on top of nflfastR's <code>xpass</code> model (70.6%). That's a useful sanity check:
+                    two independently built models with similar inputs reach the same ceiling, which suggests it's the limit of what game state can tell you.
+                </p>
+                <p>
+                    Passes are easier to call than runs. On the situational model, pass precision and recall are both about 0.76, against about 0.62 for runs.
+                    Offenses run on predictable downs, but they also throw on downs that look like running downs, which is the point of play-action.
                 </p>
 
-                <table class="table table-bordered">
+                <div class="table-scroll">
+                <table class="data-table">
                     <thead>
-                        <tr>
-                            <th>Play Type</th>
-                            <th>Precision</th>
-                            <th>Recall</th>
-                            <th>F1-Score</th>
-                        </tr>
+                        <tr><th>Situational model, 2023</th><th class="num">Precision</th><th class="num">Recall</th><th class="num">F1</th><th class="num">Plays</th></tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Run (0)</td>
-                            <td>0.67</td>
-                            <td>0.64</td>
-                            <td>0.65</td>
-                        </tr>
-                        <tr>
-                            <td>Pass (1)</td>
-                            <td>0.71</td>
-                            <td>0.74</td>
-                            <td>0.72</td>
-                        </tr>
+                        <tr><td>Run</td><td class="num">0.62</td><td class="num">0.63</td><td class="num">0.62</td><td class="num">13,141</td></tr>
+                        <tr><td>Pass</td><td class="num">0.76</td><td class="num">0.75</td><td class="num">0.76</td><td class="num">20,695</td></tr>
                     </tbody>
                 </table>
+                </div>
 
+                <h2>What the model actually uses</h2>
                 <p>
-                    The confusion matrix shows that the model correctly predicted:
-                </p>
-                <ul>
-                    <li>64% of run plays (true negatives)</li>
-                    <li>74% of pass plays (true positives)</li>
-                </ul>
-
-                <p><img src="/images/play_prediction_rfc/confusion_matrix.png" alt="Confusion Matrix"></p>
-
-                <h2>Feature Importance Analysis</h2>
-                <p>
-                    Examining feature importance reveals which variables most strongly influence play-calling decisions:
+                    Permutation importance shuffles one feature at a time on the 2023 data and measures how much accuracy drops. It's a more honest measure than
+                    the built-in "impurity" importance, which tends to overrate continuous features like the clock.
                 </p>
 
-                <p><img src="/images/play_prediction_rfc/feature_importance.png" alt="Feature Importance"></p>
+                <figure class="fig">
+                    <div class="chart" data-chart="importance"></div>
+                    <figcaption>Figure 3: Permutation importance (accuracy lost when a feature is shuffled). Full pre-snap model, 20,000 sampled 2023 plays, 5 repeats.</figcaption>
+                </figure>
 
                 <p>
-                    The most important features were:
-                </p>
-                <ol>
-                    <li><strong>Down (28%):</strong> Particularly influential for 3rd downs</li>
-                    <li><strong>Distance to go (19%):</strong> Longer distances favor passing plays</li>
-                    <li><strong>Game seconds remaining (16%):</strong> Time pressure influences play-calling</li>
-                    <li><strong>Score differential (12%):</strong> Teams trailing pass more often</li>
-                    <li><strong>Yard line (11%):</strong> Field position affects risk tolerance</li>
-                </ol>
-
-                <h2>Practical Applications</h2>
-                <p>
-                    This model could be valuable for:
-                </p>
-                <ul>
-                    <li><strong>Defensive coordinators:</strong> Better anticipating offensive tendencies</li>
-                    <li><strong>Offensive coaches:</strong> Identifying and avoiding predictable patterns</li>
-                    <li><strong>Broadcasters and analysts:</strong> Providing data-driven insights during games</li>
-                    <li><strong>Fantasy football players:</strong> Understanding situational tendencies for player projections</li>
-                </ul>
-
-                <h2>Team-Specific Models</h2>
-                <p>
-                    To demonstrate how play-calling tendencies vary by team, I trained separate models for three teams with different offensive philosophies:
+                    Shotgun dominates because it partly <em>encodes</em> the play call. Teams line up in shotgun on 3rd &amp; long because they're passing. The
+                    situational features overlap heavily (down, distance, and the "obvious pass" flag all describe the same thing), so shuffling any one of them
+                    costs little while the others cover for it. Taken together they're worth the full 9 points over baseline.
                 </p>
 
-                <p><img src="/images/play_prediction_rfc/team_comparison.png" alt="Team Comparison"></p>
+                <h2>Can you trust the probabilities?</h2>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="calibration"></div>
+                    <figcaption>Figure 4: Calibration: predicted vs. actual pass rate, 2023.</figcaption>
+                </figure>
 
                 <p>
-                    Interesting findings include:
+                    Because the probabilities are reasonably well calibrated, they're more useful than the yes/no prediction. Here's the model on a few situations:
                 </p>
-                <ul>
-                    <li>The Ravens were more run-heavy in all situations compared to league average</li>
-                    <li>The Chiefs showed higher passing rates on early downs</li>
-                    <li>The 49ers exhibited more balanced play-calling in most situations</li>
-                </ul>
 
-                <h2>Limitations and Future Improvements</h2>
+                <figure class="fig">
+                    <div class="chart" data-chart="scenarios"></div>
+                    <figcaption>Figure 5: Predicted pass probability in example situations. Full pre-snap model. Under center unless the label says shotgun; 3rd-down scenarios assume shotgun.</figcaption>
+                </figure>
+
+                <h2>Which teams were most predictable?</h2>
                 <p>
-                    While the model shows promising results, several limitations exist:
+                    Running the same league-wide model on each 2023 offense shows which teams followed league tendencies and which broke from them.
                 </p>
-                <ul>
-                    <li>It doesn't account for personnel packages or formations</li>
-                    <li>It lacks information on coaching tendencies or matchup specifics</li>
-                    <li>Weather conditions are not included as features</li>
-                    <li>It treats all teams the same (unless team-specific models are built)</li>
-                </ul>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="teams"></div>
+                    <figcaption>Figure 6: Model accuracy by offense, 2023. what the model expected. A negative gap means the team ran more than expected.</figcaption>
+                </figure>
 
                 <p>
-                    Future improvements could include:
+                    The least predictable offenses mostly share one trait: they ran more than the situation called for. Atlanta threw 9.6 points less often than
+                    the model expected, Indianapolis 8.3 points, and Philadelphia 7.3 points. Philadelphia's quarterback run game, including designed Jalen Hurts runs and the "tush push" sneak, is a likely part of
+                    its gap. A league-wide model can't know that a specific team has a specialty play. The obvious fix is to tell it which team is on offense, which the next section tests.
                 </p>
-                <ul>
-                    <li>Incorporating tracking data for formation and personnel identification</li>
-                    <li>Including coach and coordinator-specific tendencies</li>
-                    <li>Adding weather and field condition variables</li>
-                    <li>Implementing ensemble methods combining team-specific and global models</li>
-                </ul>
 
-                <h2>Conclusion</h2>
+                <h2>Other models, and does knowing the team help?</h2>
                 <p>
-                    Random Forest Classification provides a powerful tool for predicting NFL play types based on game situation variables. With 69.4% accuracy, the model demonstrates that substantial information about play-calling decisions is contained in basic game state features.
+                    Two natural questions follow. First, is the random forest the right tool, or would a simpler or a stronger model do as well? Second,
+                    since teams clearly differ, does telling the model which team is on offense improve it? I tested both on the same 2023 holdout, with the
+                    same pre-snap features.
                 </p>
                 <p>
-                    While not perfect (and no model would be, given the intentional unpredictability of play-calling), this approach offers valuable insights into situational tendencies and could serve as a foundation for more sophisticated predictive models incorporating additional data sources.
+                    For team information I tried two versions. One adds a one-hot column per team, so the model can learn each franchise's tendencies directly.
+                    The other adds a single number: the team's <strong>pass rate over expected from the previous season</strong>, a measure of how pass-happy its
+                    play-caller is once situation is accounted for. That second version can generalize to coaching changes, because it updates each year.
                 </p>
+
+<pre><code>from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+from xgboost import XGBClassifier
+
+# Last season's pass rate over expected, joined onto each play
+proe = (plays.groupby(["season", "posteam"])
+             .apply(lambda g: g["pass"].mean() - g.xpass.mean())
+             .rename("prior_proe").reset_index())
+proe["season"] += 1                                   # 2022's value describes the 2023 team
+train = train.merge(proe, on=["season", "posteam"], how="left")
+test = test.merge(proe, on=["season", "posteam"], how="left")
+
+logit = make_pipeline(StandardScaler(), LogisticRegression(max_iter=2000))
+xgb = XGBClassifier(n_estimators=400, max_depth=6, learning_rate=0.05,
+                    subsample=0.8, colsample_bytree=0.8)
+rf_proe = RandomForestClassifier(n_estimators=300, max_depth=12, min_samples_leaf=20)
+
+for model, cols in [(logit, PRESNAP), (xgb, PRESNAP), (rf_proe, PRESNAP + ["prior_proe"])]:
+    model.fit(train[cols], train.is_pass)
+    acc = ((model.predict_proba(test[cols])[:, 1] >= 0.5) == test.is_pass).mean()</code></pre>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="variants"></div>
+                    <figcaption>Figure 7: Accuracy on every 2023 run/pass play by model and feature set. The axis starts at 70% to make the small differences visible.</figcaption>
+                </figure>
+
+                <p>
+                    <strong>Model family matters a little.</strong> Logistic regression reaches 72.1%. It can't easily represent thresholds like "3rd and more than 2"
+                    without hand-built features. The random forest gets 73.6%, and XGBoost, which builds trees one after another to correct the previous trees'
+                    mistakes, does best at <strong>74.2%</strong>, with the best AUC and Brier score too.
+                </p>
+                <p>
+                    <strong>Team information didn't help at all.</strong> The one-hot team columns made the model <em>worse</em> (73.1%): it learned each franchise's
+                    2020&ndash;22 habits, and those didn't carry over to 2023 coaching staffs. Last season's PROE was neutral for the random forest (73.5% vs. 73.6%)
+                    and slightly hurt XGBoost. Even Atlanta, which had the second-most run-heavy prior season in the league (&minus;13.7% in 2022, behind only Chicago) and was the most
+                    run-heavy team in 2023, gained only 0.6 points of accuracy from it. Team tendencies are real, but they're small next to down, distance,
+                    and formation, and they shift every time a coordinator changes.
+                </p>
+
+                <h2>Limitations</h2>
+                    <ul>
+                        <li>No personnel or formation detail beyond shotgun/no-huddle. Knowing whether it's 11 or 22 personnel would very likely add accuracy.</li>
+                        <li>Scrambles and sacks are labeled as passes (they were pass calls), but RPOs are labeled by what happened, not what was called.</li>
+                        <li>Team effects were tested with team identity and last season's PROE only. A within-season version, updated week by week, would track coaching changes faster.</li>
+                    </ul>
+
+                <h2>Data and code</h2>
+                    <p>
+                        Play-by-play from <a href="https://github.com/nflverse/nflverse-data">nflverse</a>, regular seasons only, limited to plays whose type is run or pass
+                        (excluding kneels, spikes, and plays wiped out by penalty). The 2019 season is used only to compute the prior-season PROE for 2020 teams. Every number and chart comes from
+                        <a href="https://github.com/ethantompkins/ethantompkins.github.io/blob/main/analysis/play_prediction.py"><code>analysis/play_prediction.py</code></a>.
+                    </p>
+                <a href="/blogs.html" class="back-link">&larr; Back to all posts</a>
             </article>
-            
-            <div class="mt-4">
-                <a href="/blogs.html">&larr; Back to all posts</a>
-            </div>
         </div>
     </div>
     <div id="footer" class="mb-5">
         <div class="container">
         </div>
     </div>
-    
+    <script src="/assets/js/charts.js"></script>
     <script src="/assets/js/main.js"></script>
 </body>
 </html>

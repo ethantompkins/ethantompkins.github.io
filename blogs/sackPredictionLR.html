@@ -7,44 +7,22 @@
     <link rel="icon" type="image/ico" href="/favicon.ico">
     <link rel="manifest" href="/site.webmanifest">
 
-    <title>Ethan Tompkins</title>
-    <meta name="description" content="Predicting sack probability every down with logistic regression">
+    <title>Sack Prediction with Logistic Regression - Ethan Tompkins</title>
+    <meta name="description" content="Logistic regression, random forest, and XGBoost models of sack probability on 81,000 NFL dropbacks, and why pre-snap information only gets you so far.">
     <meta name="author" content="Ethan Tompkins">
 
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://ethantompkins.com/blogs/sackPredictionLR.html">
-    <meta property="og:title" content="NFL Sack Probability with Logistic Regression - Ethan Tompkins">
-    <meta property="og:description" content="Predicting sack probability every down with logistic regression">
-    
+    <meta property="og:title" content="Sack Prediction with Logistic Regression - Ethan Tompkins">
+    <meta property="og:description" content="Logistic regression, random forest, and XGBoost models of sack probability on 81,000 NFL dropbacks, and why pre-snap information only gets you so far.">
     <meta property="twitter:image" content="">
+
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/bootstrap-lite.css">
     <link rel="stylesheet" href="/assets/css/researcher.css">
-    <style>
-        /* Additional blog post styling */
-        pre {
-            font-size: .9em;
-            padding: 1em;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-            overflow-x: auto;
-        }
-        
-        code {
-            font-size: .9em;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            font-weight: 400 !important;
-        }
-        
-        img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 1rem auto;
-        }
-    </style>
+    <link rel="stylesheet" href="/assets/css/blog.css">
 </head>
-<body>
+<body data-charts="/assets/data/blog/sackPredictionLR.json">
     <div class="container">
         <nav class="navbar navbar-expand-sm flex-column flex-sm-row text-nowrap py-2">
             <a class="navbar-brand mx-0 mr-sm-auto" href="/" title="Ethan Tompkins">
@@ -66,130 +44,214 @@
     <hr class="mt-0">
     <div id="content">
         <div class="container">
-            <h1>NFL Sack Probability with Logistic Regression</h1>
-            
-            <article>
+            <article class="post">
+                <header class="post-header">
+                    <h1>Sack Prediction with Logistic Regression</h1>
+                    <p class="post-date"><time datetime="2023-08-11">August 2023</time></p>
+                    <p class="post-intro">
+                        I trained three models on 60,000 dropbacks to predict sacks from what's visible before the snap, then tested them on the 2023 season.
+                        They found real signal, but much less than the usual metrics make it look.
+                    </p>
+                </header>
+
+                <h2>The setup</h2>
                 <p>
-                    In the NFL, quarterback sacks can be game-changing plays that dramatically affect the outcome of games. Understanding the factors that contribute to sacks is crucial for both defensive coordinators looking to pressure opposing quarterbacks and offensive coaches trying to protect their own. This analysis explores the use of logistic regression to predict sack probability on passing plays.
+                    A sack is a quarterback tackled behind the line before he can throw. Each one costs an offense roughly 1.5&ndash;2 expected points,
+                    which makes sacks among the most damaging plays a defense can make. If a defensive coordinator could pick the snaps most likely to end in a sack, or an offensive
+                    coordinator could pick the snaps that need extra protection, that would be worth a lot.
+                </p>
+                <p>
+                    The data is every regular-season dropback from 2020&ndash;2023 that has participation data: the number of pass rushers and defenders
+                    in the box, charted from broadcast film. That comes to 81,390 plays. The models train on 2020&ndash;2022 and are tested only on 2023,
+                    so every result below is out-of-sample and in time order, the way a team would actually use it.
                 </p>
 
-                <h2>Exploratory Data Analysis</h2>
+                <h2>Look at rates, not counts</h2>
                 <p>
-                    Before building the model, let's first explore the data to understand the distribution of sacks across different game situations.
+                    A common mistake in sack analysis is to chart sack <em>counts</em>. Sending four rushers produces by far the most sacks, but that's only
+                    because teams rush four on 64% of dropbacks. The useful question is the <em>rate</em>.
                 </p>
 
-                <h3>Sack Distribution by Down</h3>
+                <figure class="fig">
+                    <div class="chart" data-chart="byRushers"></div>
+                    <figcaption>Figure 1: Sack rate by number of pass rushers. All 2020–23 dropbacks with participation data.</figcaption>
+                </figure>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="downDistance"></div>
+                    <figcaption>Figure 2: Sack rate by down and distance. Cells with fewer than 100 dropbacks are left blank.</figcaption>
+                </figure>
+
                 <p>
-                    When examining sacks by down, we can observe some interesting patterns:
-                </p>
-                
-                <p><img src="/images/sack_prediction_lr/sack_count_per_down.png" alt="Sack Count by Down"></p>
-                
-                <p>
-                    Third down has the highest number of sacks, which is intuitive since defenses often increase pressure in these higher-leverage situations, and offenses may take more risks with longer-developing plays to convert.
+                    Third down nearly doubles the sack rate (9.3% vs. 4.9% on first down). The worst cells are 3rd and 4th &amp; 7&ndash;10, at about 11%.
+                    On obvious passing downs the defense can pin its ears back, and quarterbacks hold the ball longer waiting for a receiver to clear the sticks.
+                    Interestingly, 3rd &amp; 11+ is <em>less</em> dangerous (8.9%). A likely reason is that offenses facing very long yardage often settle for a quick
+                    check-down instead of waiting for a downfield route.
                 </p>
 
-                <h3>Sack Distribution by Number of Pass Rushers</h3>
+                <h2>Three models</h2>
                 <p>
-                    The number of pass rushers sent by the defense is another important factor:
-                </p>
-                
-                <p><img src="/images/sack_prediction_lr/sack_count_per_pass_rusher.png" alt="Sack Count by Number of Pass Rushers"></p>
-                
-                <p>
-                    Interestingly, sending 4 pass rushers results in the highest number of sacks. This aligns with the NFL norm where teams often rush 4 and drop 7 into coverage, creating a balance between pressure and coverage.
+                    The features are all things you could know before the snap: down (one-hot encoded), distance, field position, game clock,
+                    score differential, defenders in the box, number of pass rushers, shotgun formation, nflfastR's pre-snap pass probability
+                    (<code>xpass</code>), and an "obvious passing down" flag (3rd &amp; 6+). Strictly, the number of rushers isn't known until the snap, but
+                    a defense chooses it beforehand, so it's a fair input for a model meant to help call a defense.
                 </p>
 
-                <h3>Sack Distribution by Defenders in the Box</h3>
+                <pre><code>from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import brier_score_loss, roc_auc_score
+
+FEATURES = ["down", "ydstogo", "yardline_100", "game_seconds_remaining",
+            "score_differential", "defenders_in_box", "number_of_pass_rushers",
+            "shotgun", "xpass", "obvious_pass"]
+
+train, test = df[df.season < 2023], df[df.season == 2023]
+X_train = pd.get_dummies(train[FEATURES], columns=["down"], dtype=float)
+X_test = pd.get_dummies(test[FEATURES], columns=["down"], dtype=float)
+
+model = make_pipeline(StandardScaler(), LogisticRegression(max_iter=2000))
+model.fit(X_train, train.sack)
+p = model.predict_proba(X_test)[:, 1]
+
+baseline = np.full(len(test), train.sack.mean())
+print("Brier:", brier_score_loss(test.sack, p), "vs. baseline", brier_score_loss(test.sack, baseline))
+print("AUC:  ", roc_auc_score(test.sack, p))</code></pre>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="models"></div>
+                    <figcaption>Figure 3: How well each model ranks 2023 dropbacks. AUC = the probability that a randomly chosen sack is rated riskier than a randomly chosen non-sack.</figcaption>
+                </figure>
+
                 <p>
-                    The number of defenders positioned in the box pre-snap can also indicate potential pressure:
+                    The logistic regression scores a <strong>Brier score of 0.0627</strong>, which looks excellent at first: it's the mean squared error
+                    of the predicted probabilities, and lower is better. But a "model" that predicts 6.2% for every single play scores 0.0634. The real
+                    improvement is 1.1%. The fancier models do no better. The random forest ties, and XGBoost is slightly worse.
                 </p>
-                
-                <p><img src="/images/sack_prediction_lr/sack_count_per_defenderinbox.png" alt="Sack Count by Defenders in Box"></p>
-                
                 <p>
-                    Having 6 defenders in the box is associated with the highest sack count, which provides insight into optimal defensive formations for generating pressure.
+                    That doesn't make the model useless. Ranking plays is a different job from predicting them precisely, and on ranking the model does
+                    have real signal (AUC 0.62, where 0.5 is a coin flip). Sorted by predicted risk, the top tenth of 2023 dropbacks were sacked at
+                    <strong>3.1 times</strong> the rate of the bottom tenth.
                 </p>
 
-                <h2>Logistic Regression Model</h2>
+                <figure class="fig">
+                    <div class="chart" data-chart="calibration"></div>
+                    <figcaption>Figure 4: Calibration on 2023: predicted vs. actual sack rate. 2023 dropbacks split into ten equal-sized groups by predicted probability.</figcaption>
+                </figure>
+
+                <h2>What drives the prediction</h2>
                 <p>
-                    For our predictive model, we used logistic regression with the following features:
+                    With every feature standardized, the logistic regression coefficients become directly comparable. Figure 5 converts them to odds ratios
+                    per one standard deviation of each feature.
                 </p>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="odds"></div>
+                    <figcaption>Figure 5: Effect of each feature on the odds of a sack. Odds multiplier for a one-standard-deviation increase (for down and shotgun, for that category being true). Bars start at 1.0, which means no effect.</figcaption>
+                </figure>
+
                 <ul>
-                    <li>Down (1st, 2nd, 3rd, 4th)</li>
-                    <li>Distance to first down</li>
-                    <li>Field position (yards to goal)</li>
-                    <li>Number of pass rushers</li>
-                    <li>Number of defenders in the box</li>
-                    <li>Score differential</li>
-                    <li>Time remaining in game</li>
-                    <li>Formation (shotgun vs under center)</li>
+                    <li><strong>Pass rushers (&times;1.28 per SD, about 0.8 rushers):</strong> the biggest single lever, and the only one the defense directly controls.</li>
+                    <li><strong>xpass (&times;1.19):</strong> when everyone in the stadium knows a pass is coming, rushers can commit to it.</li>
+                    <li><strong>Shotgun (&times;0.91):</strong> starting five yards deep gives a quarterback time to see pressure coming and get rid of the ball.</li>
+                    <li><strong>Defenders in the box (&times;0.98):</strong> basically no effect once the number of actual rushers is known. A crowded box is a disguise, not a pass rush.</li>
                 </ul>
 
-                <pre><code class="lang-r">
-# Create binary sack outcome variable
-pbp_pass <- pbp %>%
-  filter(play_type == "pass", !is.na(sack)) %>%
-  mutate(sack_binary = as.factor(sack))
-
-# Build logistic regression model
-sack_model <- glm(
-  sack_binary ~ down + ydstogo + yardline_100 + pass_rushers + defenders_in_box + score_differential + game_seconds_remaining + shotgun,
-  data = pbp_pass,
-  family = "binomial"
-)
-
-# Summary of model
-summary(sack_model)
-                </code></pre>
-
-                <h2>Model Results and Evaluation</h2>
+                <h2>Where the missing signal is: pressure</h2>
                 <p>
-                    The logistic regression model achieved reasonable predictive performance with an AUC (Area Under the ROC Curve) of 0.68, indicating moderate discriminative ability. The most significant predictors of sack probability were:
+                    Why can't a pre-snap model do better? Because sacks are decided after the snap, by pressure. Starting in 2023 the participation data
+                    includes charted pressure from FTN. It shows that 29.5% of dropbacks were pressured, and 23% of those pressures ended in a sack.
+                    The data codes every sack as a pressure, so pressure is effectively a requirement.
                 </p>
-                
-                <p><img src="/images/sack_prediction_lr/XGBClassifierFeatureImportance.png" alt="Feature Importance for Sack Prediction"></p>
-                
-                <p>
-                    Key insights from the model:
-                </p>
-                <ul>
-                    <li>Down and distance are strong predictors, with third-and-long situations having higher sack probabilities</li>
-                    <li>Shotgun formation is associated with lower sack rates compared to under-center formations</li>
-                    <li>More defenders in the box increases sack probability, but with diminishing returns</li>
-                    <li>Game context matters - teams trailing late in games experience higher sack rates as they take more risks</li>
-                </ul>
 
-                <h2>Practical Applications</h2>
-                <p>
-                    This model can be valuable for both offensive and defensive game planning:
-                </p>
-                <ul>
-                    <li><strong>For offensive coordinators:</strong> Identify high-risk situations and adjust protection schemes accordingly</li>
-                    <li><strong>For defensive coordinators:</strong> Recognize optimal blitz scenarios based on game situation</li>
-                    <li><strong>For quarterbacks:</strong> Be more aware of pressure likelihood in specific situations</li>
-                    <li><strong>For analysts:</strong> Evaluate offensive line and quarterback performance with context-adjusted metrics</li>
-                </ul>
+                <figure class="fig">
+                    <div class="chart" data-chart="pressure"></div>
+                    <figcaption>Figure 6: Pressure rate and sack rate by number of rushers, 2023. Share of all 2023 dropbacks in each group.</figcaption>
+                </figure>
 
-                <h2>Conclusion</h2>
                 <p>
-                    Logistic regression provides a powerful tool for modeling sack probability in the NFL. While our model has moderate predictive power, it generates valuable insights into the factors that influence quarterback sacks. Future work could incorporate more granular data such as offensive line rankings, quarterback mobility metrics, or defensive personnel packages to further improve predictive accuracy.
+                    Blitzing doubles the pressure rate, from 21% with three or fewer rushers to 43% with six or more, but the conversion rate from pressure to sack stays between
+                    20% and 25%. Whether a given pressure becomes a sack depends on things no pre-snap model can see: a missed block, a quarterback holding
+                    the ball, a receiver who never gets open. That's where most of a sack's unpredictability lives.
+                </p>
+
+                <h2>Is it the quarterback?</h2>
+                <p>
+                    A common claim in football analytics is that sacks are partly a quarterback stat: some QBs get rid of the ball under pressure, and
+                    others hold it and take the sack. With three seasons of charted pressure now available (2023&ndash;2025), that's testable. For every QB with
+                    at least 100 pressured dropbacks in a season, I computed his <strong>pressure-to-sack rate</strong>: the share of his pressures that ended in a sack.
+                </p>
+
+<pre><code>qb = (dropbacks.groupby(["season", "passer_id", "passer"])
+               .agg(dropbacks=("sack", "size"),
+                    pressures=("was_pressure", "sum"),
+                    sacks=("sack", "sum"))
+               .reset_index())
+qb["p2s"] = qb.sacks / qb.pressures               # pressure-to-sack rate
+qb["pressure_rate"] = qb.pressures / qb.dropbacks
+qb = qb[qb.pressures >= 100]
+
+# Pair each QB-season with the same QB's next season
+nxt = qb.assign(season=qb.season - 1)
+pairs = qb.merge(nxt, on=["season", "passer_id"], suffixes=("", "_next"))
+pairs.p2s.corr(pairs.p2s_next)                    # 0.16</code></pre>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="qbP2s"></div>
+                    <figcaption>Figure 7: Share of pressures that became sacks, by quarterback, 2023 (minimum 100 pressured dropbacks).</figcaption>
+                </figure>
+
+                <p>
+                    In a single season the spread is large. Josh Allen (13%) and Patrick Mahomes (14%) turned only about one pressure in seven into a sack.
+                    Bryce Young and Zach Wilson (both 30%) took a sack on nearly one in three. That's a bigger gap than anything the pre-snap features produced.
                 </p>
                 <p>
-                    Understanding these patterns can help teams optimize their strategies on both sides of the ball, potentially creating meaningful advantages in the highly competitive NFL landscape.
+                    But a skill should repeat, and this one barely does. Across 39 cases of a QB qualifying in back-to-back seasons, pressure-to-sack rate in one
+                    year correlates with the next at only <strong>r = 0.16</strong>. With so few pairs the 95% interval is wide (&minus;0.21 to 0.51), so this
+                    doesn't prove the skill is absent. It does mean one season of it can't be trusted. How often a QB gets pressured (r = 0.26) and his overall
+                    sack rate (r = 0.30) were a little more stable.
                 </p>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="qbStability"></div>
+                    <figcaption>Figure 8: Each QB's pressure-to-sack rate in one season vs. the next. Points on the diagonal would mean the rate repeated exactly.</figcaption>
+                </figure>
+
+                <h3>Does knowing the QB improve the model?</h3>
+                <p>
+                    As a direct test, I retrained the logistic regression on 2024 dropbacks and tested it on 2025, once with the original pre-snap features and once
+                    with two more: the quarterback's pressure-to-sack rate and pressure rate from the <em>previous</em> season. Using the previous season keeps the
+                    test honest, since a team would know those numbers going into a game. QBs without enough history get the league average.
+                </p>
+                <p>
+                    The QB features made essentially no difference: AUC moved from 0.593 to 0.595, and the Brier skill score slipped from 0.62% to 0.57%. Some
+                    of the sack tendency belongs to the quarterback, but last season's numbers are too noisy a measure of it to help a model. A better version would
+                    pool several seasons per QB and shrink small samples toward the league average.
+                </p>
+
+                <h2>Caveats</h2>
+                    <ul>
+                        <li>The pass-rusher count is charted after the fact. A real-time version would have to estimate it from the pre-snap look, and some rushers are disguised.</li>
+                        <li>Team and player identity aren't features. A model that knew it was a backup tackle against a top edge rusher would do better.</li>
+                        <li>Sack rates rose every season in the sample (5.7% in 2020 to 6.8% in 2023), so a model trained on earlier years slightly under-predicts later ones.</li>
+                    </ul>
+
+                <h2>Data and code</h2>
+                    <p>
+                        Play-by-play and participation data from <a href="https://github.com/nflverse/nflverse-data">nflverse</a> (participation charted by NGS through 2022 and FTN from 2023). The quarterback section uses 2023&ndash;2025.
+                        Dropbacks exclude spikes and penalties that wiped out the play. Random forest: 300 trees, min 50 samples per leaf. XGBoost: 300 rounds, depth 4, learning rate 0.05.
+                        Every number and chart comes from
+                        <a href="https://github.com/ethantompkins/ethantompkins.github.io/blob/main/analysis/sack_prediction.py"><code>analysis/sack_prediction.py</code></a>.
+                    </p>
+                <a href="/blogs.html" class="back-link">&larr; Back to all posts</a>
             </article>
-            
-            <div class="mt-4">
-                <a href="/blogs.html">&larr; Back to all posts</a>
-            </div>
         </div>
     </div>
     <div id="footer" class="mb-5">
         <div class="container">
         </div>
     </div>
-    
+    <script src="/assets/js/charts.js"></script>
     <script src="/assets/js/main.js"></script>
 </body>
 </html>

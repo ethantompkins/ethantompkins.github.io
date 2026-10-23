@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/ico" href="/favicon.ico">
+    <link rel="manifest" href="/site.webmanifest">
+
+    <title>Clemson and the Transfer Portal - Ethan Tompkins</title>
+    <meta name="description" content="Clemson took fewer transfers than almost any FBS team from 2021 to 2025 while its on-field rating slid. A team-level model of every FBS roster estimates how much of that slide the portal explains.">
+    <meta name="author" content="Ethan Tompkins">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ethantompkins.com/blogs/clemsonPortal.html">
+    <meta property="og:title" content="Clemson and the Transfer Portal - Ethan Tompkins">
+    <meta property="og:description" content="Clemson took fewer transfers than almost any FBS team from 2021 to 2025 while its on-field rating slid. A team-level model of every FBS roster estimates how much of that slide the portal explains.">
+    <meta property="twitter:image" content="">
+
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/bootstrap-lite.css">
+    <link rel="stylesheet" href="/assets/css/researcher.css">
+    <link rel="stylesheet" href="/assets/css/blog.css">
+</head>
+<body data-charts="/assets/data/blog/clemsonPortal.json">
+    <div class="container">
+        <nav class="navbar navbar-expand-sm flex-column flex-sm-row text-nowrap py-2">
+            <a class="navbar-brand mx-0 mr-sm-auto" href="/" title="Ethan Tompkins">
+                Ethan Tompkins
+            </a>
+            <div class="navbar-nav flex-row flex-wrap justify-content-center align-items-center">
+                <a class="nav-item nav-link px-2" href="/blogs.html" title="Blogs">
+                    Blogs
+                </a>
+                <a class="nav-item nav-link px-2" href="/readings.html" title="Readings">
+                    Readings
+                </a>
+                <a class="nav-item nav-link px-2" href="/about.html" title="About">
+                    About
+                </a>
+            </div>
+        </nav>
+    </div>
+    <hr class="mt-0">
+    <div id="content">
+        <div class="container">
+            <article class="post">
+                <header class="post-header">
+                    <h1>Clemson and the Transfer Portal</h1>
+                    <p class="post-date"><time datetime="2026-10-23">October 2026</time></p>
+                    <p class="post-intro">
+                        For five seasons Clemson added fewer transfers than almost any team in major college football, while the rest of the
+                        sport rebuilt rosters through the portal. Over the same stretch, the Tigers went from a perennial playoff team to 7&ndash;6.
+                        This post uses team-level data on every FBS roster to estimate how much of that decline the portal actually explains.
+                    </p>
+                </header>
+
+                <h2>The dynasty and the slide</h2>
+                <p>
+                    From 2015 to 2020 Clemson went 79&ndash;7, won two national titles, and finished in the top four of the opponent-adjusted ratings
+                    every season. Its roster talent, measured by a recruiting-based team talent composite, kept climbing. By 2021 it was
+                    4th in the country, and it stayed 3rd or 4th through 2024.
+                </p>
+                <p>
+                    The results went the other way. Clemson's on-field rating ranked 37th in 2021, 10th in 2022, 26th in 2023, and 34th in 2024. In 2025 it
+                    fell to 53rd and the team finished 7&ndash;6. To compare across seasons, Figure 1 puts both numbers on the same scale: standard deviations
+                    above the FBS average for that year.
+                </p>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="arc"></div>
+                    <figcaption>Figure 1: Clemson's roster talent and on-field rating, 2015&ndash;2026, each standardized within its season. Rating is opponent-adjusted net EPA per play. 2026 is through five games.</figcaption>
+                </figure>
+
+                <p>
+                    Through 2020 the two lines moved together, and the team played about as well as, or better than, its talent. From 2021 on, a gap of 1.4 to
+                    2.4 standard deviations opens up between them, narrowing only in the partial 2026 season. That gap is the subject of this post.
+                </p>
+
+                <h2>How little Clemson used the portal</h2>
+                <p>
+                    The NCAA's one-time transfer exception, which let players move once without sitting out a year, took effect in 2021. Transfers exploded:
+                    the median FBS team added 6 that season and 20 by 2025. Clemson added 0, 1, 3, 1, and 5 over those five years, which ranked between
+                    123rd and 132nd in FBS every season.
+                </p>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="transfersIn"></div>
+                    <figcaption>Figure 2: Transfers added per season. "Top-25 talent roster" is the 25 teams with the highest talent composite that year.</figcaption>
+                </figure>
+
+                <p>
+                    The data comes from the sportsdataverse's team-level portal table, which gives each FBS team's roster size, transfers in and out, and a
+                    "transfer talent" score that rates each incoming transfer on a 20&ndash;100 scale and sums them. Joining it to talent, returning
+                    production, and ratings takes a few lines, though one detail matters: some tables store ESPN team IDs as text and others as integers.
+                </p>
+
+<pre><code>def load(table):
+    files = sorted(glob.glob(f"cfb/{table}_20*.parquet"))
+    d = pd.concat([pd.read_parquet(f) for f in files], ignore_index=True)
+    if "team_id" in d.columns:               # some tables store the ESPN id as text
+        d["team_id"] = pd.to_numeric(d.team_id, errors="coerce").astype("Int64")
+    return d
+
+panel = (load("cfb_ratings")
+         .merge(load("cfb_team_portal"), on=["season", "team_id"])
+         .merge(load("cfb_team_talent"), on=["season", "team_id"])
+         .merge(load("cfb_returning_production"), on=["season", "team_id"], how="left"))
+
+# Put talent and rating on a per-season standard-deviation scale
+z = lambda s: (s - s.mean()) / s.std()
+panel["talent_z"] = panel.groupby("season").talent_composite.transform(z)</code></pre>
+
+                <h2>Checking the retention claim</h2>
+                <p>
+                    Dabo Swinney's case for this approach is retention. He has said Clemson "led the nation in retention" over the last three seasons. That claim is testable: retention is the share of the roster that transfers <em>out</em>.
+                </p>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="retention"></div>
+                    <figcaption>Figure 3: Share of the roster that transferred out each season. Lower means better retention.</figcaption>
+                </figure>
+
+                <p>
+                    Against the whole country, the claim doesn't hold. Clemson's out-transfer rate ranked 98th in FBS in 2021, then 57th, 34th, and 19th, and
+                    finally 5th in 2025. Many small programs lose very few players simply because few of their players have better options.
+                </p>
+                <p>
+                    Against its real peers, though, the claim is close to right. Among the 25 most talented rosters, Clemson had the 3rd-lowest out-transfer
+                    rate in 2022, 2023, and 2024, and the lowest in 2025: 6.3% of the roster, against a peer median of 20.2%. Clemson kept its players far better
+                    than other elite programs did. It just didn't replace the ones it lost.
+                </p>
+
+                <h2>Underperforming the roster</h2>
+                <p>
+                    How unusual is Clemson's gap between talent and results? Regressing each team's rating on its talent (with a season effect) across all
+                    FBS team-seasons from 2021&ndash;2025 gives the rating a roster "should" produce. The residual is how far a team played above or below that.
+                </p>
+
+<pre><code>era = panel[panel.season.between(2021, 2025)]
+fit = smf.ols("net_z ~ talent_z + C(season)", data=era).fit()
+era["gap"] = fit.resid
+
+elite = (era[era.talent_rank <= 15]
+         .groupby("team").agg(seasons=("gap", "size"), gap=("gap", "mean"))
+         .query("seasons >= 3")
+         .sort_values("gap"))</code></pre>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="talentGap"></div>
+                    <figcaption>Figure 4: Average gap between on-field rating and talent-predicted rating, 2021&ndash;2025, for programs with a top-15 talent roster in at least three of those seasons.</figcaption>
+                </figure>
+
+                <p>
+                    Clemson underperformed its talent by <strong>0.88 standard deviations per season</strong>, more than twice as much as the next program,
+                    Alabama (&minus;0.41). Ohio State and Miami sit at the other end. Clemson also took the fewest transfers of anyone on this list, an average of
+                    2.0 a year. Every other program averaged at least 6.
+                </p>
+
+                <h2>Modeling what the portal is worth</h2>
+                <p>
+                    That's suggestive, but lots of things changed at Clemson in this stretch, including the departure of both coordinators after the 2021 season. To isolate the portal, I fit a model of every
+                    FBS team's rating from 2022 to 2025 (524 team-seasons), with the things that should predict it:
+                </p>
+                <ul>
+                    <li><strong>Last season's rating</strong>: good teams tend to stay good.</li>
+                    <li><strong>Roster talent</strong>, standardized within the season.</li>
+                    <li><strong>Returning production</strong>: the share of last year's production that's back.</li>
+                    <li><strong>Transfer talent in</strong> and <strong>transfer talent out</strong>, in units of 100 points.</li>
+                </ul>
+                <p>
+                    Standard errors are clustered by team, since the same program appears in up to four seasons.
+                </p>
+
+<pre><code>import statsmodels.formula.api as smf
+
+prev = panel[["season", "team_id", "net_z"]].assign(season=panel.season + 1)
+panel = panel.merge(prev.rename(columns={"net_z": "prev_net_z"}), on=["season", "team_id"], how="left")
+panel["tin100"] = panel.transfer_talent_in / 100
+panel["tout100"] = panel.transfer_talent_out / 100
+
+train = panel[panel.season.between(2022, 2025)].dropna(subset=["prev_net_z", "overall_returning"])
+model = smf.ols(
+    "net_z ~ prev_net_z + talent_z + overall_returning + tin100 + tout100 + C(season)",
+    data=train,
+).fit(cov_type="cluster", cov_kwds={"groups": train.team_id.astype(int)})</code></pre>
+
+                <div class="table-scroll">
+                <table class="data-table">
+                    <thead>
+                        <tr><th>Predictor</th><th class="num">Effect on rating (SD)</th><th class="num">95% interval</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Last season's rating (per SD)</td><td class="num">+0.51</td><td class="num">0.43 – 0.59</td></tr>
+                        <tr><td>Roster talent (per SD)</td><td class="num">+0.32</td><td class="num">0.23 – 0.42</td></tr>
+                        <tr><td>Returning production (per +10%)</td><td class="num">+0.13</td><td class="num">0.09 – 0.17</td></tr>
+                        <tr><td>Transfer talent in (per 100 points)</td><td class="num">+0.045</td><td class="num">0.019 – 0.070</td></tr>
+                        <tr><td>Transfer talent out (per 100 points)</td><td class="num">+0.023</td><td class="num">&minus;0.006 – 0.053</td></tr>
+                    </tbody>
+                </table>
+                </div>
+
+                <p>
+                    The model explains 63% of the variation in team ratings. Incoming transfers clearly help: each 100 points of transfer talent adds about
+                    0.045 standard deviations. Fitting the same model with raw counts instead of talent points gives about <strong>+0.02 SD per transfer</strong>
+                    (95% interval 0.011&ndash;0.030). Losing transfers has no clear cost. The estimate is slightly positive, possibly because many of the players who leave
+                    weren't playing much.
+                </p>
+                <p>
+                    Those per-transfer effects are small next to roster talent and returning production, but they add up. A typical top-25 program in 2025
+                    brought in 725 points of transfer talent, worth about a third of a standard deviation.
+                </p>
+
+                <h2>What a normal portal class would have changed</h2>
+                <p>
+                    With the model in hand, the counterfactual is simple: give Clemson the median transfer talent of a top-25 roster each season, hold everything
+                    else fixed, and see how its predicted rating moves.
+                </p>
+
+<pre><code>typical = panel[panel.talent_rank <= 25].groupby("season").transfer_talent_in.median()
+
+clem = panel[panel.team_id == 228].copy()
+clem["pred"] = model.predict(clem)
+clem["pred_typical"] = clem.pred + model.params["tin100"] * (
+    clem.season.map(typical) / 100 - clem.tin100
+)</code></pre>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="counterfactual"></div>
+                    <figcaption>Figure 5: Clemson's actual rating vs. the model's prediction with its real portal use and with a typical top-25 portal class. 2026 is through five games.</figcaption>
+                </figure>
+
+                <p>
+                    The answer is that the portal mattered, but much less than the gap. A typical top-25 transfer class would have raised Clemson's predicted rating
+                    by about 0.15 standard deviations per season from 2023 to 2025. In ranking terms, that moves the 2023 team from 26th to about 23rd, 2024 from
+                    34th to 28th, and 2025 from 53rd to 42nd. That's a better team, but not a playoff contender.
+                </p>
+                <p>
+                    The bigger finding is in the gray bars. Even with its real, minimal portal use, the model expected Clemson to be much better than it was:
+                    a predicted 1.45, 1.20, and 0.98 standard deviations in 2023&ndash;25, against actual ratings of 0.91, 0.74, and 0.35. Averaged over those
+                    three seasons, Clemson fell <strong>0.69 SD</strong> short of a version with a typical portal class. Only about 0.15 of that comes from the portal.
+                    The other 0.55 SD is Clemson underperforming a talented, experienced roster, which points at development, scheme, or quarterback play
+                    rather than roster construction.
+                </p>
+
+                <h2>2026: the first real portal class</h2>
+                <p>
+                    Clemson changed course this offseason, adding 10 transfers, its most ever (the median top-25 roster added 21). Through five rated games, Clemson's
+                    rating is 0.71 SD, above the model's 0.51 prediction. That's the first positive residual since 2022, though it includes a 51&ndash;10 loss at LSU and
+                    a 41&ndash;13 loss to Miami. Five games is far too few to say whether the approach is working.
+                </p>
+
+                <h2>Caveats</h2>
+                <ul>
+                    <li>The portal data is team-level. It can't tell which transfers played, or at what positions, so a quarterback and a fourth-string linebacker with the same rating count the same.</li>
+                    <li>The model is correlational. Programs that use the portal heavily may differ in other ways (staff turnover, NIL budgets) that also affect results.</li>
+                    <li>Ratings are one season's opponent-adjusted EPA. They capture how well a team played, not how lucky it was in close games, so they can differ from the record.</li>
+                    <li>A team-fixed-effects version, comparing each program only with itself, would be a stronger test of the portal's effect. With only four seasons per team, it's also much noisier.</li>
+                </ul>
+
+                <h2>Data and code</h2>
+                <p>
+                    Team-level portal, talent, returning-production, ratings, and schedule tables from the
+                    <a href="https://github.com/sportsdataverse/sportsdataverse-data">sportsdataverse</a> releases (the data behind
+                    <a href="https://cfbfastr.sportsdataverse.org/">cfbfastR</a>), 2015&ndash;2026. Retention claims from
+                    <a href="https://www.on3.com/college/clemson-tigers/news/dabo-swinney-nothing-has-changed-with-transfer-portal-strategy-entering-offseason/">On3</a>.
+                    Every number and chart comes from
+                    <a href="https://github.com/ethantompkins/ethantompkins.github.io/blob/main/analysis/clemson_portal.py"><code>analysis/clemson_portal.py</code></a>.
+                </p>
+
+                <a href="/blogs.html" class="back-link">&larr; Back to all posts</a>
+            </article>
+        </div>
+    </div>
+    <div id="footer" class="mb-5">
+        <div class="container">
+        </div>
+    </div>
+
+    <script src="/assets/js/charts.js"></script>
+    <script src="/assets/js/main.js"></script>
+</body>
+</html>

@@ -11,6 +11,13 @@ body {
     padding: 0 20px;
 }
 
+/* Below the first breakpoint the container is width: 100%, so keep the padding inside it. */
+@media (max-width: 575px) {
+    .container {
+        box-sizing: border-box;
+    }
+}
+
 nav.navbar {
     padding-top: 20px;
     padding-bottom: 20px;

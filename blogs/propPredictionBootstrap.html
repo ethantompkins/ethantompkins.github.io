@@ -7,44 +7,22 @@
     <link rel="icon" type="image/ico" href="/favicon.ico">
     <link rel="manifest" href="/site.webmanifest">
 
-    <title>Ethan Tompkins</title>
-    <meta name="description" content="Using bootstrap sampling to predict NFL player prop bets and identify value opportunities">
+    <title>Prop Bet Pricing with Bootstrap Resampling - Ethan Tompkins</title>
+    <meta name="description" content="Using bootstrap resampling and a Poisson model to price Jalen Hurts' Super Bowl LVII pass-attempt prop, then backtesting the method on 2,000 quarterback games.">
     <meta name="author" content="Ethan Tompkins">
 
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://ethantompkins.com/blogs/propPredictionBootstrap.html">
-    <meta property="og:title" content="Predicting NFL Prop Bets with Bootstrap Sampling - Ethan Tompkins">
-    <meta property="og:description" content="Using bootstrap sampling to predict NFL player prop bets and identify value opportunities">
+    <meta property="og:title" content="Prop Bet Pricing with Bootstrap Resampling - Ethan Tompkins">
+    <meta property="og:description" content="Using bootstrap resampling and a Poisson model to price Jalen Hurts' Super Bowl LVII pass-attempt prop, then backtesting the method on 2,000 quarterback games.">
     <meta property="twitter:image" content="">
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/bootstrap-lite.css">
     <link rel="stylesheet" href="/assets/css/researcher.css">
-    <style>
-        /* Additional blog post styling */
-        pre {
-            font-size: .9em;
-            padding: 1em;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-            overflow-x: auto;
-        }
-        
-        code {
-            font-size: .9em;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            font-weight: 400 !important;
-        }
-        
-        img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 1rem auto;
-        }
-    </style>
+    <link rel="stylesheet" href="/assets/css/blog.css">
 </head>
-<body>
+<body data-charts="/assets/data/blog/propPredictionBootstrap.json">
     <div class="container">
         <nav class="navbar navbar-expand-sm flex-column flex-sm-row text-nowrap py-2">
             <a class="navbar-brand mx-0 mr-sm-auto" href="/" title="Ethan Tompkins">
@@ -66,210 +44,204 @@
     <hr class="mt-0">
     <div id="content">
         <div class="container">
-            <h1>Predicting NFL Prop Bets with Bootstrap Sampling</h1>
-            
-            <article>
+            <article class="post">
+                <header class="post-header">
+                    <h1>Prop Bet Pricing with Bootstrap Resampling</h1>
+                    <p class="post-date"><time datetime="2023-09-03">September 2023</time></p>
+                    <p class="post-intro">
+                        Before Super Bowl LVII, sportsbooks set Jalen Hurts' pass attempts at 31.5, with the over at even money.
+                        Here's how to turn his game log into a probability, how confident to be in it, and what a backtest says about the method.
+                    </p>
+                </header>
+
+                <h2>Expected value in one paragraph</h2>
                 <p>
-                    In this blog post, I explore how bootstrap sampling can be used to predict NFL player prop bets and identify value betting opportunities. By generating numerous simulated outcomes based on historical player performance data, we can create probability distributions for various statistical categories and compare them against sportsbook lines.
+                    A betting line is a price, and a price implies a probability. At +100 you risk $100 to win $100, so you break even
+                    if the bet wins 50% of the time. At &minus;120 you risk $120 to win $100 and need to win 54.5%. A bet is <strong>positive expected value
+                    (+EV)</strong> when your estimate of the true probability is higher than the break-even implied by the price. +EV doesn't mean a bet
+                    will win. It means that if you made the same bet many times, you'd come out ahead.
+                </p>
+                <p>
+                    So pricing a prop comes down to estimating a probability. Here that's P(Hurts throws 32 or more passes) in the Super Bowl.
                 </p>
 
-                <h2>Understanding Prop Bets and Bootstrap Sampling</h2>
-                <p>
-                    Prop bets (or proposition bets) are wagers on individual player performances rather than game outcomes. Examples include:
-                </p>
-                <ul>
-                    <li>Will Patrick Mahomes throw over/under 275.5 passing yards?</li>
-                    <li>Will Derrick Henry rush for over/under 95.5 yards?</li>
-                    <li>Will Davante Adams have over/under 6.5 receptions?</li>
-                </ul>
-                
-                <p>
-                    Bootstrap sampling is a statistical technique that involves random sampling with replacement from a dataset to create multiple simulated datasets. For our purposes, it allows us to generate thousands of possible game outcomes for a player based on their historical performance.
-                </p>
+                <pre><code>def implied_probability(money_line):
+    """Break-even win probability for an American money line."""
+    if money_line < 0:
+        return -money_line / (-money_line + 100)
+    return 100 / (money_line + 100)
 
-                <h2>Data Collection and Preprocessing</h2>
-                <p>
-                    The first step in our process is gathering historical NFL player data. For this analysis, I used:
-                </p>
-                <ul>
-                    <li>Play-by-play data from the 2022 and 2023 NFL seasons</li>
-                    <li>Player game logs for rushing, passing, and receiving statistics</li>
-                    <li>Current Las Vegas sportsbook lines for player props</li>
-                </ul>
+implied_probability(+100)   # 0.50
+implied_probability(-120)   # 0.545</code></pre>
 
+                <h2>The game log</h2>
                 <p>
-                    After collecting the data, I performed several preprocessing steps:
+                    The sample is Hurts' 33 games from 2021 and 2022, regular season and playoffs, up to (but not including) the Super Bowl.
+                    He averaged <strong>29.8 attempts</strong> with a median of 28 and a standard deviation of 7.2. His range was wide, from 14 attempts
+                    against Detroit in 2021 to 48 against Kansas City the same year.
                 </p>
 
-                <pre><code class="lang-python">
-# Load and prepare the data
-import pandas as pd
-import numpy as np
-from nfl_data_py import import_pbp_data, import_weekly_data
-
-# Get play-by-play data
-seasons = [2022, 2023]
-pbp_data = import_pbp_data(seasons)
-
-# Get weekly player stats
-weekly_data = import_weekly_data(seasons)
-
-# Filter for specific player (example with Josh Allen)
-josh_allen_data = weekly_data[weekly_data['player_name'] == 'Josh Allen']
-                </code></pre>
-
-                <h2>The Bootstrap Sampling Methodology</h2>
-                <p>
-                    For each player and prop bet, I implemented the following bootstrap sampling approach:
-                </p>
-
-                <ol>
-                    <li>Extract the player's historical performance data for the relevant statistic (e.g., passing yards, rushing attempts)</li>
-                    <li>Apply contextual filters based on:
-                        <ul>
-                            <li>Home/away status</li>
-                            <li>Opponent defensive ranking</li>
-                            <li>Recent performance (last 4-6 games)</li>
-                            <li>Game total and spread (to capture game script)</li>
-                        </ul>
-                    </li>
-                    <li>Generate 10,000 bootstrap samples from the filtered data</li>
-                    <li>Calculate the percentage of samples that exceed the sportsbook line</li>
-                    <li>Identify value opportunities where our probability differs significantly from the implied probability of the betting line</li>
-                </ol>
+                <figure class="fig">
+                    <div class="chart" data-chart="hist"></div>
+                    <figcaption>Figure 1: Jalen Hurts' pass attempts per game, 2021–22, with two candidate models. Bars are a density (share of games per attempt) so they share the axis with the curves.</figcaption>
+                </figure>
 
                 <p>
-                    Here's the core implementation of the bootstrap sampling function:
+                    A <strong>Poisson distribution</strong> is the textbook model for counts like pass attempts, and its one parameter, &lambda;, is the average.
+                    But Poisson also fixes the variance to equal the mean. Hurts' variance was <strong>1.74 times his mean</strong>. His games were spread out
+                    more than a Poisson allows, and the tails are where that matters most. More on that in the backtest.
                 </p>
 
-                <pre><code class="lang-python">
-def bootstrap_prop_prediction(player_data, stat_column, line, n_samples=10000):
-    """
-    Perform bootstrap sampling to predict probability of exceeding a prop line
-    
-    Args:
-        player_data (DataFrame): Historical performance data for the player
-        stat_column (str): The statistical category to analyze
-        line (float): The sportsbook's over/under line
-        n_samples (int): Number of bootstrap samples to generate
-    
-    Returns:
-        float: Probability of exceeding the line
-    """
-    # Extract the relevant statistic
-    stat_values = player_data[stat_column].dropna().values
-    
-    if len(stat_values) < 5:
-        return None  # Not enough data
-    
-    # Generate bootstrap samples
-    bootstrap_samples = np.random.choice(stat_values, size=(n_samples,), replace=True)
-    
-    # Calculate probability of exceeding the line
-    prob_over = np.mean(bootstrap_samples > line)
-    
-    return prob_over
-                </code></pre>
-
-                <h2>Case Study: Josh Allen Passing Yards</h2>
+                <h2>How sure are we about his average?</h2>
                 <p>
-                    Let's examine a specific example using Josh Allen's passing yards prop for an upcoming game:
+                    Thirty-three games isn't many, and 29.8 is only an estimate of Hurts' "true" rate. <strong>Bootstrap resampling</strong> measures that
+                    uncertainty without any distributional assumptions: draw 33 games from his log <em>with replacement</em>, compute the mean, and repeat
+                    10,000 times. The spread of those means shows how much the average could plausibly vary.
                 </p>
+
+                <pre><code>rng = np.random.default_rng(42)
+attempts = hurts.attempts.to_numpy()          # 33 games before the Super Bowl
+
+boot = rng.choice(attempts, size=(10_000, len(attempts)), replace=True).mean(axis=1)
+lo, hi = np.quantile(boot, [0.025, 0.975])    # 27.4, 32.3
+p_under_is_plus_ev = (boot < 31.5).mean()     # 0.92</code></pre>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="boot"></div>
+                    <figcaption>Figure 2: 10,000 bootstrapped averages.</figcaption>
+                </figure>
+
+                <p>
+                    The line of 31.5 sits near the top of the interval. Only 8.4% of bootstrapped averages are above it.
+                </p>
+
+                <h2>From average to probability</h2>
+                <p>
+                    Plug &lambda; = 29.8 into a Poisson and P(32 or more attempts) = <strong>36.9%</strong>. Rather than trusting that single number,
+                    we can run every plausible &lambda; from the bootstrap through the same calculation:
+                </p>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="edge"></div>
+                    <figcaption>Figure 3: Probability of the over as a function of Hurts' true average. The x-axis covers the middle 99% of bootstrapped averages. The over was priced at +100, implying 50%.</figcaption>
+                </figure>
 
                 <ul>
-                    <li>Sportsbook line: 275.5 passing yards</li>
-                    <li>Historical data: Last 16 games of Josh Allen's passing performance</li>
-                    <li>Contextual filter: Similar defensive opponents (ranked 10-20 in passing yards allowed)</li>
+                    <li>At the bottom of the 95% interval (27.4), the over hits only <strong>21%</strong> of the time.</li>
+                    <li>At the top (32.3), it hits <strong>54%</strong>, and the over becomes the +EV side.</li>
+                    <li>Across all resamples, the under is +EV <strong>92%</strong> of the time.</li>
                 </ul>
-
                 <p>
-                    After running our bootstrap sampling process:
+                    Even if the under were priced at &minus;120 (a typical price when the over is +100), the model's 63% chance of the under clears the
+                    54.5% break-even. Other reasonable models agree: resampling his actual games directly gives 36.4% for the over, a negative binomial gives 38.7%,
+                    and a normal approximation 40.8%. Every version says the under.
                 </p>
 
-                <p><img src="/images/prop_prediction_bootstrap/josh_allen_passing_distribution.png" alt="Josh Allen Passing Yards Distribution"></p>
+                <h2>What happened</h2>
+                <p>
+                    Hurts threw <strong>38 passes</strong> in Super Bowl LVII, completing 27 for 304 yards and a touchdown and adding three rushing touchdowns
+                    in a 38&ndash;35 loss to Kansas City. The over hit comfortably.
+                </p>
+                <p>
+                    That doesn't make the under a bad bet, any more than one coin landing heads makes the coin unfair. The useful question is whether the
+                    <em>method</em> produces accurate probabilities, and the only way to answer that is to test it on many games.
+                </p>
+
+                <h2>Backtesting the method on 1,979 QB games</h2>
+                <p>
+                    Historical prop lines aren't in the public data, so this backtest checks the probabilities instead of the profits. For every QB start
+                    from 2021&ndash;2024 with at least eight prior starts, I set a QB-specific line at his trailing average and at 4 and 8 attempts above
+                    and below it (alternate lines, in sportsbook terms). Then I priced each line two ways, with a Poisson fit on the mean and by resampling his prior
+                    games, and compared both to what actually happened.
+                </p>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="calibration"></div>
+                    <figcaption>Figure 4: Predicted vs. actual over rate, by how far the line is from the QB's average. 1,979 QB starts from 2021&ndash;24, priced on each QB's last two seasons of starts. The dark bar is the actual result.</figcaption>
+                </figure>
 
                 <p>
-                    Results:
+                    The results show a clear failure mode. On a line 8 attempts <em>above</em> a QB's average, Poisson said the over would hit 7.5% of the time;
+                    it actually hit <strong>11.8%</strong>, more than 50% more often. On a line 8 <em>below</em>, Poisson said 90.6% and reality was 79.5%.
+                    In 96% of the QB games in the sample, the quarterback's prior games varied more than Poisson assumes (median ratio 1.78). A Poisson model will keep
+                    finding "edges" on extreme lines that aren't real.
                 </p>
+                <p>
+                    Resampling real games handles the tails far better (12.8% and 83.1%). It does lean 1&ndash;4 points toward the over at every line, likely because
+                    league-wide pass attempts were falling over this period (from 34.1 per QB start in 2020 to 31.8 in 2024) and a two-season window lags that trend.
+                </p>
+
+                <h2>Fixing the tails</h2>
+                <p>
+                    The backtest points to a fix. If pass attempts vary more than a Poisson allows, use a distribution that has a separate variance parameter.
+                    A <strong>negative binomial</strong> is the standard choice for overdispersed counts: it has the same mean as the Poisson, but its
+                    variance can be larger. It can be fit from just a QB's sample mean and variance (the method of moments).
+                </p>
+
+<pre><code>from scipy import stats
+
+def nb_params(x, weights=None):
+    """Mean and variance, optionally weighting recent games more."""
+    w = np.ones(len(x)) if weights is None else weights
+    m = np.average(x, weights=w)
+    v = np.average((x - m) ** 2, weights=w) * len(x) / (len(x) - 1)
+    return m, v
+
+def p_over(line, m, v):
+    if v <= m:                                   # not overdispersed: fall back to Poisson
+        return 1 - stats.poisson.cdf(int(line), m)
+    n, p = m * m / (v - m), m / v                # scipy's (n, p) parameterization
+    return 1 - stats.nbinom.cdf(int(line), n, p)
+
+# Recency weighting: a game 8 starts ago counts half as much as the latest one
+weights = 0.5 ** (np.arange(len(prior))[::-1] / 8)
+p_over(line, *nb_params(prior, weights))</code></pre>
+
+                <p>
+                    I added three variants to the same backtest: a plain negative binomial, one that weights recent games more (a half-life of eight starts),
+                    and one that also shifts the expected attempts by the point spread. The spread adjustment is fit on 2015&ndash;2020 games, before the
+                    backtest window, using how much more or less favored a team is than usual. To compare methods with one number, I averaged how far each
+                    method's predicted over rate was from the actual rate across the five lines.
+                </p>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="methods"></div>
+                    <figcaption>Figure 5: Average calibration error by method, across the five lines in Figure 4. Lower is better.</figcaption>
+                </figure>
+
                 <ul>
-                    <li>Bootstrap mean: 264.8 yards</li>
-                    <li>Probability of exceeding 275.5 yards: 42.3%</li>
-                    <li>Sportsbook implied probability: 50% (standard -110 odds)</li>
-                    <li>Edge identified: 7.7% in favor of betting the under</li>
+                    <li><strong>The negative binomial cuts Poisson's error by more than half</strong> (2.6 points vs. 5.9), about the same as resampling the games, and it has the best Brier score of the three.</li>
+                    <li><strong>Weighting recent games helps the most</strong>, bringing the error down to 1.8 points. Pass attempts were falling league-wide over this period, and a recency-weighted average follows that trend faster.</li>
+                    <li><strong>The point spread didn't help.</strong> A team favored by seven more points than usual threw only about half a pass fewer (&minus;0.07 attempts per point), and adding it made the calibration slightly worse. Game script drives attempts, but the pregame spread predicts very little of a game's actual script.</li>
                 </ul>
-
-                <h2>Evaluating Multiple Props</h2>
                 <p>
-                    Applying this methodology across multiple player props for a given NFL week, we can identify the most promising betting opportunities:
+                    For the Super Bowl itself none of this changes the call. The recency-weighted negative binomial puts the over at 37%, the same as the Poisson,
+                    because Hurts' recent games averaged almost exactly his overall mean.
                 </p>
 
-                <p><img src="/images/prop_prediction_bootstrap/value_props_week7.png" alt="Value Props for Week 7"></p>
-
-                <p>
-                    In this sample from Week 7 of the 2023 NFL season, our model identified several props with significant value edges, including:
-                </p>
+                <h2>What's left to try</h2>
                 <ul>
-                    <li>Lamar Jackson over 62.5 rushing yards (63.1% bootstrap probability vs. 52.4% implied)</li>
-                    <li>Ja'Marr Chase under 85.5 receiving yards (68.2% bootstrap probability vs. 52.4% implied)</li>
-                    <li>Travis Kelce over 6.5 receptions (59.3% bootstrap probability vs. 47.6% implied)</li>
+                    <li><strong>Price against real closing lines.</strong> The final test of a betting model is whether it beats the closing price, not whether it's calibrated. That needs historical prop lines, which aren't in the public data.</li>
+                    <li><strong>Model the team, not just the QB.</strong> Opponent pass defense, offensive pace, and the team's pass rate over expected would all shift the mean more directly than the spread does.</li>
                 </ul>
 
-                <h2>Model Performance and Backtesting</h2>
-                <p>
-                    To validate our approach, I backtested the model on a sample of 50 player props from Weeks 5-8 of the 2023 NFL season. Here are the results:
-                </p>
-
-                <ul>
-                    <li>Overall accuracy: 56.0% (28/50)</li>
-                    <li>Props with > 5% edge: 60.7% accuracy (17/28)</li>
-                    <li>Props with > 10% edge: 66.7% accuracy (8/12)</li>
-                </ul>
-
-                <p>
-                    The increasing accuracy with larger predicted edges suggests the model is successfully identifying value opportunities.
-                </p>
-
-                <h2>Limitations and Improvements</h2>
-                <p>
-                    While the bootstrap sampling approach shows promise, it has several limitations:
-                </p>
-
-                <ul>
-                    <li>Small sample sizes for some players, especially rookies or those with limited playing time</li>
-                    <li>Inability to capture external factors like weather conditions, coaching changes, or injuries to teammates</li>
-                    <li>Limited incorporation of defensive matchup quality beyond basic rankings</li>
-                </ul>
-
-                <p>
-                    Future improvements could include:
-                </p>
-
-                <ul>
-                    <li>Weighted bootstrap sampling to prioritize more recent performances</li>
-                    <li>Integration of advanced metrics like EPA (Expected Points Added), DVOA, or NextGen Stats</li>
-                    <li>Ensemble approaches combining bootstrap results with other predictive models</li>
-                    <li>Bayesian methods to incorporate prior knowledge about player performance</li>
-                </ul>
-
-                <h2>Conclusion</h2>
-                <p>
-                    Bootstrap sampling provides a powerful framework for evaluating NFL player prop bets. By generating probability distributions from historical data, we can identify market inefficiencies and make more informed betting decisions.
-                </p>
-                <p>
-                    The approach excels at quantifying uncertainty and producing intuitive probability estimates that can be directly compared to sportsbook lines. While no model can perfectly predict individual player performance, this methodology offers a systematic, data-driven approach to finding value in the prop betting market.
-                </p>
+                <h2>Data and code</h2>
+                    <p>
+                        Weekly QB stats from <a href="https://github.com/nflverse/nflverse-data">nflverse</a>. The line (31.5, over +100) is the pregame sportsbook price
+                        quoted in the original version of this post. The Super Bowl itself is excluded from Hurts' sample so the model only uses what was known before the game.
+                        Every number and chart comes from
+                        <a href="https://github.com/ethantompkins/ethantompkins.github.io/blob/main/analysis/prop_bootstrap.py"><code>analysis/prop_bootstrap.py</code></a>.
+                        Nothing here is betting advice.
+                    </p>
+                <a href="/blogs.html" class="back-link">&larr; Back to all posts</a>
             </article>
-            
-            <div class="mt-4">
-                <a href="/blogs.html">&larr; Back to all posts</a>
-            </div>
         </div>
     </div>
     <div id="footer" class="mb-5">
         <div class="container">
         </div>
     </div>
-    
+    <script src="/assets/js/charts.js"></script>
     <script src="/assets/js/main.js"></script>
 </body>
 </html>

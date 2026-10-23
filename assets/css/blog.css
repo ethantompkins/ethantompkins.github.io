@@ -1,0 +1,208 @@
+/* Blog post layout. Loaded after researcher.css on /blogs/* pages. */
+body {
+    background: #ffffff;
+}
+
+/* ---------- text ---------- */
+.post-header {
+    margin: 1.5rem 0 1.5rem;
+}
+
+.post-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: .75rem;
+}
+
+.post-intro {
+    color: #52514e;
+}
+
+.post h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 2.5rem 0 .75rem;
+    padding-bottom: .3rem;
+    border-bottom: 1px solid #ecebe6;
+}
+
+.post p,
+.post li {
+    font-size: 1.0625rem;
+}
+
+.post a:not(.back-link) {
+    color: #1c5cab;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.post strong {
+    font-weight: 700;
+}
+
+.post code {
+    font-family: ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+    font-size: .875em;
+}
+
+.post pre {
+    font-size: .85rem;
+    line-height: 1.55;
+    background: #f7f7f5;
+    border-radius: 4px;
+    padding: 1rem;
+    overflow-x: auto;
+    margin: 1rem 0 1.5rem;
+}
+
+/* ---------- tables ---------- */
+.table-scroll {
+    overflow-x: auto;
+    margin: 1rem 0 1.5rem;
+}
+
+.post table.data-table {
+    margin: 0;
+    font-size: .95rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.post table.data-table th,
+.post table.data-table td {
+    padding: .5rem .75rem;
+}
+
+.post table.data-table .num {
+    text-align: right;
+}
+
+/* ---------- figures ---------- */
+.fig {
+    margin: 2rem 0;
+}
+
+.fig figcaption {
+    font-size: .85rem;
+    color: #6c6b66;
+    margin-top: .5rem;
+}
+
+.chart {
+    position: relative;
+    width: 100%;
+    min-height: 120px;
+}
+
+.chart svg {
+    display: block;
+    overflow: visible;
+    font-family: inherit;
+}
+
+.chart .tnum {
+    font-variant-numeric: tabular-nums;
+}
+
+.chart .chart-halo {
+    paint-order: stroke;
+    stroke: #ffffff;
+    stroke-width: 3px;
+    stroke-linejoin: round;
+}
+
+.chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem 1.1rem;
+    font-size: .8rem;
+    color: #52514e;
+    margin-bottom: .5rem;
+}
+
+.chart-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+}
+
+.chart-swatch {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex: none;
+}
+
+.chart-swatch-dot {
+    border-radius: 50%;
+}
+
+.chart-swatch-line {
+    width: 16px;
+    height: 2px;
+    border-radius: 1px;
+}
+
+.chart-swatch-dash {
+    background: none !important;
+    border-top: 2px dashed;
+    height: 0;
+}
+
+.chart-tip {
+    position: absolute;
+    z-index: 5;
+    pointer-events: none;
+    background: #ffffff;
+    border: 1px solid rgba(11, 11, 11, .12);
+    border-radius: 4px;
+    padding: .45rem .6rem;
+    font-size: .8rem;
+    line-height: 1.45;
+    min-width: 140px;
+    max-width: 280px;
+}
+
+.chart-tip-title {
+    font-weight: 700;
+    color: #212529;
+    margin-bottom: .2rem;
+}
+
+.chart-tip-row {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+}
+
+.chart-tip-key {
+    color: #52514e;
+    flex: 1;
+}
+
+.chart-tip-val {
+    color: #212529;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 2rem;
+    font-size: .9rem;
+}
+
+@media (max-width: 576px) {
+    .post-header h1 {
+        font-size: 1.6rem;
+    }
+}
+
+.post-date {
+    font-size: .9rem;
+    color: #898781;
+    margin-top: -.25rem;
+}

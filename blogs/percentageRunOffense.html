@@ -7,44 +7,22 @@
     <link rel="icon" type="image/ico" href="/favicon.ico">
     <link rel="manifest" href="/site.webmanifest">
 
-    <title>Ethan Tompkins</title>
-    <meta name="description" content="Seeing the best and worst of run game percentage in 2023">
+    <title>Run Rate and Game Script: 49ers vs. Vikings, 2023 - Ethan Tompkins</title>
+    <meta name="description" content="The 49ers ran more than anyone in 2023 and the Vikings almost never did. The data says the scoreboard, not philosophy, explains most of the gap.">
     <meta name="author" content="Ethan Tompkins">
 
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://ethantompkins.com/blogs/percentageRunOffense.html">
-    <meta property="og:title" content="Percentage Run Offense - Ethan Tompkins">
-    <meta property="og:description" content="Seeing the best and worst of run game percentage in 2023">
-    
+    <meta property="og:title" content="Run Rate and Game Script: 49ers vs. Vikings, 2023 - Ethan Tompkins">
+    <meta property="og:description" content="The 49ers ran more than anyone in 2023 and the Vikings almost never did. The data says the scoreboard, not philosophy, explains most of the gap.">
     <meta property="twitter:image" content="">
+
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/bootstrap-lite.css">
     <link rel="stylesheet" href="/assets/css/researcher.css">
-    <style>
-        /* Additional blog post styling */
-        pre {
-            font-size: .9em;
-            padding: 1em;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-            overflow-x: auto;
-        }
-        
-        code {
-            font-size: .9em;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            font-weight: 400 !important;
-        }
-        
-        img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 1rem auto;
-        }
-    </style>
+    <link rel="stylesheet" href="/assets/css/blog.css">
 </head>
-<body>
+<body data-charts="/assets/data/blog/percentageRunOffense.json">
     <div class="container">
         <nav class="navbar navbar-expand-sm flex-column flex-sm-row text-nowrap py-2">
             <a class="navbar-brand mx-0 mr-sm-auto" href="/" title="Ethan Tompkins">
@@ -66,87 +44,230 @@
     <hr class="mt-0">
     <div id="content">
         <div class="container">
-            <h1>Percentage Run Offense</h1>
-            
-            <article>
-                <p>
-                    In the 2023 NFL season, the San Francisco 49ers boasted the league's best run offense. Several factors contributed to their dominance on the ground.
-                    The 49ers have long been known for their effective running schemes under head coach Kyle Shanahan, but in 2023, they took it to another level.
-                    Key reasons for their success include a healthy offensive line, star running back Christian McCaffrey, and the creative play-calling that kept defenses off balance.
-                    The team often utilized motion and pre-snap shifts to create mismatches, while leveraging outside zone schemes and gap-based runs to exploit defenses.
-                </p>
-                
-                <pre><code class="lang-r">
-# Calculate the percentage of run plays for each play
-games_SF_2023_perc <- games_SF_2023 %>%
-filter(posteam == "SF") %>%
-select(game_id, posteam, play_type, game_seconds_remaining) %>%
-filter(play_type == "run" | play_type == "pass") %>%
-group_by(game_id, play_type) %>%
-mutate(count_plays = row_number()) %>%
-group_by(game_id) %>%
-mutate(count_all = row_number()) %>%
-ungroup() %>%
-mutate(count_run = ifelse(play_type == "run", count_plays, NA)) %>%
-fill(count_run) %>%
-mutate(perc = (count_run / count_all) * 100)
-                </code></pre>
+            <article class="post">
+                <header class="post-header">
+                    <h1>Run Rate and Game Script: 49ers vs. Vikings, 2023</h1>
+                    <p class="post-date"><time datetime="2024-10-01">October 2024</time></p>
+                    <p class="post-intro">
+                        The 49ers ran the ball more than any team in 2023, and the Vikings barely ran at all.
+                        It's tempting to read that as two coaching philosophies. Mostly, it's the scoreboard.
+                    </p>
+                </header>
 
-                <p><img src="/images/percentage_run_offense/percentage-49ers.png" alt="Percentage Run Offense San Francisco 49ers"></p>
-                
+                <h2>Two very different seasons on the ground</h2>
                 <p>
-                    This visualization helps in understanding the 49ers' play-calling tendencies. For example, it may reveal whether the team tends to run more when leading or passes more when trailing. 
-                    With a strong run game, it's expected that the 49ers leaned heavily on their running attack, especially in the second halves of games where they likely had the lead.
+                    Kyle Shanahan's offense has been built around the run for years, and 2023 may have been its best version.
+                    Christian McCaffrey ran for 5.4 yards per carry on 272 carries.
+                    Deebo Samuel's carries out of the backfield averaged 6.1 yards. San Francisco finished first in
+                    <a href="https://www.nflfastr.com/articles/beginners_guide.html">expected points added (EPA)</a>
+                    per run, one of only three teams (with Baltimore and Buffalo) above zero.
                 </p>
-                
-                <h2>Minnesota Vikings Run Offense Analysis - 2023</h2>
-                
                 <p>
-                    In contrast, the Minnesota Vikings struggled with their run game in 2023, finishing the season with the worst run offense in the league.
-                    A combination of a poor offensive line play, injuries at the running back position, and an overall lack of consistency in the ground game led to their struggles.
-                    The Vikings often found themselves abandoning the run early in games due to falling behind, further diminishing their effectiveness.
-                    Additionally, the lack of a consistent run game made their offense one-dimensional, making it easier for defenses to anticipate passing plays.
+                    Minnesota went the other way. Alexander Mattison carried 180 times for &minus;0.18 EPA per carry, and the
+                    offense lost Kirk Cousins to a torn Achilles at midseason. The Vikings ended up 25th in rushing EPA and 29th in run rate.
                 </p>
-                
-                <pre><code class="lang-r">
-# Calculate the percentage of run plays for each play
-games_MIN_2023_perc <- games_MIN_2023 %>%
-filter(posteam == "MIN") %>%
-select(game_id, week_label, posteam, play_type, game_seconds_remaining) %>%
-filter(play_type == "run" | play_type == "pass") %>%
-group_by(game_id, play_type) %>%
-mutate(count_plays = row_number()) %>%
-group_by(game_id) %>%
-mutate(count_all = row_number()) %>%
-ungroup() %>%
-mutate(count_run = ifelse(play_type == "run", count_plays, NA)) %>%
-fill(count_run) %>%
-mutate(perc = (count_run / count_all) * 100)
-                </code></pre>
-                
-                <p><img src="/images/percentage_run_offense/percentage-vikings.png" alt="Percentage Run Offense Minnesota Vikings"></p>
-                
+
+                <figure class="fig">
+                    <div class="chart" data-chart="runVsEpa"></div>
+                    <figcaption>Figure 1: Run rate vs. rushing efficiency, all 32 teams. Run rate = designed runs &divide; (runs + dropbacks). Scrambles and sacks count as dropbacks.</figcaption>
+                </figure>
+
                 <p>
-                    The visualization produced for the Vikings reveals that they rarely leaned on their run game throughout their 2023 season.
-                    This step plot illustrates that the percentage of run plays remained low even in situations where they may have benefited from a balanced approach.
+                    The obvious reading of Figure 1 is that good rushing teams choose to run more. But teams that run more
+                    are also usually teams that are winning, and a team with a lead runs to drain the clock whatever its philosophy.
+                    To separate the two, we need to know <em>when</em> each team was running.
                 </p>
-                
+
+                <h2>Where the snaps happened</h2>
                 <p>
-                    By comparing the two visualizations, we can clearly see the contrast between the best and worst run offenses in the league.
-                    While the 49ers consistently utilized their effective run game to control games, the Vikings' lack of a reliable ground attack ultimately led to predictable play-calling and poor overall performance.
+                    San Francisco went 12&ndash;5 with an average margin of +11.4 points. Minnesota went 7&ndash;10 and played 14 one-score games.
+                    The result is that the two offenses spent their seasons in very different situations:
                 </p>
-            </article>
-            
-            <div class="back-to-posts">
+
+                <figure class="fig">
+                    <div class="chart" data-chart="gameStates"></div>
+                    <figcaption>Figure 2: Share of offensive plays by score state. Score state at the snap, from the offense's perspective.</figcaption>
+                </figure>
+
+                <p>
+                    Teams pass when they're behind and run when they're ahead. Every team follows this pattern, so a team that leads
+                    all season will post a high run rate almost automatically. The real question is how each team behaved
+                    <em>within</em> the same situation:
+                </p>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="runByState"></div>
+                    <figcaption>Figure 3: Run rate by score state. League = all 32 teams pooled.</figcaption>
+                </figure>
+
+                <p>
+                    Three things stand out:
+                </p>
+                <ul>
+                    <li><strong>Behind, the 49ers threw like everyone else.</strong> Down by 9 or more, they ran only 20.5% of the time, lower than the league's 28.2%.</li>
+                    <li><strong>Ahead, they really did lean on the run.</strong> Up by 9 or more, San Francisco ran 58% of the time, against 50% for the league and 38% for Minnesota.</li>
+                    <li><strong>Minnesota was pass-first even when tied</strong> (35.5% run rate vs. the league's 40.1%). That is the one part of its low run rate that game script doesn't explain.</li>
+                </ul>
+                <p>
+                    A cleaner way to strip out game script is to look only at "neutral" plays: 1st and 2nd down, win
+                    probability between 20% and 80%, and outside the last two minutes of each half. On those plays the
+                    49ers ran 46.4% of the time (19th in the league) and the Vikings 44.5% (23rd). That's a two-point gap, compared with twelve points overall.
+                </p>
+
+                <pre><code>import pandas as pd
+
+pbp = pd.read_parquet("play_by_play_2023.parquet")
+plays = pbp[(pbp.season_type == "REG") & ((pbp["pass"] == 1) | (pbp.rush == 1))]
+
+# Neutral = early down, game still in doubt, not a two-minute drill
+neutral = plays[
+    (plays.down <= 2)
+    & plays.wp.between(0.2, 0.8)
+    & (plays.half_seconds_remaining > 120)
+]
+
+run_rate = plays.groupby("posteam").rush.mean()
+neutral_run_rate = neutral.groupby("posteam").rush.mean()
+print(run_rate[["SF", "MIN"]], neutral_run_rate[["SF", "MIN"]])</code></pre>
+
+                <h2>The same pattern across every game in the league</h2>
+                <p>
+                    Figure 4 plots each of the 544 team-games from 2023: the team's run rate in that game against its final margin.
+                    The correlation is <strong>r = 0.52</strong>. Each extra point of final margin adds about a third of a percentage
+                    point of run rate. That doesn't mean running wins games. Winning causes running, because teams with a lead
+                    hand the ball off to kill the clock.
+                </p>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="gameMargin"></div>
+                    <figcaption>Figure 4: Run rate vs. final margin, every 2023 team-game. Line = least-squares fit across all teams.</figcaption>
+                </figure>
+
+                <h2>Who carried the ball</h2>
+                <p>
+                    Efficiency did differ between the two teams, and it shows up at the player level. Every 49ers back with 30 or more carries
+                    except Elijah Mitchell beat every Vikings back on a per-carry basis. Ty Chandler (+0.007 EPA per carry) was
+                    Minnesota's one bright spot. He took over late in the season, after the Vikings were already throwing on most downs.
+                </p>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="rushers"></div>
+                    <figcaption>Figure 5: EPA per carry, players with 30+ carries. Designed runs only.</figcaption>
+                </figure>
+
+                <h2>A better yardstick: pass rate over expected</h2>
+                <p>
+                    The neutral-situation filter works, but it throws away most of a team's plays. The more common fix in public analytics is
+                    <strong>pass rate over expected (PROE)</strong>. nflfastR ships a model, <code>xpass</code>, that gives every play the probability
+                    of a dropback based on down, distance, field position, score, clock, and win probability. Averaging <code>xpass</code> over a
+                    team's plays gives the pass rate a league-average play-caller would have had in exactly the same situations. PROE is the
+                    difference between that and what the team actually did.
+                </p>
+
+<pre><code>cols = ["season", "season_type", "posteam", "pass", "rush", "xpass", "epa"]
+pbp = load_pbp(range(2020, 2026), columns=cols)
+plays = pbp[(pbp.season_type == "REG") & ((pbp["pass"] == 1) | (pbp.rush == 1))]
+plays = plays.dropna(subset=["xpass", "posteam", "epa"])
+
+proe = plays.groupby(["season", "posteam"]).agg(pass_rate=("pass", "mean"),
+                                                xpass=("xpass", "mean"))
+proe["proe"] = proe.pass_rate - proe.xpass</code></pre>
+
+                <p>
+                    In 2023 Minnesota passed on 67.4% of plays against an expected 64.7%, a PROE of <strong>+2.7%</strong> (6th most pass-heavy).
+                    San Francisco passed on 55.0% against an expected 57.0%, a PROE of <strong>&minus;2.0%</strong> (19th). So of the 12.4-point gap
+                    between the two teams' pass rates, 7.7 points come from the situations they were in. Only about 4.7 points reflect a choice.
+                </p>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="proe"></div>
+                    <figcaption>Figure 6: Pass rate over expected, all 32 teams in 2023. Negative values mean a team ran more than a typical play-caller would have in the same situations.</figcaption>
+                </figure>
+
+                <p>
+                    The extremes are more interesting than either of our two teams. Atlanta (&minus;9.2%) ran far more than its situations called for,
+                    and Kansas City (+6.9%), Cincinnati, and Washington threw far more.
+                </p>
+
+                <h3>Is play-calling philosophy a stable trait?</h3>
+                <p>
+                    If PROE measures a coaching tendency rather than noise, it should carry over from one season to the next. Correlating each team's
+                    value with its value the following year, across 2020&ndash;2025, gives an average <strong>r = 0.52</strong> for PROE. Raw pass rate
+                    carries over less well (r = 0.44) because it moves with the team's record.
+                </p>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="proeHistory"></div>
+                    <figcaption>Figure 7: Pass rate over expected by season, 2020&ndash;2025.</figcaption>
+                </figure>
+
+                <p>
+                    The two histories line up with the coaching staffs. San Francisco was below zero in all six seasons under Kyle Shanahan.
+                    Minnesota was run-leaning in 2020&ndash;21 under Mike Zimmer (&minus;4.3% and &minus;2.2%), then flipped to pass-leaning in 2022,
+                    Kevin O'Connell's first season as head coach, and stayed there through 2024. The Vikings' low run rate in 2023 was partly game script
+                    and partly a new philosophy.
+                </p>
+
+                <h3>How sure are we about the neutral gap?</h3>
+                <p>
+                    Earlier, the two teams' neutral run rates differed by 1.9 points. That's small, but is it distinguishable from zero? A bootstrap answers this:
+                    resample each team's games with replacement 10,000 times and recompute the gap. Resampling <em>games</em> rather than plays matters
+                    here, because plays in the same game share an opponent, a game plan, and weather, so they aren't independent.
+                </p>
+
+<pre><code>rng = np.random.default_rng(7)
+by_game = {t: neutral[neutral.posteam == t].groupby("game_id").rush.agg(["sum", "count"])
+           for t in ["SF", "MIN"]}
+
+diffs = []
+for _ in range(10_000):
+    rate = {}
+    for t, g in by_game.items():
+        idx = rng.integers(0, len(g), len(g))          # resample games, keep plays together
+        rate[t] = g["sum"].values[idx].sum() / g["count"].values[idx].sum()
+    diffs.append(rate["SF"] - rate["MIN"])
+
+np.quantile(diffs, [0.025, 0.975])                     # [-0.037, 0.073]</code></pre>
+
+                <p>
+                    The 95% interval runs from &minus;3.7 to +7.3 points. It comfortably includes zero, so in neutral situations the data can't tell these two
+                    play-callers apart at all.
+                </p>
+
+                <h2>So what?</h2>
+                <p>
+                    "Establish the run" is one of football's most durable clichés, and season-long run rate is the stat usually quoted to support it.
+                    This comparison is a reminder of how much that number depends on the scoreboard. The 49ers' 45% run rate mostly reflects how often
+                    they were winning, and their efficiency on the ground was one reason they were winning. Strip out the game script and the
+                    two teams' play-calling was far more alike than their season totals suggest.
+                </p>
+                <p>
+                    When you compare teams' tendencies, look at neutral-situation rates, or at least split by score. Raw run rate
+                    tells you more about a team's record than about its philosophy.
+                </p>
+
+                <h2>Caveats</h2>
+                    <ul>
+                        <li>One season, two teams. Minnesota started four different quarterbacks after Cousins' injury, which affected how often it could pass well, not just how often it chose to.</li>
+                        <li>EPA per run penalizes short-yardage carries that convert but gain little. Success rate tells the same story, though (SF 1st at 47.0%, MIN 14th at 39.9%).</li>
+                        <li>"Neutral" is a convention. Shifting the win-probability window to 30&ndash;70% doesn't change the conclusion.</li>
+                    </ul>
+
+                <h2>Data and code</h2>
+                    <p>
+                        Play-by-play from <a href="https://github.com/nflverse/nflverse-data">nflverse</a> (nflfastR), 2023 regular season
+                        (2020&ndash;2025 for the PROE section), limited to designed runs and dropbacks with a valid EPA. The analysis script that produces every number and chart
+                        on this page is <a href="https://github.com/ethantompkins/ethantompkins.github.io/blob/main/analysis/percentage_run_offense.py"><code>analysis/percentage_run_offense.py</code></a>.
+                    </p>
                 <a href="/blogs.html" class="back-link">&larr; Back to all posts</a>
-            </div>
+            </article>
         </div>
     </div>
     <div id="footer" class="mb-5">
         <div class="container">
         </div>
     </div>
-    
+    <script src="/assets/js/charts.js"></script>
     <script src="/assets/js/main.js"></script>
 </body>
 </html>

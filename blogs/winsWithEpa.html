@@ -7,44 +7,22 @@
     <link rel="icon" type="image/ico" href="/favicon.ico">
     <link rel="manifest" href="/site.webmanifest">
 
-    <title>Ethan Tompkins</title>
-    <meta name="description" content="Seeing which metrics can be used to predict wins in the NFL">
+    <title>EPA Metrics and Team Wins - Ethan Tompkins</title>
+    <meta name="description" content="128 team-seasons of EPA vs. wins: net EPA explains 78% of the variation in win percentage, passing beats rushing, and offense is far more stable than defense.">
     <meta name="author" content="Ethan Tompkins">
 
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://ethantompkins.com/blogs/winsWithEpa.html">
-    <meta property="og:title" content="Exploring Wins based on Season EPA Metrics - Ethan Tompkins">
-    <meta property="og:description" content="Seeing which metrics can be used to predict wins in the NFL">
+    <meta property="og:title" content="EPA Metrics and Team Wins - Ethan Tompkins">
+    <meta property="og:description" content="128 team-seasons of EPA vs. wins: net EPA explains 78% of the variation in win percentage, passing beats rushing, and offense is far more stable than defense.">
     <meta property="twitter:image" content="">
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/bootstrap-lite.css">
     <link rel="stylesheet" href="/assets/css/researcher.css">
-    <style>
-        /* Additional blog post styling */
-        pre {
-            font-size: .9em;
-            padding: 1em;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-            overflow-x: auto;
-        }
-        
-        code {
-            font-size: .9em;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            font-weight: 400 !important;
-        }
-        
-        img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 1rem auto;
-        }
-    </style>
+    <link rel="stylesheet" href="/assets/css/blog.css">
 </head>
-<body>
+<body data-charts="/assets/data/blog/winsWithEpa.json">
     <div class="container">
         <nav class="navbar navbar-expand-sm flex-column flex-sm-row text-nowrap py-2">
             <a class="navbar-brand mx-0 mr-sm-auto" href="/" title="Ethan Tompkins">
@@ -66,140 +44,258 @@
     <hr class="mt-0">
     <div id="content">
         <div class="container">
-            <h1>Exploring Wins based on Season EPA Metrics</h1>
-            
-            <article>
-                <!-- Your existing content goes here -->
+            <article class="post">
+                <header class="post-header">
+                    <h1>EPA Metrics and Team Wins</h1>
+                    <p class="post-date"><time datetime="2024-09-30">September 2024</time></p>
+                    <p class="post-intro">
+                        Expected Points Added is the standard efficiency stat in football analytics. Across four seasons and 128 team-seasons,
+                        here's how well each version of it lines up with winning, and which ones can predict the rest of a season.
+                    </p>
+                </header>
+
+                <h2>What EPA measures</h2>
                 <p>
-                    In this analysis, we'll explore which Expected Points Added (EPA) metrics most strongly correlate with wins in the NFL. EPA is a statistical measure that quantifies the value of a play based on down, distance, and field position, making it one of the most insightful metrics for evaluating team performance.
+                    Every play starts from a down, distance, and field position that's worth some number of expected points.
+                    1st &amp; 10 at your own 25 is worth about +1.1; 1st &amp; 10 at the opponent's 25 is worth about +4.1.
+                    <a href="https://www.nflfastr.com/articles/beginners_guide.html">EPA</a> is the change in that value caused by the play.
+                    Averaging it over a season gives one efficiency number per team, on offense (higher is better) and defense
+                    (EPA <em>allowed</em>, where lower is better), and it can be split into passing and rushing.
+                </p>
+                <p>
+                    The question here is simple: which of those numbers move with wins? I built every metric for every team from
+                    2020 through 2023 and correlated each with that season's win percentage. Ties count as half a win, and win percentage
+                    handles the switch from 16 to 17 games.
                 </p>
 
-                <h2>The Data</h2>
-                <p>
-                    We'll use data from the 2022 NFL season, including offensive and defensive EPA metrics across various play types (passing, rushing, etc.). Our goal is to determine which of these metrics have the strongest relationship with a team's win total.
-                </p>
+                <pre><code>plays = pbp[(pbp.season_type == "REG") & ((pbp["pass"] == 1) | (pbp.rush == 1))]
 
-                <h2>Step 1: Load and Prepare the Data</h2>
-                <pre><code class="lang-r">
-# Loading packages
-library(tidyverse)
-library(nflfastR)
-library(ggplot2)
+off = plays.groupby(["season", "posteam"])
+dfn = plays.groupby(["season", "defteam"])
+team = pd.DataFrame({
+    "off_epa":  off.epa.mean(),
+    "off_pass": plays[plays["pass"] == 1].groupby(["season", "posteam"]).epa.mean(),
+    "off_rush": plays[plays.rush == 1].groupby(["season", "posteam"]).epa.mean(),
+    "def_epa":  dfn.epa.mean().values,  # EPA allowed: lower is better
+})
+team["net_epa"] = team.off_epa - team.def_epa
+team = team.join(win_pct)  # from the schedule: wins + 0.5 * ties, over games played
 
-# Load 2022 NFL season play-by-play data
-pbp_2022 <- load_pbp(2022)
+# Flip defense so every correlation reads "higher = better"
+corr = {m: team[m].corr(team.win_pct) * (-1 if m.startswith("def") else 1)
+        for m in ["net_epa", "off_epa", "off_pass", "off_rush", "def_epa"]}</code></pre>
 
-# Calculate team EPA metrics
-team_epa <- pbp_2022 %>%
-  filter(!is.na(epa)) %>%
-  group_by(posteam) %>%
-  summarize(
-    off_epa_per_play = mean(epa, na.rm = TRUE),
-    off_pass_epa = mean(epa[pass == 1], na.rm = TRUE),
-    off_rush_epa = mean(epa[rush == 1], na.rm = TRUE)
-  )
+                <h2>How strongly each metric tracks winning</h2>
 
-# Calculate defensive EPA metrics
-def_epa <- pbp_2022 %>%
-  filter(!is.na(epa), !is.na(defteam)) %>%
-  group_by(defteam) %>%
-  summarize(
-    def_epa_per_play = -mean(epa, na.rm = TRUE),  # Negative for better interpretation
-    def_pass_epa = -mean(epa[pass == 1], na.rm = TRUE),
-    def_rush_epa = -mean(epa[rush == 1], na.rm = TRUE)
-  ) %>%
-  rename(team = defteam)
-
-# Get team wins
-team_wins <- pbp_2022 %>%
-  filter(!is.na(result)) %>%
-  select(home_team, away_team, result) %>%
-  mutate(
-    home_win = ifelse(result > 0, 1, 0),
-    away_win = ifelse(result < 0, 1, 0)
-  ) %>%
-  pivot_longer(
-    cols = c(home_team, away_team),
-    names_to = "team_type",
-    values_to = "team"
-  ) %>%
-  mutate(
-    win = ifelse(team_type == "home_team", home_win, away_win)
-  ) %>%
-  group_by(team) %>%
-  summarize(wins = sum(win, na.rm = TRUE))
-                </code></pre>
-
-                <h2>Step 2: Merge the Data and Analyze Correlations</h2>
-                <pre><code class="lang-r">
-# Merge team EPA metrics with wins
-team_data <- team_epa %>%
-  rename(team = posteam) %>%
-  left_join(def_epa, by = "team") %>%
-  left_join(team_wins, by = "team")
-
-# Calculate correlations between EPA metrics and wins
-correlations <- team_data %>%
-  summarize(
-    off_epa_corr = cor(off_epa_per_play, wins),
-    off_pass_epa_corr = cor(off_pass_epa, wins),
-    off_rush_epa_corr = cor(off_rush_epa, wins),
-    def_epa_corr = cor(def_epa_per_play, wins),
-    def_pass_epa_corr = cor(def_pass_epa, wins),
-    def_rush_epa_corr = cor(def_rush_epa, wins)
-  ) %>%
-  pivot_longer(
-    cols = everything(),
-    names_to = "metric",
-    values_to = "correlation"
-  ) %>%
-  arrange(desc(abs(correlation)))
-                </code></pre>
-
-                <h2>Step 3: Visualize the Results</h2>
-                <pre><code class="lang-r">
-# Plot the correlations
-ggplot(correlations, aes(x = reorder(metric, abs(correlation)), y = correlation)) +
-  geom_bar(stat = "identity", fill = "steelblue") +
-  coord_flip() +
-  labs(
-    title = "Correlation between EPA Metrics and Wins",
-    x = "EPA Metric",
-    y = "Correlation with Wins",
-    subtitle = "2022 NFL Season"
-  ) +
-  theme_minimal()
-                </code></pre>
+                <figure class="fig">
+                    <div class="chart" data-chart="correlations"></div>
+                    <figcaption>Figure 1: Correlation with win percentage, 2020–2023. Pearson r across 128 team-seasons. Defensive metrics are sign-flipped so that a stronger defense counts as positive.</figcaption>
+                </figure>
 
                 <p>
-                    Looking at our correlation analysis, we found that overall offensive EPA per play has the strongest correlation with wins (0.76), followed closely by offensive passing EPA (0.73). Defensive EPA metrics also showed significant correlations, with defensive pass EPA having a correlation of 0.68 with wins.
+                    Three patterns stand out in Figure 1.
+                </p>
+                <ul>
+                    <li><strong>Net EPA is almost as good as the scoreboard.</strong> Point differential is the gold standard for team strength, and net EPA per play nearly matches it (0.885 vs. 0.890) without using a single point scored.</li>
+                    <li><strong>Passing beats rushing on both sides of the ball.</strong> Offensive pass EPA correlates at 0.73 and offensive rush EPA at 0.46. On defense the gap is wider: pass defense 0.52, run defense 0.20.</li>
+                    <li><strong>Offense beats defense.</strong> A team's offensive EPA tracks its record about 1.6 times as strongly as its defensive EPA (0.75 vs. 0.48).</li>
+                </ul>
+
+                <h2>Net EPA and win percentage</h2>
+                <p>
+                    Figure 2 shows the strongest of these relationships. The fitted line implies that every +0.10 of net EPA per play is worth about
+                    14.7 points of win percentage, or roughly <strong>2.5 extra wins</strong> over 17 games. The distance of each dot
+                    from the line is a measure of luck: close-game record, turnover timing, and other things EPA doesn't credit.
                 </p>
 
-                <p>
-                    This analysis confirms what many NFL analysts have observed: passing efficiency, both offensively and defensively, is more strongly correlated with winning than rushing efficiency. Teams that perform well in offensive and defensive passing EPA tend to win more games over the course of a season.
-                </p>
-
-                <h2>Conclusion</h2>
-                <p>
-                    The results suggest that teams should prioritize passing game efficiency on both sides of the ball if they want to maximize their win total. While rushing metrics do show correlation with wins, they are not as strongly predictive as passing metrics. This aligns with the modern NFL's shift toward pass-heavy offenses and the increased importance of pass defense.
-                </p>
+                <figure class="fig">
+                    <div class="chart" data-chart="netEpa"></div>
+                    <figcaption>Figure 2: Net EPA per play vs. win %, every team-season 2020–2023.</figcaption>
+                </figure>
 
                 <p>
-                    For future analysis, we could explore how these correlations have changed over time, or examine how situational EPA metrics (e.g., third down, red zone) correlate with winning. We could also build predictive models using these EPA metrics to forecast team performance.
+                    The biggest outlier is the <strong>2022 Vikings</strong>: 13 wins with a net EPA of almost exactly zero, about 4.5 more wins
+                    than the line expects. That team went 11&ndash;0 in one-score games. They lost to the Giants in the first round of the playoffs,
+                    and the next season they won 7. At the other end, the <strong>2020 Falcons</strong> (4 wins, &minus;3.3) blew several
+                    fourth-quarter leads, and the <strong>2021 Bills</strong> (11 wins) were second in the league in net EPA but won 2.5 fewer games than
+                    the line expects.
                 </p>
+
+                <h2>The 2023 map</h2>
+                <p>
+                    Putting offense and defense on separate axes shows how each team won. San Francisco's offense was far ahead of the field. Cleveland and Baltimore had the two best defenses, and Cleveland made the
+                    playoffs despite a bottom-five offense. Six of the seven teams in the upper-right quadrant made the playoffs; New Orleans was the exception.
+                </p>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="map2023"></div>
+                    <figcaption>Figure 3: Offense vs. defense EPA per play, 2023. Playoff teams in blue.</figcaption>
+                </figure>
+
+                <h2>Which metrics predict the <em>rest</em> of a season?</h2>
+                <p>
+                    Lining up with wins is one thing. A more useful test is prediction: if all you know is a team's first half of the season,
+                    which number best predicts its second half? I split each season at its midpoint and correlated each first-half
+                    metric with the team's second-half win percentage.
+                </p>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="predictive"></div>
+                    <figcaption>Figure 4: First-half metric vs. second-half win %. 128 team-seasons split at the middle week. Defensive metrics sign-flipped.</figcaption>
+                </figure>
+
+                <p>
+                    In these four seasons, a team's first-half record (r = 0.33) was a <em>worse</em> predictor of its second half than
+                    its first-half net EPA (0.42) or even its offensive EPA alone (0.40). The usual explanation is that win-loss records are noisy:
+                    one-score games mostly come down to luck, and EPA filters much of that out. The next section tests whether that edge survives
+                    on seasons the analysis never saw.
+                </p>
+                <p>
+                    Defense is a different story. First-half defensive EPA predicts the second half at only 0.17, and run defense at &minus;0.02,
+                    which is effectively nothing. Offensive performance is a stable skill; defensive performance swings from week to week. This lines up with
+                    a long-standing finding in football analytics: build around the passing offense, and don't overpay for a defense
+                    that has played well for half a season.
+                </p>
+
+                <h2>Testing it on seasons the model never saw</h2>
+                <p>
+                    Everything above uses 2020&ndash;2023. Since then, two more seasons have finished, which makes for a clean out-of-sample test.
+                    Before running it, though, it's worth asking how precise the original numbers are.
+                </p>
+
+                <h3>How precise are the correlations?</h3>
+                <p>
+                    With only 128 team-seasons, every r in Figure 1 has real uncertainty. Resampling the team-seasons 5,000 times gives a 95% interval for each:
+                </p>
+
+                <div class="table-scroll">
+                <table class="data-table">
+                    <thead>
+                        <tr><th>Metric</th><th class="num">r with win %</th><th class="num">95% interval</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Point differential / game</td><td class="num">0.89</td><td class="num">0.85 – 0.92</td></tr>
+                        <tr><td>Net EPA / play</td><td class="num">0.89</td><td class="num">0.85 – 0.92</td></tr>
+                        <tr><td>Offense EPA / play</td><td class="num">0.75</td><td class="num">0.66 – 0.83</td></tr>
+                        <tr><td>Offense pass EPA / play</td><td class="num">0.73</td><td class="num">0.63 – 0.81</td></tr>
+                        <tr><td>Defense pass EPA / play</td><td class="num">0.52</td><td class="num">0.37 – 0.64</td></tr>
+                        <tr><td>Defense EPA / play</td><td class="num">0.48</td><td class="num">0.33 – 0.61</td></tr>
+                        <tr><td>Offense rush EPA / play</td><td class="num">0.46</td><td class="num">0.33 – 0.58</td></tr>
+                        <tr><td>Defense rush EPA / play</td><td class="num">0.20</td><td class="num">0.04 – 0.36</td></tr>
+                    </tbody>
+                </table>
+                </div>
+
+                <p>
+                    The broad conclusions hold up well. Offensive EPA beat defensive EPA in 99.9% of resamples, and offensive pass EPA beat offensive rush EPA in all
+                    of them. Fine distinctions don't: defensive pass EPA, defensive EPA, and offensive rush EPA have overlapping intervals, so their order in
+                    Figure 1 could easily change with different seasons.
+                </p>
+
+<pre><code>rng = np.random.default_rng(11)
+boot = {m: [] for m in metrics}
+for _ in range(5000):
+    sample = season.iloc[rng.integers(0, len(season), len(season))]  # resample team-seasons
+    for m in metrics:
+        sign = -1 if m.startswith("def") else 1
+        boot[m].append(sign * sample[m].corr(sample.win_pct))
+
+ci = {m: np.quantile(v, [0.025, 0.975]) for m, v in boot.items()}
+(np.array(boot["off_epa"]) > np.array(boot["def_epa"])).mean()       # 0.999</code></pre>
+
+                <h3>Does this season predict next season?</h3>
+                <p>
+                    Pairing every team's season with its following season (2020&rarr;21 through 2024&rarr;25, 160 pairs), here's how well each metric
+                    predicts the <em>next</em> year's win percentage:
+                </p>
+
+                <div class="table-scroll">
+                <table class="data-table">
+                    <thead>
+                        <tr><th>Metric this season</th><th class="num">r with this season's win %</th><th class="num">r with next season's win %</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Offense EPA / play</td><td class="num">0.73</td><td class="num">0.38</td></tr>
+                        <tr><td>Net EPA / play</td><td class="num">0.89</td><td class="num">0.37</td></tr>
+                        <tr><td>Point differential / game</td><td class="num">0.90</td><td class="num">0.37</td></tr>
+                        <tr><td>Win %</td><td class="num">1.00</td><td class="num">0.37</td></tr>
+                        <tr><td>Defense EPA / play</td><td class="num">0.53</td><td class="num">0.13</td></tr>
+                    </tbody>
+                </table>
+                </div>
+
+                <p>
+                    Across a full offseason of roster turnover, almost everything regresses to the same place: about r = 0.37. Offensive EPA alone does as well as
+                    anything. Defensive EPA keeps only a third of that (0.13), which is the most consistent result in this post: it shows up within a season and across seasons.
+                </p>
+
+                <h3>A real forecast: the second halves of 2024 and 2025</h3>
+                <p>
+                    The final test is to build forecasting models on 2020&ndash;2023 and use them, unchanged, on 2024 and 2025. Each model sees a team's first
+                    half of the season and predicts its second-half win percentage. I measured each one by its average miss, in wins, across all 64 teams.
+                </p>
+
+<pre><code>from sklearn.linear_model import LinearRegression
+
+train = pd.concat([season_halves(yr) for yr in [2020, 2021, 2022, 2023]])
+test = pd.concat([season_halves(yr) for yr in [2024, 2025]])
+
+features = ["net_epa", "win_pct"]                       # first-half values
+lm = LinearRegression().fit(train[features], train.win_pct_2nd)
+forecast = lm.predict(test[features])
+
+miss_in_wins = np.abs(forecast - test.win_pct_2nd) * test.games_2nd
+miss_in_wins.mean()                                     # 1.59</code></pre>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="forecast"></div>
+                    <figcaption>Figure 5: Average forecast miss over the second half of the 2024 and 2025 seasons. All models were fit on 2020&ndash;2023 only. Lower is better.</figcaption>
+                </figure>
+
+                <p>
+                    Every approach beats the naive guess of a .500 finish (1.84 wins off), but the EPA models <em>didn't</em> beat the simplest forecast of all:
+                    assume the team keeps its first-half record (1.52 wins off, against 1.57 for net EPA). In 2024&ndash;25, first-half record correlated with
+                    the second half at r = 0.52, well above the 0.33 from 2020&ndash;23, while net EPA stayed about the same (0.43).
+                </p>
+                <p>
+                    Is that a real reversal? A paired bootstrap over the 64 teams puts the difference between the two forecasts at +0.05 wins,
+                    with a 95% interval of &minus;0.19 to +0.28. That's no detectable difference in either direction. Over a half-season, first-half record and
+                    first-half EPA carry about the same information. The apparent edge for EPA in 2020&ndash;23 was within the noise.
+                </p>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="forecastPoints"></div>
+                    <figcaption>Figure 6: Net EPA + record forecast vs. actual second-half win %, every 2024 and 2025 team. The diagonal is a perfect forecast.</figcaption>
+                </figure>
+
+                <p>
+                    Even the best models miss by a lot: the typical team finishes about 1.5 wins away from its forecast over eight or nine games. The biggest
+                    misses were 2025 Arizona, Indianapolis, and Kansas City (4.1&ndash;4.7 wins off) and 2024 Chicago (4.0). Most of a half-season's outcome is
+                    simply not predictable from the first half.
+                </p>
+
+                <h2>Caveats</h2>
+                    <ul>
+                        <li>These are correlations, not causes. A team that's winning faces different play-calling (see <a href="/blogs/percentageRunOffense.html">Run Rate and Game Script: 49ers vs. Vikings, 2023</a>), which feeds back into its EPA.</li>
+                        <li>EPA per play is unadjusted for opponent strength and for garbage time. Weighting by win probability or adjusting for schedule usually raises the correlations a little.</li>
+                        <li>The forecast test covers only two seasons (64 teams), so it can rule out a large edge for EPA over record, not a small one.</li>
+                    </ul>
+
+                <h2>Data and code</h2>
+                    <p>
+                        Play-by-play and schedules from <a href="https://github.com/nflverse/nflverse-data">nflverse</a>, 2020&ndash;2023 regular seasons, plus 2024&ndash;2025 for the out-of-sample tests.
+                        Plays are designed runs and dropbacks with a valid EPA. Every number and chart comes from
+                        <a href="https://github.com/ethantompkins/ethantompkins.github.io/blob/main/analysis/wins_with_epa.py"><code>analysis/wins_with_epa.py</code></a>.
+                    </p>
+                <a href="/blogs.html" class="back-link">&larr; Back to all posts</a>
             </article>
-            
-            <div class="mt-4">
-                <a href="/blogs.html">&larr; Back to all posts</a>
-            </div>
         </div>
     </div>
     <div id="footer" class="mb-5">
         <div class="container">
         </div>
     </div>
-    
+    <script src="/assets/js/charts.js"></script>
     <script src="/assets/js/main.js"></script>
 </body>
 </html>
-

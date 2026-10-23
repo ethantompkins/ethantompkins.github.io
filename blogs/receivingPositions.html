@@ -7,44 +7,22 @@
     <link rel="icon" type="image/ico" href="/favicon.ico">
     <link rel="manifest" href="/site.webmanifest">
 
-    <title>Ethan Tompkins</title>
-    <meta name="description" content="Breakdown of the NFL Receiving Game by Position">
+    <title>Receiving Usage and Efficiency by Position - Ethan Tompkins</title>
+    <meta name="description" content="A breakdown of the 2023 NFL passing game by position: target share, depth of target, yards after catch, and why running-back targets look so inefficient.">
     <meta name="author" content="Ethan Tompkins">
 
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://ethantompkins.com/blogs/receivingPositions.html">
-    <meta property="og:title" content="Receiving by Position in the NFL - Ethan Tompkins">
-    <meta property="og:description" content="Breakdown of the NFL Receiving Game by Position">
-    
+    <meta property="og:title" content="Receiving Usage and Efficiency by Position - Ethan Tompkins">
+    <meta property="og:description" content="A breakdown of the 2023 NFL passing game by position: target share, depth of target, yards after catch, and why running-back targets look so inefficient.">
     <meta property="twitter:image" content="">
+
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/bootstrap-lite.css">
     <link rel="stylesheet" href="/assets/css/researcher.css">
-    <style>
-        /* Additional blog post styling */
-        pre {
-            font-size: .9em;
-            padding: 1em;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-            overflow-x: auto;
-        }
-        
-        code {
-            font-size: .9em;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            font-weight: 400 !important;
-        }
-        
-        img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 1rem auto;
-        }
-    </style>
+    <link rel="stylesheet" href="/assets/css/blog.css">
 </head>
-<body>
+<body data-charts="/assets/data/blog/receivingPositions.json">
     <div class="container">
         <nav class="navbar navbar-expand-sm flex-column flex-sm-row text-nowrap py-2">
             <a class="navbar-brand mx-0 mr-sm-auto" href="/" title="Ethan Tompkins">
@@ -66,98 +44,202 @@
     <hr class="mt-0">
     <div id="content">
         <div class="container">
-            <h1>Receiving by Position in the NFL</h1>
-            
-            <article>
+            <article class="post">
+                <header class="post-header">
+                    <h1>Receiving Usage and Efficiency by Position</h1>
+                    <p class="post-date"><time datetime="2024-09-30">September 2024</time></p>
+                    <p class="post-intro">
+                        Wide receivers, tight ends, and running backs split the targets in every NFL offense, but they do completely
+                        different jobs. A position-by-position look at 17,540 targets from 2023.
+                    </p>
+                </header>
+
+                <h2>Splitting the pie</h2>
                 <p>
-                    In today's NFL, the passing game has evolved significantly compared to previous eras. Teams are now utilizing various positions as receivers beyond the traditional wide receiver role. This analysis examines how different positions - wide receivers (WR), tight ends (TE), and running backs (RB) - contribute to their teams' receiving game.
+                    Every 2023 pass attempt with a listed receiver is tagged with that player's position (fullbacks counted as running backs).
+                    Wide receivers dominate the volume, but the more interesting result is how each position's share <em>changes</em>
+                    from targets to yards to touchdowns.
                 </p>
 
-                <h2>Data Collection and Preparation</h2>
+                <figure class="fig">
+                    <div class="chart" data-chart="share"></div>
+                    <figcaption>Figure 1: Share of the 2023 passing game by position. Regular season, sacks and throwaways without a target excluded.</figcaption>
+                </figure>
+
                 <p>
-                    For this analysis, I collected play-by-play data from the 2022 NFL season using the nflfastR package in R. The data was filtered to include only completed passes, and then aggregated by position to calculate various receiving metrics.
+                    Running backs have the highest catch rate in football at 77%, so their share of <em>receptions</em> (21.5%) is
+                    bigger than their share of targets (18.7%). Those catches are short, though, and RBs end up with just 14.1% of receiving yards and 12.5% of
+                    receiving touchdowns. Wide receivers go the other way: 59.7% of targets becomes 64.6% of the yards.
+                </p>
+                <p>
+                    These shares are very stable. From 2020 through 2023, the WR share of targets never moved outside 59.5&ndash;59.7%, TEs stayed
+                    at 21&ndash;22%, and RBs at about 19%. League-wide, offenses split the ball almost identically every season, even as individual teams vary a lot.
                 </p>
 
-                <pre><code class="lang-r">
-# Loading libraries
-library(nflfastR)
-library(tidyverse)
-library(ggplot2)
-
-# Load play-by-play data
-pbp_2022 <- load_pbp(2022)
-
-# Filter for completed passes only
-pass_data <- pbp_2022 %>%
-  filter(play_type == "pass", complete_pass == 1, !is.na(receiver_position))
-
-# Summarize data by position
-position_stats <- pass_data %>%
-  group_by(receiver_position) %>%
-  summarize(
-    total_receptions = n(),
-    total_yards = sum(yards_gained, na.rm = TRUE),
-    avg_yards_per_reception = mean(yards_gained, na.rm = TRUE),
-    total_touchdowns = sum(touchdown == 1, na.rm = TRUE),
-    avg_air_yards = mean(air_yards, na.rm = TRUE),
-    avg_yac = mean(yards_after_catch, na.rm = TRUE)
-  ) %>%
-  filter(receiver_position %in% c("WR", "TE", "RB"))
-                </code></pre>
-
-                <h2>Results: Reception Distribution by Position</h2>
+                <h2>Where each position is targeted</h2>
                 <p>
-                    The analysis revealed that wide receivers still dominate the receiving game, accounting for approximately 55% of all receptions. Tight ends and running backs make up about 22% and 21% respectively. However, each position plays a distinct role in the passing attack.
+                    The real difference between positions is depth. Figure 2 shows where along the field each position's targets are
+                    thrown, measured as air yards beyond the line of scrimmage at the catch point.
                 </p>
 
-                <h2>Yards After Catch (YAC) Analysis</h2>
-                <p>
-                    One interesting aspect of the analysis was the difference in yards after catch (YAC) between positions:
-                </p>
+                <figure class="fig">
+                    <div class="chart" data-chart="depth"></div>
+                    <figcaption>Figure 2: Depth of target by position. Share of each position's targets in 2-yard air-yard bins (each line sums to 100%). Throws beyond 40 air yards are grouped into the last bin.</figcaption>
+                </figure>
+
                 <ul>
-                    <li>Running backs led with an average of 7.8 YAC per reception</li>
-                    <li>Tight ends averaged 4.5 YAC per reception</li>
-                    <li>Wide receivers averaged 3.9 YAC per reception</li>
+                    <li><strong>58%</strong> of RB targets are at or behind the line of scrimmage, vs. 17% for TEs and 13% for WRs.</li>
+                    <li><strong>17%</strong> of WR targets travel 20+ air yards. Only 6% of TE targets and 1% of RB targets do.</li>
+                    <li>Average depth of target (aDOT): <strong>WR 10.8, TE 6.4, RB &minus;0.1</strong> yards.</li>
                 </ul>
+
+                <h2>How each position gains its yards</h2>
                 <p>
-                    This makes sense considering running backs typically catch shorter passes and have more open field ahead of them, while wide receivers often catch passes further downfield with defenders in closer proximity.
+                    That depth difference determines how each position produces yards. On an average catch, a wide receiver's yards come mostly from
+                    the throw itself. A running back's reception starts behind the line, so every yard comes after the catch.
                 </p>
 
-                <h2>Air Yards Comparison</h2>
+                <figure class="fig">
+                    <div class="chart" data-chart="yards"></div>
+                    <figcaption>Figure 3: Yards per reception, split into air yards and yards after catch. Completed passes only. RB air yards are negative (&minus;0.7), so the RB bar starts slightly left of zero.</figcaption>
+                </figure>
+
                 <p>
-                    The average air yards (distance the ball travels in the air) shows a completely opposite pattern:
-                </p>
-                <ul>
-                    <li>Wide receivers: 9.6 air yards per reception</li>
-                    <li>Tight ends: 6.3 air yards per reception</li>
-                    <li>Running backs: 0.7 air yards per reception</li>
-                </ul>
-                <p>
-                    This demonstrates how running backs are primarily used for short, safe passes that can potentially turn into longer gains through their ability to make defenders miss in the open field.
+                    Running backs lead every position with <strong>7.8 yards after catch</strong> per reception, nearly twice a wide receiver's 4.4.
+                    It isn't enough, though: an RB reception gains 7.1 yards in total, vs. 10.2 for tight ends and 12.6 for wide receivers.
                 </p>
 
-                <h2>Conclusion</h2>
+                <h2>The players</h2>
                 <p>
-                    This analysis highlights the specialized roles different positions play in modern NFL passing attacks. Wide receivers remain the primary downfield threats, tight ends provide a balance of downfield and intermediate options, while running backs serve as safety valves and YAC specialists.
+                    Figure 4 places every player with 50+ targets on the same two axes, depth of target and YAC. The positions separate into three clear
+                    groups, with a few hybrids in between: Deebo Samuel and Rashee Rice are WRs used like running backs, George Kittle is a TE who does both, and
+                    Christian McCaffrey's 1.8-yard aDOT is among the deepest of any running back.
+                </p>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="players"></div>
+                    <figcaption>Figure 4: Depth of target vs. YAC per reception, players with 50+ targets. 127 players. Position from nflverse weekly rosters.</figcaption>
+                </figure>
+
+                <pre><code>targets = pbp[(pbp.season_type == "REG") & (pbp.pass_attempt == 1)
+              & (pbp.sack == 0) & pbp.receiver_player_id.notna()]
+
+# One position per player-season, from the weekly player stats
+pos = (player_stats.groupby(["season", "player_id"]).position
+       .agg(lambda s: s.mode().iat[0]).replace({"FB": "RB"}).rename("pos"))
+targets = targets.join(pos, on=["season", "receiver_player_id"])
+
+by_pos = targets.groupby("pos").agg(
+    targets=("epa", "size"),
+    catch_rate=("complete_pass", "mean"),
+    adot=("air_yards", "mean"),
+    epa_per_target=("epa", "mean"),
+)</code></pre>
+
+                <h2>Are running-back targets bad?</h2>
+                <p>
+                    Per target, the passing game strongly prefers wide receivers (+0.21 EPA) and tight ends (+0.19) over running backs (&minus;0.05).
+                    That's the analytics case against "feeding the back in the passing game": a typical RB target loses value, and a typical WR target adds it.
                 </p>
                 <p>
-                    Teams that effectively utilize all three position groups in their passing game can create more diverse and unpredictable offenses, making them more difficult to defend. The data suggests that a well-balanced approach that leverages each position's strengths can lead to a more efficient passing attack.
+                    But comparing positions overall mixes together <em>who</em> is targeted and <em>where</em>. Figure 5 holds depth constant.
+                </p>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="eff"></div>
+                    <figcaption>Figure 5: EPA per target by position and depth of target. RB targets of 10&ndash;19 yards (82) and 20+ yards (36) are small samples.</figcaption>
+                </figure>
+
+                <p>
+                    Throws behind the line of scrimmage lose value for <em>everyone</em> (&minus;0.14 to &minus;0.24 EPA), and RBs are actually the best of
+                    the three there. Screens to receivers and tight ends fare worse. Running backs do lag at 0&ndash;9 yards (+0.00 vs. +0.12 for WRs),
+                    partly because many of those are check-downs on plays where nothing else was open.
                 </p>
                 <p>
-                    Future research could explore how these patterns vary by team and how they correlate with overall offensive success. Additionally, tracking how these trends evolve over multiple seasons could provide insights into the changing nature of NFL offenses.
+                    The bigger effect is the mix. If RB targets were spread across depths the way WR targets are, using the RB EPA at each depth, they'd be worth
+                    about <strong>+0.19 EPA per target</strong>, close to the WR average. Most of the efficiency gap comes from <em>where</em> backs are
+                    targeted, not from backs being worse receivers. Running backs are a good outlet when the play breaks down, but an offense built on RB targets
+                    is an offense built on low-value throws.
                 </p>
+
+                <h2>Is yards after catch a skill?</h2>
+                <p>
+                    Running backs lead the league in YAC, but that's mostly about where they catch the ball: a screen behind the line comes with blockers
+                    and open field. To separate the player from the situation, nflfastR includes an <strong>expected YAC</strong> model
+                    (<code>xyac_mean_yardage</code>). It estimates how many yards after the catch an average receiver would gain on each completion, given the
+                    catch depth, field position, down, and distance. <strong>YAC over expected (YACOE)</strong> is the gap between the two.
+                </p>
+
+<pre><code>comp = targets[targets.complete_pass == 1].dropna(subset=["yards_after_catch", "xyac_mean_yardage"])
+comp["yacoe"] = comp.yards_after_catch - comp.xyac_mean_yardage
+
+players = (comp.groupby(["receiver_player_name", "pos", "posteam"])
+               .agg(rec=("yacoe", "size"),
+                    yac=("yards_after_catch", "mean"),
+                    xyac=("xyac_mean_yardage", "mean"),
+                    yacoe=("yacoe", "mean"))
+               .query("rec >= 50")
+               .sort_values("yacoe", ascending=False))</code></pre>
+
+                <p>
+                    Adjusting for situation flips the position story. Running backs averaged 7.9 YAC per catch against an expected 7.7, so only
+                    <strong>+0.2</strong> over expected. Tight ends were at &minus;0.1 and wide receivers at &minus;0.5. The xyac model runs slightly high
+                    for 2023 overall, so these are best read relative to each other: RBs' big YAC numbers are almost entirely the situations they're thrown
+                    into, not extra elusiveness.
+                </p>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="yacoe"></div>
+                    <figcaption>Figure 6: The ten best and five worst players in YAC over expected per reception, 2023 (minimum 50 receptions).</figcaption>
+                </figure>
+
+                <p>
+                    The top of the list is a who's who of after-the-catch players: Deebo Samuel (+3.2 yards per catch), Rashee Rice (+3.0), and George Kittle (+2.9),
+                    the same hybrids that stood out in Figure 4. It also shows how scheme and skill mix: two of the top three play for Kyle Shanahan,
+                    whose offense is built to create space after the catch. The bottom five are all wide receivers, each losing about two yards per catch against
+                    what the situation offered.
+                </p>
+
+                <h3>Does it repeat from year to year?</h3>
+                <p>
+                    A skill should persist. Pairing every receiver with 40+ catches in one season with his next season (2020&rarr;21 through 2024&rarr;25,
+                    321 player pairs) shows how stable each number is:
+                </p>
+
+                <figure class="fig">
+                    <div class="chart" data-chart="yacStability"></div>
+                    <figcaption>Figure 7: Correlation between a player's season and his next season, receivers with 40+ receptions in both.</figcaption>
+                </figure>
+
+                <p>
+                    The most stable numbers describe a player's <em>role</em>: depth of target (r = 0.90) and expected YAC (0.86) barely change, because
+                    they're set by how the offense uses him. Raw YAC per catch looks fairly stable (0.66), but most of that is the role carrying over.
+                    YAC over expected, the part that's actually the player, repeats at only <strong>r = 0.36</strong>. There's a real skill in there, but one
+                    season of it is mostly noise, so a big YACOE season should be expected to come back toward average.
+                </p>
+
+                <h2>Caveats</h2>
+                    <ul>
+                        <li>Position labels are roster positions. A "WR" lined up in the backfield (Deebo Samuel) is still counted as a WR.</li>
+                        <li>EPA per target credits the receiver for the whole play, including the quarterback's decision and the defense's coverage.</li>
+                        <li>The depth-mix calculation uses tiny RB samples at 10+ yards, so treat the +0.19 as "about the same as a WR," not as a precise figure.</li>
+                    </ul>
+
+                <h2>Data and code</h2>
+                    <p>
+                        Play-by-play and weekly player stats from <a href="https://github.com/nflverse/nflverse-data">nflverse</a>.
+                        A target is any non-sack pass attempt with a listed receiver. The year-to-year comparison uses 2020&ndash;2025. Every number and chart comes from
+                        <a href="https://github.com/ethantompkins/ethantompkins.github.io/blob/main/analysis/receiving_positions.py"><code>analysis/receiving_positions.py</code></a>.
+                    </p>
+                <a href="/blogs.html" class="back-link">&larr; Back to all posts</a>
             </article>
-            
-            <div class="mt-4">
-                <a href="/blogs.html">&larr; Back to all posts</a>
-            </div>
         </div>
     </div>
     <div id="footer" class="mb-5">
         <div class="container">
         </div>
     </div>
-    
+    <script src="/assets/js/charts.js"></script>
     <script src="/assets/js/main.js"></script>
 </body>
 </html>
