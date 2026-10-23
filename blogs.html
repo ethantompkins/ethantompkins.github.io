@@ -25,9 +25,9 @@
     <meta property="og:image" content="">
     <!-- Twitter -->
     <meta property="twitter:image" content="">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/bootstrap-lite.css">
     <link rel="stylesheet" href="/assets/css/researcher.css">
+    <link rel="stylesheet" href="/assets/css/site.css">
     <style>
         pre {
             font-size: .9em;
@@ -127,62 +127,33 @@
     </style>
 </head>
 <body class="max-w-prose m-auto px-4 relative">
-    <div class="container">
-        <nav class="navbar navbar-expand-sm flex-column flex-sm-row text-nowrap py-2">
-            <a class="navbar-brand mx-0 mr-sm-auto" href="/" title="Ethan Tompkins">
-                Ethan Tompkins
-            </a>
-            <div class="navbar-nav flex-row flex-wrap justify-content-center align-items-center">
-                <a class="nav-item nav-link px-2" href="/blogs.html" title="Blogs">
-                    Blogs
-                </a>
-                <a class="nav-item nav-link px-2" href="/readings.html" title="Readings">
-                    Readings
-                </a>
-                <a class="nav-item nav-link px-2" href="/about.html" title="About">
-                    About
-                </a>
-            </div>
-        </nav>
-    </div>
-    <hr class="mt-0">
+    <nav class="site-nav" aria-label="Site">
+        <a class="site-name" href="/">Ethan Tompkins</a>
+        <div class="nav-group">
+            <a href="/">home</a>
+            <a href="/blogs.html">blog</a>
+            <a href="/readings.html">reading</a>
+            <a href="/about.html">about</a>
+        </div>
+        <div class="nav-group">
+            <a href="https://github.com/ethantompkins/">github</a>
+            <a href="https://linkedin.com/in/ethantompkins/">linkedin</a>
+        </div>
+    </nav>
     <div id="content">
         <div class="container">
-            <h3 id="blog">Blogs</h3>
+            <h3 id="blog">Blog</h3>
             <p>Things I wrote about, mostly NFL data.</p>
             
-            <table>
-                <tbody>
-                    <tr>
-                        <td style="text-align:left"><a href="/blogs/clemsonPortal.html">Clemson and the Transfer Portal</a></td>
-                        <td style="text-align:right">Oct 2026</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:left"><a href="/blogs/percentageRunOffense.html">Run Rate and Game Script: 49ers vs. Vikings, 2023</a></td>
-                        <td style="text-align:right">Oct 2024</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:left"><a href="/blogs/winsWithEpa.html">EPA Metrics and Team Wins</a></td>
-                        <td style="text-align:right">Sep 2024</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:left"><a href="/blogs/receivingPositions.html">Receiving Usage and Efficiency by Position</a></td>
-                        <td style="text-align:right">Sep 2024</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:left"><a href="/blogs/playPredictionRFC.html">Run/Pass Prediction with a Random Forest</a></td>
-                        <td style="text-align:right">Sep 2023</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:left"><a href="/blogs/propPredictionBootstrap.html">Prop Bet Pricing with Bootstrap Resampling</a></td>
-                        <td style="text-align:right">Sep 2023</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:left"><a href="/blogs/sackPredictionLR.html">Sack Prediction with Logistic Regression</a></td>
-                        <td style="text-align:right">Aug 2023</td>
-                    </tr>
-                </tbody>
-            </table>
+            <ul class="post-list">
+                <li><time datetime="2026-10">Oct 2026</time><a href="/blogs/clemsonPortal.html">Clemson and the Transfer Portal</a></li>
+                <li><time datetime="2024-10">Oct 2024</time><a href="/blogs/percentageRunOffense.html">Run Rate and Game Script: 49ers vs. Vikings, 2023</a></li>
+                <li><time datetime="2024-09">Sep 2024</time><a href="/blogs/winsWithEpa.html">EPA Metrics and Team Wins</a></li>
+                <li><time datetime="2024-09">Sep 2024</time><a href="/blogs/receivingPositions.html">Receiving Usage and Efficiency by Position</a></li>
+                <li><time datetime="2023-09">Sep 2023</time><a href="/blogs/playPredictionRFC.html">Run/Pass Prediction with a Random Forest</a></li>
+                <li><time datetime="2023-09">Sep 2023</time><a href="/blogs/propPredictionBootstrap.html">Prop Bet Pricing with Bootstrap Resampling</a></li>
+                <li><time datetime="2023-08">Aug 2023</time><a href="/blogs/sackPredictionLR.html">Sack Prediction with Logistic Regression</a></li>
+            </ul>
         </div>
     </div>
     <div id="footer" class="mb-5">

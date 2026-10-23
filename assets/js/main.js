@@ -1,13 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
-  // Highlight the current page in the navigation
-  const currentPath = window.location.pathname;
-  const navLinks = document.querySelectorAll('.nav-link');
-  
-  navLinks.forEach(link => {
-    const linkPath = link.getAttribute('href');
-    if (currentPath === linkPath || 
-        (currentPath.includes(linkPath) && linkPath !== '/')) {
-      link.style.fontWeight = 'bold';
+  // Mark the sidebar link for the current section
+  const path = window.location.pathname.replace(/index\.html$/, '');
+  document.querySelectorAll('.site-nav .nav-group a').forEach(link => {
+    const href = link.getAttribute('href');
+    const inBlog = href === '/blogs.html' && path.startsWith('/blogs/');
+    if (path === href || inBlog) {
+      link.classList.add('active');
+      link.setAttribute('aria-current', 'page');
     }
   });
 });
